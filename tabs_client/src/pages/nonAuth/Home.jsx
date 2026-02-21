@@ -72,7 +72,7 @@ export default function Home() {
       console.log(err.message);
       const errorData = err.response?.data;
       if (hostname !== `${import.meta.env.VITE_FRONTEND_URL}`) {
-        window.location.href = `https://${import.meta.env.VITE_FRONTEND_URL}`;
+        window.location.href = `http://${import.meta.env.VITE_FRONTEND_URL}`;
       }
 
       if (errorData?.errors && Array.isArray(errorData.errors)) {
