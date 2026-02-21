@@ -43,7 +43,7 @@ const PORT = process.env.PORT || 7500;
 //   }),
 // );
 
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 connection();
 
