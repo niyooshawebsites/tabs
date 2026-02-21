@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo
+    container_name: tabs_mongo
+
+  server:
+    build: ./tabs_server
+    container_name: tabs_server
+    env_file:
+      - ./tabs_server/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/tabs
+    depends_on:
+      - mongo
+
+  client:
+    build: ./tabs_client
+    container_name: tabs_client
+    env_file:
+      - ./tabs_server/.env
+    depends_on:
+      - server
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - client
+      - server
