@@ -1,9 +1,9 @@
-version: "3.9"
-
 services:
   mongo:
     image: mongo
     container_name: tabs_mongo
+    ports:
+      - "27017:27017"
 
   server:
     build: ./tabs_server

@@ -26,22 +26,24 @@ const extractTenant = require("./middlewares/tenant.middleware");
 
 const PORT = process.env.PORT || 7500;
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      const allowedDomain = /\.?propertydealer\.sbs$/;
-      const url = new URL(origin);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
+//       const allowedDomain = /\.?propertydealer\.sbs$/;
+//       const url = new URL(origin);
 
-      if (allowedDomain.test(url.hostname)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  }),
-);
+//       if (allowedDomain.test(url.hostname)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   }),
+// );
+
+app.use(cors());
 
 connection();
 
@@ -113,18 +115,18 @@ app.use(process.env.API_VERSION, planRoutes);
 // serverless function
 // module.exports = app;
 
-// app.listen(PORT, () =>
-//   console.log(
-//     `The server is running on PORT ${PORT} in ${process.env.NODE_ENV} environment`,
-//   ),
-// );
-
 app.use((req, res, next) => {
   console.log("HOST:", req.headers.host);
   next();
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("SERVER STARTED");
-  console.log("PORT:", PORT);
-});
+// app.listen(PORT, "0.0.0.0", () => {
+//   console.log("SERVER STARTED");
+//   console.log("PORT:", PORT);
+// });
+
+app.listen(PORT, () =>
+  console.log(
+    `The server is running on PORT ${PORT} in ${process.env.NODE_ENV} environment`,
+  ),
+);
