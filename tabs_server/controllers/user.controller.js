@@ -90,7 +90,8 @@ const loginController = async (req, res) => {
     res.cookie("authToken", authToken, {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      // sameSite: "None",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       path: "/",
     });
@@ -119,7 +120,8 @@ const logoutController = async (req, res) => {
     res.clearCookie("authToken", {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      // sameSite: "None",
+      sameSite: "lax",
       path: "/",
     });
 
@@ -148,7 +150,7 @@ const updateUserController = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       uid,
       { password: encryptedPassword },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedUser) {

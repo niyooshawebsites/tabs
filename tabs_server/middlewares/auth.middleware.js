@@ -9,6 +9,7 @@ const isAuthenticated = (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: "No token, no access",
+        authToken: authToken,
       });
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);

@@ -26,11 +26,12 @@ const extractTenant = require("./middlewares/tenant.middleware");
 
 const PORT = process.env.PORT || 7500;
 
+// PRODUCTION CORS
 // app.use(
 //   cors({
 //     origin: (origin, callback) => {
 //       if (!origin) return callback(null, true);
-//       const allowedDomain = /\.?propertydealer\.sbs$/;
+//       const allowedDomain = /(^|\.)propertydealer\.sbs$/;
 //       const url = new URL(origin);
 
 //       if (allowedDomain.test(url.hostname)) {
@@ -43,7 +44,21 @@ const PORT = process.env.PORT || 7500;
 //   }),
 // );
 
-app.use(cors({ credentials: true }));
+// DEVELOPMENT CORS
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      if (origin.includes("localhost:5173")) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
 
 connection();
 
@@ -119,11 +134,6 @@ app.use((req, res, next) => {
   console.log("HOST:", req.headers.host);
   next();
 });
-
-// app.listen(PORT, "0.0.0.0", () => {
-//   console.log("SERVER STARTED");
-//   console.log("PORT:", PORT);
-// });
 
 app.listen(PORT, () =>
   console.log(

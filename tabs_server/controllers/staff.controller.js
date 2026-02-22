@@ -62,7 +62,7 @@ const staffLoginController = async (req, res) => {
 
     const passwordVerfication = await decryptPassword(
       password,
-      existingStaff.password
+      existingStaff.password,
     );
 
     if (!passwordVerfication) {
@@ -87,7 +87,8 @@ const staffLoginController = async (req, res) => {
     res.cookie("authToken", authToken, {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      // sameSite: "None",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       path: "/",
     });
@@ -140,7 +141,7 @@ const updateStaffPasswordController = async (req, res) => {
     const updatedStaff = await Staff.findByIdAndUpdate(
       staffId,
       { password: encryptedPassword },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedStaff) {
@@ -182,7 +183,7 @@ const updateStaffDetailsController = async (req, res) => {
         location: lid,
         tenant: uid,
       },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedStaff) {

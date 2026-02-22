@@ -4,6 +4,8 @@ services:
     container_name: tabs_mongo
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db # ✅ Persist DB
 
   server:
     image: node:22
@@ -32,3 +34,7 @@ services:
       - "5173:5173"
     depends_on:
       - server
+
+# ✅ ADD THIS AT THE BOTTOM
+volumes:
+  mongo_data:
