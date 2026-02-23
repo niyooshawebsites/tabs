@@ -103,6 +103,12 @@ export default function Profile() {
     }
   };
 
+  const greeting = (role) => {
+    if (role == 1) return `${name.uppercase()}} - ${empId.uppercase()}`;
+    if (role == 2) return 'ADMIN';
+    if (role == 3) return 'PLATFORM OWNER';
+  };
+
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <ButtonBase
@@ -123,7 +129,7 @@ export default function Profile() {
         <Stack direction="row" sx={{ gap: 1.25, alignItems: 'center', p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            Welcome! {name === null && empId === null ? 'ADMIN' : `${name.uppercase()}} - ${empId.uppercase()}`}
+            Welcome!
           </Typography>
         </Stack>
       </ButtonBase>
@@ -158,7 +164,7 @@ export default function Profile() {
                           <Stack>
                             <Typography variant="h6">{legalName}</Typography>
                             <Typography variant="body2" color="text.secondary">
-                              {role == 1 ? `${name.uppercase()}} - ${empId.uppercase()}` : 'ADMIN'}
+                              {greeting(role)}
                             </Typography>
                           </Stack>
                         </Stack>
