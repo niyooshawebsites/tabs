@@ -57,8 +57,8 @@ export default function DashboardAppointments() {
       //     : `?page=${page}&limit=${limit}`;
       // }
 
-      // for tenant
-      if ((role === 1 || role === 3) && isAuthenticated) {
+      // for employee or tenant
+      if ((role === 1 || role === 2) && isAuthenticated) {
         endPoint = isFiltered ? `fetch-filtered-appointments` : `fetch-all-appointments`;
 
         query = isFiltered

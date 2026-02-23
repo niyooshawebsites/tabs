@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { loginSliceActions } from '../../store/slices/LoginSlice';
+import { tenantSliceActions } from '../../store/slices/TenantSlice';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import IconButton from 'components/@extended/IconButton';
@@ -70,6 +71,14 @@ export default function AuthLogin({ isDemo = false }) {
             empId: null
           })
         );
+
+        if (data?.data?.role == 2) {
+          dispatch(
+            tenantSliceActions.captureTenantDetails({
+              tenantId: data?.data?.uid
+            })
+          );
+        }
 
         navigate('/dashboard');
       }

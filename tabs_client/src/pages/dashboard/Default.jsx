@@ -101,7 +101,7 @@ export default function DashboardDefault() {
   };
 
   useEffect(() => {
-    if (role === 1 && isAuthenticated && services.length > 0) {
+    if ((role === 1 || role == 2) && isAuthenticated && services.length > 0) {
       setIsFiltered(false);
       fetchTodayAppointments();
     }

@@ -40,15 +40,14 @@ const isTenant = (req, res, next) => {
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);
 
-    if (loginDetails.role == 1) {
-      req.user = loginDetails;
-      next();
-    } else {
+    if (loginDetails.role !== 2) {
       return res.status(401).json({
         success: false,
         message: "You are not a tenant. Unauthorized access. Permission denied",
       });
     }
+    req.user = loginDetails;
+    next();
   } catch (err) {
     console.log(err);
   }
@@ -66,16 +65,15 @@ const isTenantOrStaff = (req, res, next) => {
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);
 
-    if (loginDetails.role == 1 || loginDetails.role == 3) {
-      req.user = loginDetails;
-      next();
-    } else {
+    if (loginDetails.role !== 1 || loginDetails.role !== 2) {
       return res.status(401).json({
         success: false,
         message:
           "You are not a tenant or staff. Unauthorized access. Permission denied",
       });
     }
+    req.user = loginDetails;
+    next();
   } catch (err) {
     console.log(err);
   }
@@ -93,15 +91,15 @@ const isStaff = (req, res, next) => {
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);
 
-    if (loginDetails.role == 3) {
-      req.user = loginDetails;
-      next();
-    } else {
+    if (loginDetails.role !== 1) {
       return res.status(401).json({
         success: false,
         message: "You are not a tenant. Unauthorized access. Permission denied",
       });
     }
+
+    req.user = loginDetails;
+    next();
   } catch (err) {
     console.log(err);
   }
@@ -119,7 +117,7 @@ const isPlatformOwner = (req, res, next) => {
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);
 
-    if (loginDetails.role !== 2) {
+    if (loginDetails.role !== 3) {
       return res.status(401).json({
         success: false,
         message:

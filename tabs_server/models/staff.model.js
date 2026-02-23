@@ -40,12 +40,12 @@ const staffSchema = new mongoose.Schema(
     },
     role: {
       type: Number,
-      default: 3,
+      default: 1,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Staff", staffSchema);

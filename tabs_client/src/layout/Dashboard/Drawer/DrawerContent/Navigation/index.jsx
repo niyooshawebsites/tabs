@@ -60,12 +60,12 @@ export default function Navigation() {
       )
     );
 
-  if (role === 1) {
+  if (role === 2) {
     // Role 1 sees all menu items
     return <Box sx={{ pt: 2 }}>{renderGroups(menuItem.items)}</Box>;
   }
 
-  if (role === 3) {
+  if (role === 1) {
     // Role 3: filter out staff, services, notification
     const staffNavigationMenu = menuItem.items.filter(
       (item) => item.title !== 'Staff' && item.title !== 'Services' && item.title !== 'Notification'

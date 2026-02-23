@@ -40,8 +40,8 @@ export default function DashboardLayout() {
             email: data.user?.email,
             role: data.user?.role,
             isAuthenticated: true,
-            name: role == 3 ? data?.user?.name : null,
-            empId: role == 3 ? data?.user?.empId : null
+            name: role == 2 ? data?.user?.name : null,
+            empId: role == 2 ? data?.user?.empId : null
           })
         );
         setIsAuthenticated(true);
