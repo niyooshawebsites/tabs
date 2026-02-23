@@ -43,7 +43,7 @@ function a11yProps(index) {
 
 export default function Profile() {
   const theme = useTheme();
-  const { name, empId } = useSelector((state) => state.login_slice);
+  const { name, empId, role } = useSelector((state) => state.login_slice);
   const { legalName } = useSelector((state) => state.admin_slice);
   const [loading, setLoading] = useState(false);
   const anchorRef = useRef(null);
@@ -158,7 +158,7 @@ export default function Profile() {
                           <Stack>
                             <Typography variant="h6">{legalName}</Typography>
                             <Typography variant="body2" color="text.secondary">
-                              {name === null && empId === null ? 'ADMIN' : `${name.uppercase()}} - ${empId.uppercase()}`}
+                              {role == 1 ? `${name.uppercase()}} - ${empId.uppercase()}` : 'ADMIN'}
                             </Typography>
                           </Stack>
                         </Stack>
