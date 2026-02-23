@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: Number,
       required: true,
-      enum: [0, 1, 2, 3], // 0 for endUser, 1 for employee, 2 for tenant, 3 for platform owner
+      enum: [0, 1, 2, 3], // 0 for endUser, 1 for staff, 2 for tenant, 3 for platform owner
       default: 2,
     },
     totalAppointments: {
