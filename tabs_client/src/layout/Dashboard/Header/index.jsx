@@ -31,29 +31,31 @@ export default function Header() {
 
   const fetchAdminDetails = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-admin-details?username=${subDomain}`, {
-        withCredentials: true
-      });
+      if (subDomain) {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-admin-details?username=${subDomain}`, {
+          withCredentials: true
+        });
 
-      if (data.success) {
-        dispatch(
-          adminSliceActions.captureAdminDetails({
-            id: data.data?._id,
-            legalName: data.data?.legalName,
-            gstNo: data.data?.gstNo,
-            name: data.data?.name,
-            isDoctor: data.data?.isDoctor,
-            experience: data.data?.experience,
-            proffessinalCourse: data.data?.proffessinalCourse,
-            phone: data.data?.phone,
-            altPhone: data.data?.altPhone,
-            email: data.data?.email,
-            address: data.data?.address,
-            tenantId: data.data?.tenant,
-            workingDays: data.data?.workingDays,
-            timings: data.data?.timings
-          })
-        );
+        if (data.success) {
+          dispatch(
+            adminSliceActions.captureAdminDetails({
+              id: data.data?._id,
+              legalName: data.data?.legalName,
+              gstNo: data.data?.gstNo,
+              name: data.data?.name,
+              isDoctor: data.data?.isDoctor,
+              experience: data.data?.experience,
+              proffessinalCourse: data.data?.proffessinalCourse,
+              phone: data.data?.phone,
+              altPhone: data.data?.altPhone,
+              email: data.data?.email,
+              address: data.data?.address,
+              tenantId: data.data?.tenant,
+              workingDays: data.data?.workingDays,
+              timings: data.data?.timings
+            })
+          );
+        }
       }
     } catch (err) {
       console.log(err);

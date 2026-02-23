@@ -30,9 +30,6 @@ export default function DashboardEditProfile() {
   const [updatingProfile, setUpdatingProfile] = useState(false);
 
   const handleSubmit = async (values, { resetForm }) => {
-    console.log('start test');
-    console.log(uid, tenantId);
-    console.log('end test');
     if (role === 3 && isAuthenticated) {
       try {
         setUpdatingProfile(true);

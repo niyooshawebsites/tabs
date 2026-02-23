@@ -21,7 +21,6 @@ import Ticker from '../../components/Ticker';
 import detectSubDomain from '../../utils/detectSubDomain';
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import NonAuthWrapper from 'sections/auth/NonAuthWrapper';
-import FirebaseRegister from 'sections/auth/AuthRegister';
 // import AuthCard from '../../sections/auth/AuthCard';
 import SlotsSearchModal from '../../components/SlotsSearchModal';
 import ShowSlotsModal from '../../components/ShowSlotsModal';
@@ -32,6 +31,7 @@ import { tenantSliceActions } from '../../store/slices/TenantSlice';
 import { locationSliceActions } from '../../store/slices/LocationSlice';
 import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
+import UsernameLoginPage from '../../sections/auth/UsernameLoginPage';
 
 export default function Home() {
   const subDomain = detectSubDomain();
@@ -568,7 +568,7 @@ export default function Home() {
           </Stack>
         </Grid>
         <Grid size={12}>
-          <FirebaseRegister />
+          <UsernameLoginPage />
         </Grid>
       </Grid>
     </AuthWrapper>
