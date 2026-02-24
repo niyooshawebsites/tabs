@@ -5,11 +5,11 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import AnimateButton from 'components/@extended/AnimateButton';
 
-export default function UsernameLoginPage({ isDemo = false }) {
+export default function UsernameLoginPage() {
   const handleSubmit = async (values) => {
     try {
       // Example redirect
-      const redirectUrl = `https://${values.username}.${import.meta.env.VITE_API_URL}/login`;
+      const redirectUrl = `http://${values.username}.${import.meta.env.VITE_FRONTEND_URL}`;
       window.location.replace(redirectUrl);
     } catch (err) {
       const errorData = err.response?.data;
@@ -37,7 +37,7 @@ export default function UsernameLoginPage({ isDemo = false }) {
       {({ errors, handleBlur, handleChange, touched, values, handleSubmit }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid sixe={12} sx={{ width: '100%' }}>
               <Stack sx={{ gap: 1 }}>
                 <InputLabel htmlFor="username-login">Registered Username</InputLabel>
                 <OutlinedInput
@@ -56,10 +56,10 @@ export default function UsernameLoginPage({ isDemo = false }) {
               {touched.username && errors.username && <FormHelperText error>{errors.username}</FormHelperText>}
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <AnimateButton>
-                <Button type="submit" fullWidth size="large" variant="contained" color="primary" disabled={loading}>
-                  {loading ? 'Submitting...' : 'Submit'}
+                <Button type="submit" fullWidth size="large" variant="contained" color="primary">
+                  Submit
                 </Button>
               </AnimateButton>
             </Grid>

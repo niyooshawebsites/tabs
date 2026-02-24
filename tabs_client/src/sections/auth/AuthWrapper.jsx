@@ -7,10 +7,15 @@ import { useNavigate } from 'react-router';
 import AuthBackground from './AuthBackground';
 import { Link } from 'react-router';
 import { useSelector } from 'react-redux';
-
-const hostname = window.location.hostname;
+import detectSubDomain from '../../utils/detectSubDomain';
 
 export default function AuthWrapper({ children }) {
+  const subDomain = detectSubDomain();
+
+  console.log(subDomain);
+  console.log(subDomain);
+  console.log(subDomain);
+  console.log(subDomain);
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const navigate = useNavigate();
 
@@ -25,14 +30,15 @@ export default function AuthWrapper({ children }) {
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', px: 3, mt: 3 }}>
           <Logo to="/" />
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-            <Typography component={Link} to="/login" variant="body1" sx={{ textDecoration: 'none', mx: 2 }} color="primary">
-              Login
-            </Typography>
-            {hostname == `${import.meta.env.VITE_FRONTEND_URL}` ? (
+            {subDomain ? (
+              <Typography component={Link} to="/login" variant="body1" sx={{ textDecoration: 'none', mx: 2 }} color="primary">
+                Login
+              </Typography>
+            ) : (
               <Typography component={Link} to="/register" variant="body1" sx={{ textDecoration: 'none', mx: 2 }} color="primary">
                 Register
               </Typography>
-            ) : null}
+            )}
           </Box>
         </Box>
         <Grid size={12}>

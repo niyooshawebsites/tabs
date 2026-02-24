@@ -32,6 +32,7 @@ import { locationSliceActions } from '../../store/slices/LocationSlice';
 import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 import UsernameLoginPage from '../../sections/auth/UsernameLoginPage';
+import { color } from 'framer-motion';
 
 export default function Home() {
   const subDomain = detectSubDomain();
@@ -58,8 +59,6 @@ export default function Home() {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
         withCredentials: true
       });
-
-      console.log(data);
 
       if (data.success) {
         dispatch(
@@ -561,9 +560,9 @@ export default function Home() {
       <Grid container spacing={3}>
         <Grid size={12}>
           <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'space-between', mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Sign up</Typography>
-            <Typography component={Link} to="/login" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-              Already have an account?
+            <Typography variant="h3">My Account</Typography>
+            <Typography component={Link} to="/register" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
+              <span sx={{ color: 'blue' }}>Register FREE</span>
             </Typography>
           </Stack>
         </Grid>

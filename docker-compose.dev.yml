@@ -14,11 +14,12 @@ services:
     volumes:
       - ./tabs_server:/app
       - /app/node_modules
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && npx nodemon --legacy-watch server.js"
     ports:
       - "8800:8800"
     environment:
       - MONGODB_URI=mongodb://mongo:27017/tabs
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - mongo
 
@@ -29,7 +30,9 @@ services:
     volumes:
       - ./tabs_client:/app
       - /app/node_modules
-    command: sh -c "corepack enable && yarn install && yarn dev"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: sh -c "corepack enable && yarn install && yarn dev --host"
     ports:
       - "5173:5173"
     depends_on:

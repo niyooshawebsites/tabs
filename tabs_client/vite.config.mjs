@@ -82,6 +82,9 @@ export default defineConfig(({ mode }) => {
       port: PORT,
       strictPort: true,
       open: false,
+      watch: {
+        usePolling: true
+      },
 
       // 🔥 Allow tenant123.localhost, tenant22.localhost, etc.
       allowedHosts: ['.localhost'],

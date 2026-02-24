@@ -5,13 +5,13 @@ const CheckMissingInfo = (legalName, phone, altPhone, address, name, email, loca
   const navigate = useNavigate();
   if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
     return (
-      <Grid container spacing={3}>
-        <Grid size={12}>
+      <Grid container flex flexDirection={'column'} justifyContent={'center'} alignItems={'center'} spacing={3} sx={{ height: '100vh' }}>
+        <Grid size={6}>
           <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'start', mb: { xs: -0.5, sm: 0.5 } }}>
             <Typography variant="h3">Infomration missing:</Typography>
           </Stack>
         </Grid>
-        <Grid size={12} sx={{ p: 2, backgroundColor: '#f2f2f2', borderRadius: '10px' }}>
+        <Grid size={6} sx={{ p: 2, backgroundColor: '#f2f2f2', borderRadius: '10px' }}>
           <Typography variant="h6">Get up and running in 3 easy steps:</Typography>
           <Box>
             <ol style={{ textAlign: 'left', display: 'inline-block', margin: '1rem 0' }}>
