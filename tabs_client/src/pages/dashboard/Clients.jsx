@@ -9,6 +9,7 @@ import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
+import { toast } from 'react-toastify';
 
 export default function DashboardClients() {
   const { tenantId } = useSelector((state) => state.tenant_slice);

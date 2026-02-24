@@ -1,7 +1,7 @@
 import { Grid, Stack, Button, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router';
 import Loader from '../../components/Loader';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
+import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 
 export default function EditService() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -21,20 +22,22 @@ export default function EditService() {
   const [initialService, setInitialService] = useState({ name: '', charges: '', duration: '' });
   const [fetchingServiceToUpdate, setFetchingServiceToUpdate] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { sid } = useParams();
+  const dispatch = useDispatch();
 
   const fetchAllServices = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
         withCredentials: true
       });
 
       if (data.success) {
         dispatch(
-          locationSliceActions.captureLocationDetails({
-            locations: data?.data,
-            totalLocations: data?.pagination?.totalLocations,
+          serviceSliceActions.captureServiceDetails({
+            services: data?.data,
+            totalServices: data?.pagination?.totalServices,
             totalPages: data?.pagination?.totalPages,
             hasNextPage: data?.pagination?.hasNextPage,
             hasPrevPage: data?.pagination?.hasPrevPage,
@@ -60,6 +63,7 @@ export default function EditService() {
 
   const fetchServiceToUpdate = async () => {
     setFetchingServiceToUpdate(true);
+    setLoading(false);
     try {
       const apiURL = `${import.meta.env.VITE_API_URL}fetch-service/${sid}?uid=${tenantId}`;
       const { data } = await axios.get(apiURL, { withCredentials: true });
@@ -88,6 +92,8 @@ export default function EditService() {
         toast.error(errorMessage);
       }
       setFetchingServiceToUpdate(false);
+    } finally {
+      setLoading(true);
     }
   };
 
@@ -228,7 +234,7 @@ export default function EditService() {
                         </Grid>
                         <Grid size={12}>
                           <AnimateButton>
-                            <Button fullWidth size="large" variant="contained" color="primary" type="submit" disabled={loading}>
+                            <Button fullWidth size="large" variant="contained" color="primary" type="submit" disabled={updating}>
                               {updating ? 'Updating Service...' : 'Update Service'}
                             </Button>
                           </AnimateButton>

@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import { locationSliceActions } from '../../store/slices/LocationSlice';
 import NoInfo from '../../components/NoInfo';
+import Loader from '../../components/Loader';
 
 export default function DashboardEditLocation() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -192,7 +193,7 @@ export default function DashboardEditLocation() {
                           <Grid size={12}>
                             <AnimateButton>
                               <Button fullWidth size="large" variant="contained" color="primary" disabled={updating} type="submit">
-                                {loading ? 'Updating Location...' : 'Update Location'}
+                                {updating ? 'Updating Location...' : 'Update Location'}
                               </Button>
                             </AnimateButton>
                           </Grid>

@@ -32,9 +32,11 @@ export default function CreateAppointment() {
     state: '',
     pincode: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      setLoading(true);
       setBookingAppointment(true);
       const { data } = await axios.post(`${import.meta.env.VITE_API_URL}book-appointment?uid=${tenantId}`, values, {
         withCredentials: true
@@ -51,6 +53,7 @@ export default function CreateAppointment() {
     } finally {
       setBookingAppointment(false);
       setSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -173,7 +176,7 @@ export default function CreateAppointment() {
                 <Form>
                   {/* Service Details */}
                   <Typography variant="h6" mb={1}>
-                    Service Details
+                    Select Service
                   </Typography>
                   <Grid container spacing={2}>
                     {/* Column 1 - Service */}

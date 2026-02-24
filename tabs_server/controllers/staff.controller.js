@@ -250,7 +250,7 @@ const fetchStaffController = async (req, res) => {
     const staff = await Staff.find({ tenant: uid })
       .select("-password")
       .populate("services")
-      .popuplate("location")
+      .populate("location")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });

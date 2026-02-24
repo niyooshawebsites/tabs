@@ -65,7 +65,7 @@ const isTenantOrStaff = (req, res, next) => {
     }
     const loginDetails = jwt.verify(authToken, process.env.JWT_SECRET);
 
-    if (loginDetails.role !== 1 || loginDetails.role !== 2) {
+    if (loginDetails.role !== 1 && loginDetails.role !== 2) {
       return res.status(401).json({
         success: false,
         message:

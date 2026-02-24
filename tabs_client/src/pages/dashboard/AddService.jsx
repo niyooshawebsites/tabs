@@ -21,15 +21,15 @@ export default function AddService() {
 
   const fetchAllServices = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
         withCredentials: true
       });
 
       if (data.success) {
         dispatch(
           serviceSliceActions.captureServiceDetails({
-            locations: data?.data,
-            totalLocations: data?.pagination?.totalLocations,
+            services: data?.data,
+            totalServices: data?.pagination?.totalServices,
             totalPages: data?.pagination?.totalPages,
             hasNextPage: data?.pagination?.hasNextPage,
             hasPrevPage: data?.pagination?.hasPrevPage,

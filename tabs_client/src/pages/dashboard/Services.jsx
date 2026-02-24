@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import ServicesTable from '../../sections/dashboard/default/ServicesTable';
@@ -18,7 +18,9 @@ export default function DashboardServices() {
   const { locations } = useSelector((state) => state.location_slice);
   const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
   const [fetchingAllServices, serFetchingAllServices] = useState(false);
+  const [pagination, setPagination] = useState({});
   const [deletingService, serDeletingService] = useState(false);
+  const [serviceDeleted, setServiceDeleted] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,10 +32,12 @@ export default function DashboardServices() {
       });
 
       if (data.success) {
+        setPagination(data?.pagination);
+        console.log(data?.pagination);
         dispatch(
           serviceSliceActions.captureServiceDetails({
-            locations: data?.data,
-            totalLocations: data?.pagination?.totalServices,
+            services: data?.data,
+            totalServices: data?.pagination.totalServices,
             totalPages: data?.pagination?.totalPages,
             hasNextPage: data?.pagination?.hasNextPage,
             hasPrevPage: data?.pagination?.hasPrevPage,
