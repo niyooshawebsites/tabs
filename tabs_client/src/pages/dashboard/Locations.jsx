@@ -17,6 +17,7 @@ export default function DashboardLocations() {
   const { locations, page, limit } = useSelector((state) => state.location_slice);
   const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
   const [fetchingAllLocations, setFetchingAllLocations] = useState(false);
+  const [pagination, setPagination] = useState({});
   const [deletingLocation, setDeletingLocation] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function DashboardLocations() {
       });
 
       if (data.success) {
+        setPagination(data?.pagination);
         dispatch(
           locationSliceActions.captureLocationDetails({
             locations: data?.data,
