@@ -107,11 +107,11 @@ export default function DashboardCreateStaff() {
             validationSchema={Yup.object().shape({
               name: Yup.string().min(3, 'Employee name must be atleast 3 characters long').max(255).required('Employee name is required'),
               empId: Yup.string().required('Employee ID is required'),
-              sid: Yup.array().when('handlesAllServices', (handlesAllServices, schema) => {
-                if (handlesAllServices === false) {
-                  return schema.min(1, 'Select at least one service');
-                }
-                return schema;
+
+              sid: Yup.array().when('handlesAllServices', {
+                is: false,
+                then: (schema) => schema.min(1, 'Select at least one service'),
+                otherwise: (schema) => schema.notRequired()
               }),
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().required('Password is required'),

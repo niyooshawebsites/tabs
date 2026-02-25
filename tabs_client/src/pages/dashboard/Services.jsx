@@ -33,7 +33,6 @@ export default function DashboardServices() {
 
       if (data.success) {
         setPagination(data?.pagination);
-        console.log(data?.pagination);
         dispatch(
           serviceSliceActions.captureServiceDetails({
             services: data?.data,
@@ -90,7 +89,7 @@ export default function DashboardServices() {
 
       if (data.success) {
         toast.success(data.message);
-        await fetchAllServices();
+        setServiceDeleted((prev) => !prev);
         serDeletingService(true);
       }
     } catch (err) {
@@ -106,6 +105,10 @@ export default function DashboardServices() {
 
     serDeletingService(false);
   };
+
+  useEffect(() => {
+    fetchAllServices();
+  }, [serviceDeleted]);
 
   if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
     return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);

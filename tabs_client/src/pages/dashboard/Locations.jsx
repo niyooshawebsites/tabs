@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import LocationTable from '../../sections/dashboard/default/LocationTable';
@@ -10,6 +10,7 @@ import Loader from '../../components/Loader';
 import { useNavigate } from 'react-router';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
+import { locationSliceActions } from '../../store/slices/LocationSlice';
 
 export default function DashboardLocations() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -19,6 +20,7 @@ export default function DashboardLocations() {
   const [fetchingAllLocations, setFetchingAllLocations] = useState(false);
   const [pagination, setPagination] = useState({});
   const [deletingLocation, setDeletingLocation] = useState(false);
+  const [loationDeleted, setLoationDeleted] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -78,16 +80,17 @@ export default function DashboardLocations() {
       const confirmation = confirm(
         'If you delete the location, then all appointments, clients and services related to the location will be deleted as well. Do you really want to delete the location?'
       );
+
       if (!confirmation) return;
       const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-location/${lid}?uid=${tenantId}`, {
         withCredentials: true
       });
+
       setDeletingLocation(true);
 
       if (data.success) {
         toast.success(data.message);
-
-        await fetchAllLocations();
+        setLoationDeleted((prev) => !prev);
         setDeletingLocation(false);
       }
     } catch (err) {
@@ -105,6 +108,10 @@ export default function DashboardLocations() {
       setDeletingLocation(false);
     }
   };
+
+  useEffect(() => {
+    fetchAllLocations();
+  }, [loationDeleted]);
 
   if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
     return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
