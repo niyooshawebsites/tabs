@@ -23,6 +23,10 @@ const staffSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+    },
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

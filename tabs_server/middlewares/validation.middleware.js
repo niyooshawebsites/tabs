@@ -5,6 +5,7 @@ const validateBody = (schema) => {
     try {
       const parsed = schema.parse(req.body);
       req.body = parsed;
+      console.log(parsed);
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
