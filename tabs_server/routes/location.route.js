@@ -33,7 +33,7 @@ router.post(
   isTenant,
   validateParams(generateParamSchema("uid")),
   validateBody(addLocationSchema),
-  addLocationController
+  addLocationController,
 );
 
 // update location route
@@ -43,7 +43,7 @@ router.patch(
   validateParams(generateParamSchema("lid")),
   validateQuery(querySchema),
   validateBody(updateLocationSchema),
-  updateLocationController
+  updateLocationController,
 );
 
 // get a location route
@@ -52,22 +52,28 @@ router.get(
   isTenant,
   validateParams(generateParamSchema("lid")),
   validateQuery(querySchema),
-  fetchALocationController
+  fetchALocationController,
 );
 
 // get location route
+// router.get(
+//   "/fetch-all-locations",
+//   isTenant,
+//   validateQuery(querySchema),
+//   fetchAllLocationsController,
+// );
+
 router.get(
   "/fetch-all-locations",
-  isTenant,
   validateQuery(querySchema),
-  fetchAllLocationsController
+  fetchAllLocationsController,
 );
 
-// fetch all services route
+// fetch all locations route
 router.get(
   "/fetch-all-locations-at-once",
   validateQuery(querySchema),
-  fetchAllLocationsAtOnceController
+  fetchAllLocationsAtOnceController,
 );
 
 // delete location route
@@ -76,7 +82,7 @@ router.delete(
   isTenant,
   validateParams(generateParamSchema("lid")),
   validateQuery(querySchema),
-  deleteALocationController
+  deleteALocationController,
 );
 
 module.exports = router;

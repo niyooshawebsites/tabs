@@ -1,21 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { locationSliceActions } from '../../store/slices/LocationSlice';
 import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 import { tenantSliceActions } from '../../store/slices/TenantSlice';
+import { subDomainSliceActions } from '../../store/slices/SubDomainSlice';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const TenantDetails = () => {
-  const [tenantUsername, setTenantUsername] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setTenantUsername(detectSubDomain());
+    detectSubDomain();
   }, []);
 
   const fetchAllLocations = async (tid) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tid}`, {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
         withCredentials: true
       });
 
@@ -157,6 +159,12 @@ const TenantDetails = () => {
 
       if (isSubdomain) {
         subDomain = parts[1];
+        dispatch(
+          subDomainSliceActions.captureSubDomainDetails({
+            subDomain: subDomain
+          })
+        );
+        subDomainSliceActions;
         fetchTenantDetails(subDomain);
       }
     }
@@ -164,144 +172,7 @@ const TenantDetails = () => {
     return subDomain;
   };
 
-  return (
-    <>
-      <div></div>
-    </>
-  );
+  return <></>;
 };
 
 export default TenantDetails;
-
-// const fetchAllLocations = async (tid) => {
-//   try {
-//     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tid}`, {
-//       withCredentials: true
-//     });
-
-//     if (data.success) {
-//       dispatch(
-//         locationSliceActions.captureLocationDetails({
-//           locations: data?.data,
-//           totalLocations: data?.pagination?.totalLocations,
-//           totalPages: data?.pagination?.totalPages,
-//           hasNextPage: data?.pagination?.hasNextPage,
-//           hasPrevPage: data?.pagination?.hasPrevPage,
-//           limit: data?.pagination?.limit,
-//           page: data?.pagination?.page
-//         })
-//       );
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     const errorData = err.response?.data;
-
-//     if (errorData?.errors && Array.isArray(errorData.errors)) {
-//       // Multiple validation errors (Zod)
-//       errorData.errors.forEach((msg) => toast.error(msg));
-//     } else {
-//       // Generic error
-//       const errorMessage = errorData?.message || 'Something went wrong';
-//       toast.error(errorMessage);
-//     }
-//   }
-// };
-
-// const fetchAllServices = async (tid) => {
-//   try {
-//     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tid}`, {
-//       withCredentials: true
-//     });
-//     if (data.success) {
-//       dispatch(
-//         serviceSliceActions.captureServiceDetails({
-//           services: data?.data,
-//           totalServices: data?.pagination?.totalServices,
-//           totalPages: data?.pagination?.totalPages,
-//           hasNextPage: data?.pagination?.hasNextPage,
-//           hasPrevPage: data?.pagination?.hasPrevPage,
-//           limit: data?.pagination?.limit,
-//           page: data?.pagination?.page
-//         })
-//       );
-//     }
-//   } catch (err) {
-//     const errorData = err.response?.data;
-//     if (errorData?.errors) errorData.errors.forEach((msg) => toast.error(msg));
-//     else toast.error(errorData?.message || 'Something went wrong');
-//   }
-// };
-
-// const fetchAnnouncement = async (tid) => {
-//   try {
-//     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-announcement?uid=${tid}`, { withCredentials: true });
-//     if (data.success) {
-//       dispatch(
-//         announcementSliceActions.captureAnnouncementDetails({
-//           announcement: data?.announcement
-//         })
-//       );
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// const fetchTenantDetails = async (subDomain) => {
-//   try {
-//     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
-//       withCredentials: true
-//     });
-
-//     if (data.success) {
-//       dispatch(
-//         tenantSliceActions.captureTenantDetails({
-//           tenantId: data?.data?.id
-//         })
-//       );
-
-//       fetchAllLocations(data?.data?.id);
-//       fetchAllServices(data?.data?.id);
-//       fetchAnnouncement(data?.data?.id);
-//     }
-
-//     if (!data.success) {
-//       toast.error('You are not registered with us. Register first.');
-//       navigate('/register');
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//     const errorData = err.response?.data;
-
-//     if (errorData?.errors && Array.isArray(errorData.errors)) {
-//       // Multiple validation errors (Zod)
-//       errorData.errors.forEach((msg) => toast.error(msg));
-//     } else {
-//       // Generic error
-//       const errorMessage = errorData?.message || 'Something went wrong';
-//       console.log(errorMessage);
-//     }
-//   }
-// };
-
-// const detectSubDomain = () => {
-//   let subDomain;
-//   let hostname = window.location.hostname;
-
-//   // Ensure hostname includes 'www' if missing
-//   if (!hostname.startsWith('www.')) {
-//     hostname = 'www.' + hostname; //www.bookyourappointment.online or www.visooptica.bookyourappointment.online
-
-//     const parts = hostname.split('.');
-//     const isSubdomain = parts.length > 2;
-
-//     if (isSubdomain) {
-//       subDomain = parts[1];
-//       fetchTenantDetails(subDomain);
-//     }
-//   }
-
-//   return subDomain;
-// };
-
-// export default detectSubDomain;

@@ -10,7 +10,6 @@ import { DRAWER_WIDTH, MINI_DRAWER_WIDTH } from 'config';
 import MenuFoldOutlined from '@ant-design/icons/MenuFoldOutlined';
 import MenuUnfoldOutlined from '@ant-design/icons/MenuUnfoldOutlined';
 import { useSelector, useDispatch } from 'react-redux';
-import detectSubDomain from '../../../utils/detectSubDomain';
 import axios from 'axios';
 import { adminSliceActions } from '../../../store/slices/AdminSlice';
 import { toast } from 'react-toastify';
@@ -18,7 +17,7 @@ import { toast } from 'react-toastify';
 // ==============================|| MAIN LAYOUT - HEADER ||============================== //
 
 export default function Header() {
-  const subDomain = detectSubDomain();
+  const { subDomain } = useSelector((state) => state.subDomain_slice);
   const { phone, email } = useSelector((state) => state.admin_slice);
   const dispatch = useDispatch();
 

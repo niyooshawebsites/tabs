@@ -6,10 +6,10 @@ import { useParams } from 'react-router';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
-import detectSubDomain from '../../utils/detectSubDomain';
+import { useSelector } from 'react-redux';
 
 export default function SearchAppointment() {
-  const subDomain = detectSubDomain();
+  const { subDomain } = useSelector((state) => state.subDomain_slice);
   const { aid } = useParams();
   const [loading, setLoading] = useState(false);
 

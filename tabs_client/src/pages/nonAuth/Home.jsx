@@ -11,33 +11,26 @@ import {
   InputLabel,
   Select
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Ticker from '../../components/Ticker';
-import detectSubDomain from '../../sections/auth/TenantDetails';
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import NonAuthWrapper from 'sections/auth/NonAuthWrapper';
-// import AuthCard from '../../sections/auth/AuthCard';
 import SlotsSearchModal from '../../components/SlotsSearchModal';
 import ShowSlotsModal from '../../components/ShowSlotsModal';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import states from '../../constants/states';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
-import { tenantSliceActions } from '../../store/slices/TenantSlice';
-import { locationSliceActions } from '../../store/slices/LocationSlice';
-import { serviceSliceActions } from '../../store/slices/ServiceSlice';
-import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 import UsernameLoginPage from '../../sections/auth/UsernameLoginPage';
 
 export default function Home() {
-  const subDomain = detectSubDomain();
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
-  const { locations, page, limit } = useSelector((state) => state.location_slice);
+  const { locations } = useSelector((state) => state.location_slice);
   const { announcement } = useSelector((state) => state.announcement_slice);
   const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
   const [bookingAppointment, setBookingAppointment] = useState(false);
@@ -48,133 +41,8 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [hideServiceDetails, setHideServiceDetails] = useState(true);
+  const { subDomain } = useSelector((state) => state.subDomain_slice);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const hostname = window.location.hostname;
-
-  const fetchTenantDetails = async () => {
-    try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
-        withCredentials: true
-      });
-
-      if (data.success) {
-        dispatch(
-          tenantSliceActions.captureTenantDetails({
-            tenantId: data?.data?.id
-          })
-        );
-      }
-    } catch (err) {
-      console.log(err.message);
-      const errorData = err.response?.data;
-      if (hostname !== `${import.meta.env.VITE_FRONTEND_URL}`) {
-        window.location.href = `http://${import.meta.env.VITE_FRONTEND_URL}`;
-      }
-
-      if (errorData?.errors && Array.isArray(errorData.errors)) {
-        // Multiple validation errors (Zod)
-        errorData.errors.forEach((msg) => toast.error(msg));
-      } else {
-        // Generic error
-        const errorMessage = errorData?.message || 'Something went wrong';
-        console.log(errorMessage);
-      }
-    }
-  };
-
-  const fetchAllLocations = async () => {
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}fetch-all-locations-at-once?page=${page}&limit=${limit}&uid=${tenantId}`,
-        {
-          withCredentials: true
-        }
-      );
-
-      if (data.success) {
-        dispatch(
-          locationSliceActions.captureLocationDetails({
-            locations: data?.data,
-            totalLocations: data?.pagination?.totalLocations,
-            totalPages: data?.pagination?.totalPages,
-            hasNextPage: data?.pagination?.hasNextPage,
-            hasPrevPage: data?.pagination?.hasPrevPage,
-            limit: data?.pagination?.limit,
-            page: data?.pagination?.page
-          })
-        );
-      }
-    } catch (err) {
-      console.log(err);
-      const errorData = err.response?.data;
-
-      if (errorData?.errors && Array.isArray(errorData.errors)) {
-        // Multiple validation errors (Zod)
-        errorData.errors.forEach((msg) => toast.error(msg));
-      } else {
-        // Generic error
-        const errorMessage = errorData?.message || 'Something went wrong';
-        toast.error(errorMessage);
-      }
-    }
-  };
-
-  const fetchAllServices = async () => {
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}fetch-all-services-at-once?page=${page}&limit=${limit}&uid=${tenantId}`,
-        {
-          withCredentials: true
-        }
-      );
-      if (data.success) {
-        dispatch(
-          serviceSliceActions.captureServiceDetails({
-            services: data?.data,
-            totalServices: data?.pagination?.totalServices,
-            totalPages: data?.pagination?.totalPages,
-            hasNextPage: data?.pagination?.hasNextPage,
-            hasPrevPage: data?.pagination?.hasPrevPage,
-            limit: data?.pagination?.limit,
-            page: data?.pagination?.page
-          })
-        );
-      }
-    } catch (err) {
-      const errorData = err.response?.data;
-      if (errorData?.errors) errorData.errors.forEach((msg) => toast.error(msg));
-      else toast.error(errorData?.message || 'Something went wrong');
-    }
-  };
-
-  const fetchAnnouncement = async () => {
-    try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-announcement?uid=${tenantId}`, { withCredentials: true });
-      if (data.success) {
-        dispatch(
-          announcementSliceActions.captureAnnouncementDetails({
-            announcement: data?.announcement
-          })
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (subDomain) {
-      fetchTenantDetails();
-
-      if (tenantId !== null) {
-        fetchAllLocations();
-        fetchAllServices();
-        fetchAnnouncement();
-      }
-    }
-  }, [subDomain, tenantId]);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {

@@ -6,6 +6,7 @@ import tenantSliceReducers from './slices/TenantSlice';
 import serviceSliceReducers from './slices/ServiceSlice';
 import announcementSliceReducers from './slices/AnnouncementSlice';
 import locationSliceReducers from './slices/LocationSlice';
+import subDomainSliceReducers from './slices/SubDomainSlice';
 
 const GlobalStore = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const GlobalStore = configureStore({
     tenant_slice: tenantSliceReducers,
     service_slice: serviceSliceReducers,
     announcement_slice: announcementSliceReducers,
-    location_slice: locationSliceReducers
+    location_slice: locationSliceReducers,
+    subDomain_slice: subDomainSliceReducers
   }
 });
 
