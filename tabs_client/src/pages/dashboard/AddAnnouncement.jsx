@@ -1,6 +1,6 @@
 import { Grid, Stack, Button, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -9,6 +9,7 @@ import DashboardHeading from '../../components/DashboardHeading';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
+import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 
 export default function AddAnnouncement() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -16,6 +17,7 @@ export default function AddAnnouncement() {
   const { locations } = useSelector((state) => state.location_slice);
   const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
   const [announcing, setAnnouncing] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
@@ -26,6 +28,11 @@ export default function AddAnnouncement() {
 
       if (data.success) {
         toast.success(data.message);
+        dispatch(
+          announcementSliceActions.captureAnnouncementDetails({
+            announcement: data?.data
+          })
+        );
         resetForm();
         setAnnouncing(false);
       }
@@ -92,7 +99,7 @@ export default function AddAnnouncement() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 8, lg: 6 }}>
         <Grid container alignItems="center" justifyContent="start">
           <DashboardHeading title="Publish Announcement" />
         </Grid>

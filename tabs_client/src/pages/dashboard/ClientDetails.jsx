@@ -134,7 +134,7 @@ export default function DashboardClientDetails() {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, lg: 4 }}>
                 <Stack sx={{ gap: 3 }}>
-                  <DashboardHeading title={isDoctor ? `Patient Details` : `Client Details`} />
+                  <DashboardHeading title={isDoctor == 'yes' ? `Patient Details` : `Client Details`} />
 
                   <MainCard title="ID">
                     <Breadcrumbs aria-label="breadcrumb">

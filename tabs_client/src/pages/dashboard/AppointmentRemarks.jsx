@@ -15,6 +15,7 @@ export default function DashboardAppointmentRemarks() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
+  const { name: empName, empId } = useSelector((state) => state.login_slice);
   const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
   const { aid } = useParams();
   const [remarks, setRemarks] = useState([]);
@@ -113,7 +114,12 @@ export default function DashboardAppointmentRemarks() {
                     </Breadcrumbs>
                   </MainCard>
                   {remarks.map((remark) => (
-                    <MainCard title={moment(remark.createdAt).format('MMM DD, YYYY [at] hh:mm A')} key={remark._id}>
+                    <MainCard
+                      title={`${moment(remark.createdAt).format('MMM DD, YYYY [at] hh:mm A')} by ${
+                        empId ? `${empName} - ${empId}` : 'ADMIN'
+                      }`}
+                      key={remark._id}
+                    >
                       <Breadcrumbs aria-label="breadcrumb">
                         <Typography variant="h6">{remark?.message}</Typography>
                       </Breadcrumbs>

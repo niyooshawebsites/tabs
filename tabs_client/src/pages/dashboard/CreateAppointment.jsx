@@ -20,6 +20,7 @@ export default function CreateAppointment() {
   const [isClientSearchModalOpen, setIsClientSearchModalOpen] = useState(false);
   const [appointmentDetails, setAppointmentDetails] = useState({
     service: '',
+    location: '',
     date: moment().format('YYYY-MM-DD'),
     time: moment().format('HH:mm'),
     name: '',
@@ -69,6 +70,7 @@ export default function CreateAppointment() {
           return {
             ...prev,
             service: '',
+            location: '',
             date: moment().format('YYYY-MM-DD'),
             time: moment().format('HH:mm'),
             name: data?.data?.name || '',
@@ -104,6 +106,7 @@ export default function CreateAppointment() {
 
   const validationSchema = Yup.object({
     service: Yup.string().required('Service is required'),
+    location: Yup.string().required('Location is required'),
     date: Yup.date().required('Date is required'),
     time: Yup.string().required('Time is required'),
     name: Yup.string().required('Full name is required'),
@@ -168,7 +171,7 @@ export default function CreateAppointment() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      <Grid size={{ xs: 12, md: 8, lg: 6 }}>
+      <Grid size={{ xs: 12, md: 10, lg: 8 }}>
         <Grid container spacing={3}>
           <Box
             sx={{
@@ -213,7 +216,7 @@ export default function CreateAppointment() {
                   </Typography>
                   <Grid container spacing={2}>
                     {/* Column 1 - Service */}
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                       <FormControl fullWidth>
                         <InputLabel>Service</InputLabel>
                         <Select
@@ -238,8 +241,33 @@ export default function CreateAppointment() {
                       </FormControl>
                     </Grid>
 
+                    <Grid size={{ xs: 12, md: 3 }}>
+                      <FormControl fullWidth>
+                        <InputLabel>Location</InputLabel>
+                        <Select
+                          name="location"
+                          value={values.location}
+                          label="Location"
+                          onChange={handleChange}
+                          error={touched.location && Boolean(errors.location)}
+                        >
+                          <MenuItem value="">Select Location</MenuItem>
+                          {locations.map((location) => (
+                            <MenuItem key={location._id} value={location._id}>
+                              {location.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {touched.location && errors.location && (
+                          <Typography color="error" variant="caption">
+                            {errors.location}
+                          </Typography>
+                        )}
+                      </FormControl>
+                    </Grid>
+
                     {/* Column 2 - Date */}
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                       <TextField
                         fullWidth
                         type="date"
@@ -254,7 +282,7 @@ export default function CreateAppointment() {
                     </Grid>
 
                     {/* Column 3 - Time */}
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                       <TextField
                         fullWidth
                         type="time"

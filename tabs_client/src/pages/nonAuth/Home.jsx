@@ -38,6 +38,7 @@ export default function Home() {
   const [isShowSlotsModalOpen, setIsShowSlotsModalOpen] = useState(false);
   const [slots, setSlots] = useState([]);
   const [selectedService, setSelectedService] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [hideServiceDetails, setHideServiceDetails] = useState(true);
@@ -56,6 +57,7 @@ export default function Home() {
         resetForm();
 
         setSelectedService('');
+        setSelectedLocation('');
         setSelectedDate('');
         setSelectedTime('');
         setHideServiceDetails(true);
@@ -77,6 +79,7 @@ export default function Home() {
   if (subDomain) {
     const validationSchema = Yup.object({
       service: Yup.string().required('Service is required'),
+      location: Yup.string().required('Location is required'),
       date: Yup.date().required('Date is required'),
       time: Yup.string().required('Time is required'),
       name: Yup.string().required('Full name is required'),
@@ -96,6 +99,7 @@ export default function Home() {
 
     const initialValues = {
       service: selectedService,
+      location: selectedLocation,
       date: selectedDate,
       time: selectedTime,
       name: '',
@@ -198,7 +202,7 @@ export default function Home() {
                       </Typography>
                       <Grid container spacing={2}>
                         {/* Column 1 - Service */}
-                        <Grid size={{ xs: 12, md: 4 }}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                           <FormControl fullWidth>
                             <InputLabel>Service</InputLabel>
                             <Select
@@ -223,8 +227,33 @@ export default function Home() {
                           </FormControl>
                         </Grid>
 
+                        <Grid size={{ xs: 12, md: 3 }}>
+                          <FormControl fullWidth>
+                            <InputLabel>Location</InputLabel>
+                            <Select
+                              name="location"
+                              value={values.location}
+                              label="Location"
+                              onChange={handleChange}
+                              error={touched.location && Boolean(errors.location)}
+                            >
+                              <MenuItem value="">Select Location</MenuItem>
+                              {locations.map((location) => (
+                                <MenuItem key={location._id} value={location._id}>
+                                  {location.name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {touched.location && errors.location && (
+                              <Typography color="error" variant="caption">
+                                {errors.location}
+                              </Typography>
+                            )}
+                          </FormControl>
+                        </Grid>
+
                         {/* Column 2 - Date */}
-                        <Grid size={{ xs: 12, md: 4 }}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                           <TextField
                             fullWidth
                             type="date"
@@ -239,7 +268,7 @@ export default function Home() {
                         </Grid>
 
                         {/* Column 3 - Time */}
-                        <Grid size={{ xs: 12, md: 4 }}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                           <TextField
                             fullWidth
                             type="text"
@@ -440,6 +469,7 @@ export default function Home() {
           tenantId={tenantId}
           setSelectedDate={setSelectedDate}
           setSelectedService={setSelectedService}
+          setSelectedLocation={setSelectedLocation}
         />
 
         <ShowSlotsModal

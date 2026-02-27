@@ -137,7 +137,7 @@ export default function DashboardClients() {
               <Grid container direction="row" alignItems="center" justifyContent="space-between">
                 <DashboardHeading
                   title={
-                    isDoctor
+                    isDoctor == 'yes'
                       ? `All Patients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
                       : `All Clients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
                   }

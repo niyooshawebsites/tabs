@@ -3,9 +3,11 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import SearchModal from '../../../../components/SearchModal';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function Search() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isDoctor } = useSelector((state) => state.admin_slice);
   return (
     <Box sx={{ width: '100%', ml: { xs: 0, md: 1 } }}>
       <Stack direction="row" sx={{ alignItems: 'center' }}>
@@ -16,7 +18,7 @@ export default function Search() {
           isOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           onClose={() => setIsModalOpen(false)}
-          title="Search Appointment or Client"
+          title={`Search Appointment or ${isDoctor == 'yes' ? 'Patient' : 'Client'}`}
         />
       </Stack>
     </Box>

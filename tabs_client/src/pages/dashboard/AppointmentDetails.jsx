@@ -140,7 +140,7 @@ export default function DashboardAppointmentDetails() {
           {appointment !== null ? (
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, lg: 6 }}>
-                <Stack sx={{ gap: 3 }}>
+                <Stack sx={{ gap: 1 }}>
                   <DashboardHeading title="Appointment Details" />
 
                   <MainCard title="Appointment ID">

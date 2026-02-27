@@ -152,8 +152,6 @@ const bookAppointmentController = async (req, res) => {
   try {
     const { uid } = req.query;
 
-    console.log("UID", uid);
-
     const {
       name,
       gender,
@@ -169,6 +167,8 @@ const bookAppointmentController = async (req, res) => {
       service,
       location,
     } = req.body;
+
+    console.log("Location: ", location);
 
     // check for exisitng client
     const existingClient = await Client.findOne({ email, tenant: uid });
@@ -228,6 +228,7 @@ const bookAppointmentController = async (req, res) => {
     // creating and saving the new appointment
     const newAppointment = await new Appointment({
       service,
+      location,
       date,
       time,
       client: newClientDetails._id,
@@ -237,6 +238,7 @@ const bookAppointmentController = async (req, res) => {
     // Populate service and client
     const populatedAppointment = await Appointment.findById(newAppointment._id)
       .populate("service")
+      .populate("location")
       .populate("client");
 
     // send email to the client for appointment confirmation

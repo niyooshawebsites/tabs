@@ -29,6 +29,7 @@ const SlotsSearchModal = ({
   setIsSlotsSearchModalOpen,
   setIsShowSlotsModalOpen,
   setSelectedService,
+  setSelectedLocation,
   setSelectedDate
 }) => {
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,10 @@ const SlotsSearchModal = ({
 
   const updateService = (value) => {
     setSelectedService(value);
+  };
+
+  const updateLocation = (value) => {
+    setSelectedLocation(value);
   };
 
   const updateDate = (value) => {
@@ -132,7 +137,7 @@ const SlotsSearchModal = ({
                       const value = e.target.value;
 
                       setFieldValue('lid', value);
-                      updateService(value);
+                      updateLocation(value);
                     }}
                     onBlur={handleBlur}
                   >

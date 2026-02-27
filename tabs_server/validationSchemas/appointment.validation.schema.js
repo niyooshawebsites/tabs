@@ -77,7 +77,7 @@ const bookAppointmentSchema = z.object({
 
   location: z
     .string({ required_error: "Location Id is required" })
-    .min(1, "Service ID cannot be empty"),
+    .min(1, "Location ID cannot be empty"),
 });
 
 // update appointment schema

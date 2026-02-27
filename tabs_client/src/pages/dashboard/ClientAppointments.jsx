@@ -171,7 +171,7 @@ export default function DashboardClientAppointments() {
                 >
                   <DashboardHeading
                     title={
-                      isDoctor
+                      isDoctor == 'yes'
                         ? `Patient ID: ${cid} - All Appointments (${
                             pagination.totalAppointments < 10 ? `0${pagination.totalAppointments}` : pagination.totalAppointments
                           })`
@@ -197,6 +197,7 @@ export default function DashboardClientAppointments() {
                   </Typography>
                 </Box>
               </Grid>
+
               <MainCard sx={{ mt: 2 }} content={false}>
                 <AppointmentsTable
                   appointments={appointments}
