@@ -74,6 +74,10 @@ const bookAppointmentSchema = z.object({
       required_error: "Service ID is required",
     })
     .min(1, "Service ID cannot be empty"),
+
+  location: z
+    .string({ required_error: "Location Id is required" })
+    .min(1, "Service ID cannot be empty"),
 });
 
 // update appointment schema
@@ -83,7 +87,7 @@ const updateAppointmentSchema = z
       ["Pending", "Confirmed", "Rescheduled", "Completed", "Cancelled"],
       {
         required_error: "Status is required",
-      }
+      },
     ),
     date: z.string().optional(),
     time: z.string().optional(),
