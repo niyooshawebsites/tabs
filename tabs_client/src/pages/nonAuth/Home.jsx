@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Ticker from '../../components/Ticker';
-import detectSubDomain from '../../utils/detectSubDomain';
+import detectSubDomain from '../../sections/auth/TenantDetails';
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import NonAuthWrapper from 'sections/auth/NonAuthWrapper';
 // import AuthCard from '../../sections/auth/AuthCard';
@@ -32,7 +32,6 @@ import { locationSliceActions } from '../../store/slices/LocationSlice';
 import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 import UsernameLoginPage from '../../sections/auth/UsernameLoginPage';
-import { color } from 'framer-motion';
 
 export default function Home() {
   const subDomain = detectSubDomain();
@@ -243,15 +242,48 @@ export default function Home() {
     };
 
     if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
-      return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
+      return (
+        <CheckMissingInfo
+          legalName={legalName}
+          phone={phone}
+          altPhone={altPhone}
+          address={address}
+          name={name}
+          email={email}
+          locations={locations}
+          services={services}
+        />
+      );
     }
 
     if (locations.length === 0) {
-      return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
+      return (
+        <CheckMissingInfo
+          legalName={legalName}
+          phone={phone}
+          altPhone={altPhone}
+          address={address}
+          name={name}
+          email={email}
+          locations={locations}
+          services={services}
+        />
+      );
     }
 
     if (services.length === 0) {
-      return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
+      return (
+        <CheckMissingInfo
+          legalName={legalName}
+          phone={phone}
+          altPhone={altPhone}
+          address={address}
+          name={name}
+          email={email}
+          locations={locations}
+          services={services}
+        />
+      );
     }
 
     return (

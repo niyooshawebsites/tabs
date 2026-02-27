@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { Grid, Box, Typography, Button } from '@mui/material';
 import AuthFooter from 'components/cards/AuthFooter';
 import Logo from 'components/logo';
@@ -7,20 +8,71 @@ import AuthBackground from './AuthBackground';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import AppointmentSearchNonAuthModal from '../../components/AppointmentSearchNonAuthModal';
-import detectSubDomain from '../../utils/detectSubDomain';
+import detectSubDomain from './TenantDetails';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { adminSliceActions } from '../../store/slices/AdminSlice';
+import TenantDetails from './TenantDetails';
 
 export default function NonAuthWrapper({ children }) {
   const subDomain = detectSubDomain();
-
-  console.log(subDomain);
-  console.log(subDomain);
-  console.log(subDomain);
-  console.log(subDomain);
-
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // const fetchAdminDetails = async () => {
+  //   try {
+  //     if (subDomain) {
+  //       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-admin-details?username=${subDomain}`, {
+  //         withCredentials: true
+  //       });
+
+  //       if (data.success) {
+  //         dispatch(
+  //           adminSliceActions.captureAdminDetails({
+  //             id: data.data?._id,
+  //             legalName: data.data?.legalName,
+  //             gstNo: data.data?.gstNo,
+  //             name: data.data?.name,
+  //             isDoctor: data.data?.isDoctor,
+  //             experience: data.data?.experience,
+  //             proffessinalCourse: data.data?.proffessinalCourse,
+  //             phone: data.data?.phone,
+  //             altPhone: data.data?.altPhone,
+  //             email: data.data?.email,
+  //             address: data.data?.address,
+  //             tenantId: data.data?.tenant,
+  //             workingDays: data.data?.workingDays,
+  //             timings: data.data?.timings
+  //           })
+  //         );
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     const errorData = err.response?.data;
+
+  //     if (errorData?.errors && Array.isArray(errorData.errors)) {
+  //       // Multiple validation errors (Zod)
+  //       errorData.errors.forEach((msg) => toast.error(msg));
+  //     } else {
+  //       // Generic error
+  //       const errorMessage = errorData?.message || 'Something went wrong';
+  //       console.log(errorMessage);
+  //       toast.error('Profile is not updated');
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (subDomain) {
+  //     fetchAdminDetails();
+  //   }
+  // }, [subDomain]);
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
+      <TenantDetails />
       <AuthBackground />
       <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', px: 3, mt: 3 }}>

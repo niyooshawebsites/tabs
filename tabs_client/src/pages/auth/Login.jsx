@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Grid, Stack, Typography } from '@mui/material';
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import AuthLogin from 'sections/auth/AuthLogin';

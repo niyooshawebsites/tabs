@@ -3,25 +3,20 @@ import { Grid, Box, Typography } from '@mui/material';
 import AuthFooter from 'components/cards/AuthFooter';
 import Logo from 'components/logo';
 import AuthCard from './AuthCard';
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import AuthBackground from './AuthBackground';
 import { Link } from 'react-router';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import detectSubDomain from '../../utils/detectSubDomain';
 
 export default function AuthWrapper({ children }) {
   const subDomain = detectSubDomain();
+  // const { tenantId } = useSelector((state) => state.tenant_slice);
+  // const navigate = useNavigate();
 
-  console.log(subDomain);
-  console.log(subDomain);
-  console.log(subDomain);
-  console.log(subDomain);
-  const { tenantId } = useSelector((state) => state.tenant_slice);
-  const navigate = useNavigate();
-
-  if (tenantId === null) {
-    navigate('/register');
-  }
+  // if (tenantId === null) {
+  //   navigate('/register');
+  // }
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
