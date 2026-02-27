@@ -38,7 +38,7 @@ const Ticker = ({ msg, link, linkText }) => {
         }}
       >
         📢 Notice: {msg}{' '}
-        <Link
+        {/* <Link
           component={RouterLink}
           to={link}
           underline="none"
@@ -56,7 +56,7 @@ const Ticker = ({ msg, link, linkText }) => {
           }}
         >
           {linkText}
-        </Link>
+        </Link> */}
       </Typography>
     </Box>
   );

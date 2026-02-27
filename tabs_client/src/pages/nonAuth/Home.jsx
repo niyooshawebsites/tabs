@@ -186,7 +186,7 @@ export default function Home() {
             </Box>
           </Grid>
           <Grid size={12}>
-            {announcement.message ? <Ticker msg={announcement.message} /> : ''}
+            {announcement?.message ? <Ticker msg={announcement?.message} /> : ''}
             <Formik enableReinitialize={true} initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
               {({ values, handleChange, touched, errors }) => (
                 <Form>
@@ -436,6 +436,7 @@ export default function Home() {
           title="Search Available Time Slots"
           setSlots={setSlots}
           services={services}
+          locations={locations}
           tenantId={tenantId}
           setSelectedDate={setSelectedDate}
           setSelectedService={setSelectedService}

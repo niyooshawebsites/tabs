@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 const SlotsSearchModal = ({
   tenantId,
   services,
+  locations,
   isOpen,
   onClose,
   title,
@@ -35,12 +36,14 @@ const SlotsSearchModal = ({
   // ✅ Validation schema using Yup
   const validationSchema = Yup.object().shape({
     sid: Yup.string().required('Service is required'),
+    lid: Yup.string().required('Location is required'),
     date: Yup.string().required('Date is required')
   });
 
   // ✅ Initial form values
   const initialValues = {
     sid: '',
+    lid: '',
     date: ''
   };
 
@@ -115,6 +118,34 @@ const SlotsSearchModal = ({
                   {touched.sid && errors.sid && (
                     <Box color="error.main" fontSize={12} mt={0.5}>
                       {errors.sid}
+                    </Box>
+                  )}
+                </FormControl>
+
+                <FormControl fullWidth required error={touched.lid && !!errors.lid}>
+                  <InputLabel>Location</InputLabel>
+                  <Select
+                    name="lid"
+                    label="Location"
+                    value={values.lid}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      setFieldValue('lid', value);
+                      updateService(value);
+                    }}
+                    onBlur={handleBlur}
+                  >
+                    <MenuItem value="">Select Location</MenuItem>
+                    {locations.map((location) => (
+                      <MenuItem key={location._id} value={location._id}>
+                        {location.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {touched.lid && errors.lid && (
+                    <Box color="error.main" fontSize={12} mt={0.5}>
+                      {errors.lid}
                     </Box>
                   )}
                 </FormControl>

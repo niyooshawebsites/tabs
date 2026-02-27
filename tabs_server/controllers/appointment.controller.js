@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Service = require("../models/service.model");
+const Location = require("../models/location.model");
 const Appointment = require("../models/appointment.model");
 const Client = require("../models/client.model");
 const Admin = require("../models/admin.model");
@@ -13,10 +14,10 @@ const {
 // check appointment slots availability
 const appointmentSlotsAvailabilityCheckController = async (req, res) => {
   try {
-    const { sid, date } = req.body;
+    const { sid, lid, date } = req.body;
     const { uid } = req.query;
 
-    if (!date || !uid) {
+    if (!date || !lid || !uid) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -25,9 +26,14 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
       return res.status(404).json({ message: "Service not found" });
     }
 
+    const location = await Location.findById(lid);
+    if (!location) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+
     const admin = await Admin.findOne({ tenant: uid });
     if (!admin) {
-      return res.status(404).json({ message: "Details not found" });
+      return res.status(404).json({ message: "Tenant Details not found" });
     }
 
     const duration = service.duration;
@@ -68,7 +74,7 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
 
       workingHours.push(
         { start: p.morningStart, end: p.morningEnd },
-        { start: p.eveningStart, end: p.eveningEnd }
+        { start: p.eveningStart, end: p.eveningEnd },
       );
     }
 
@@ -85,7 +91,11 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
     };
 
     // Fetch existing booked appointments
-    const appointments = await Appointment.find({ date, service: sid });
+    const appointments = await Appointment.find({
+      date,
+      service: sid,
+      location: lid,
+    });
 
     let allSlots = [];
 
@@ -157,6 +167,7 @@ const bookAppointmentController = async (req, res) => {
       date,
       time,
       service,
+      location,
     } = req.body;
 
     // check for exisitng client
@@ -168,6 +179,7 @@ const bookAppointmentController = async (req, res) => {
       // creating and saving the new appointment
       const newAppointment = await new Appointment({
         service,
+        location,
         date,
         time,
         client: existingClient._id,
@@ -176,9 +188,10 @@ const bookAppointmentController = async (req, res) => {
 
       // Populate service and client
       const populatedAppointment = await Appointment.findById(
-        newAppointment._id
+        newAppointment._id,
       )
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -259,6 +272,7 @@ const fetchAllApointmentsController = async (req, res) => {
 
     const appointments = await Appointment.find({ tenant: uid })
       .populate("service")
+      .populate("location")
       .populate("client")
       .populate("tenant")
       .skip(skip)
@@ -302,6 +316,7 @@ const fetchAnAppointmentController = async (req, res) => {
 
     const appointment = await Appointment.findOne({ _id: aid, tenant: uid })
       .populate("service")
+      .populate("location")
       .populate("client");
 
     if (!appointment) {
@@ -353,6 +368,7 @@ const searchAnAppointmentController = async (req, res) => {
       tenant: user._id,
     })
       .populate("service")
+      .populate("location")
       .populate("client", "-phone -email -address");
 
     if (!appointment) {
@@ -384,6 +400,7 @@ const dashboardSearchAnAppointmentController = async (req, res) => {
 
     const appointment = await Appointment.findOne({ _id: aid, tenant: uid })
       .populate("service")
+      .populate("location")
       .populate("client");
 
     if (!appointment) {
@@ -442,7 +459,7 @@ const updateAppointmentController = async (req, res) => {
           },
           $set: updateFields,
         },
-        { new: true }
+        { new: true },
       )
         .populate("service")
         .populate("client");
@@ -450,7 +467,7 @@ const updateAppointmentController = async (req, res) => {
       updatedAppointment = await Appointment.findByIdAndUpdate(
         aid,
         updateFields,
-        { new: true }
+        { new: true },
       );
     }
 
@@ -869,7 +886,7 @@ const fetchFilteredAppointmentsController = async (req, res) => {
 // fetch filtered appointments for platform owner
 const fetchFilteredAppointmentsForPlatformOwnerController = async (
   req,
-  res
+  res,
 ) => {
   try {
     const page = parseInt(req.query.page) || 1;

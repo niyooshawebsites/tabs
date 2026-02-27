@@ -11,7 +11,7 @@ const remarksSchema = new mongoose.Schema(
   {
     _id: false,
     timestamps: true,
-  }
+  },
 );
 
 const appointmentSchema = new mongoose.Schema(
@@ -20,6 +20,11 @@ const appointmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
       required: [true, "The service is required"],
+    },
+    location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+      required: [true, "The location is required"],
     },
     date: {
       type: Date,
@@ -55,7 +60,7 @@ const appointmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
