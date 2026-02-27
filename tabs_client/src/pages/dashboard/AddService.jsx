@@ -82,11 +82,33 @@ export default function AddService() {
   };
 
   if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
-    return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
+    return (
+      <CheckMissingInfo
+        legalName={legalName}
+        phone={phone}
+        altPhone={altPhone}
+        address={address}
+        name={name}
+        email={email}
+        locations={locations}
+        services={services}
+      />
+    );
   }
 
   if (locations.length === 0) {
-    return CheckMissingInfo(legalName, phone, altPhone, address, name, email, locations, services);
+    return (
+      <CheckMissingInfo
+        legalName={legalName}
+        phone={phone}
+        altPhone={altPhone}
+        address={address}
+        name={name}
+        email={email}
+        locations={locations}
+        services={services}
+      />
+    );
   }
 
   if (services.length >= 0) {

@@ -5,6 +5,7 @@ import { serviceSliceActions } from '../../store/slices/ServiceSlice';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
 import { tenantSliceActions } from '../../store/slices/TenantSlice';
 import { subDomainSliceActions } from '../../store/slices/SubDomainSlice';
+import { adminSliceActions } from '../../store/slices/AdminSlice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -14,6 +15,50 @@ const TenantDetails = () => {
   useEffect(() => {
     detectSubDomain();
   }, []);
+
+  const fetchAdminDetails = async (subDomain) => {
+    try {
+      if (subDomain) {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-admin-details?username=${subDomain}`, {
+          withCredentials: true
+        });
+
+        if (data.success) {
+          dispatch(
+            adminSliceActions.captureAdminDetails({
+              id: data.data?._id,
+              legalName: data.data?.legalName,
+              gstNo: data.data?.gstNo,
+              name: data.data?.name,
+              isDoctor: data.data?.isDoctor,
+              experience: data.data?.experience,
+              proffessinalCourse: data.data?.proffessinalCourse,
+              phone: data.data?.phone,
+              altPhone: data.data?.altPhone,
+              email: data.data?.email,
+              address: data.data?.address,
+              tenantId: data.data?.tenant,
+              workingDays: data.data?.workingDays,
+              timings: data.data?.timings
+            })
+          );
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      const errorData = err.response?.data;
+
+      if (errorData?.errors && Array.isArray(errorData.errors)) {
+        // Multiple validation errors (Zod)
+        errorData.errors.forEach((msg) => toast.error(msg));
+      } else {
+        // Generic error
+        const errorMessage = errorData?.message || 'Something went wrong';
+        console.log(errorMessage);
+        toast.error('Profile is not updated');
+      }
+    }
+  };
 
   const fetchAllLocations = async (tid) => {
     try {
@@ -51,7 +96,7 @@ const TenantDetails = () => {
 
   const fetchAllServices = async (tid) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tid}`, {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
         withCredentials: true
       });
       if (data.success) {
@@ -90,6 +135,7 @@ const TenantDetails = () => {
   };
 
   const fetchTenantDetails = async (subDomain) => {
+    const adminDetailsSubDomain = subDomain;
     try {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
         withCredentials: true
@@ -102,6 +148,7 @@ const TenantDetails = () => {
           })
         );
 
+        fetchAdminDetails(adminDetailsSubDomain);
         fetchAllLocations(data?.data?.id);
         fetchAllServices(data?.data?.id);
         fetchAnnouncement(data?.data?.id);
