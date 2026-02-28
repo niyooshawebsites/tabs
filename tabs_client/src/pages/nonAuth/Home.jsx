@@ -76,7 +76,7 @@ export default function Home() {
     }
   };
 
-  if (subDomain) {
+  if (subDomain && tenantId) {
     const validationSchema = Yup.object({
       service: Yup.string().required('Service is required'),
       location: Yup.string().required('Location is required'),

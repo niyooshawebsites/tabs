@@ -195,7 +195,7 @@ export default function AuthLogin({ isDemo = false }) {
               </Grid>
               <Grid sx={{ mt: -1 }} size={12}>
                 <Stack direction="row" sx={{ gap: 2, alignItems: 'baseline', justifyContent: 'space-between' }}>
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     control={
                       <Checkbox
                         checked={checked}
@@ -206,8 +206,8 @@ export default function AuthLogin({ isDemo = false }) {
                       />
                     }
                     label={<Typography variant="h6">Keep me sign in</Typography>}
-                  />
-                  <Link variant="h6" component={RouterLink} to="#" color="text.primary">
+                  /> */}
+                  <Link variant="h6" component={RouterLink} to="reset-password" sx={{ color: 'red' }}>
                     Forgot Password?
                   </Link>
                 </Stack>
