@@ -94,7 +94,8 @@ export default function Home() {
       state: Yup.string().required('State is required'),
       pincode: Yup.string()
         .matches(/^[0-9]{6}$/, 'Enter valid 6-digit pincode')
-        .required('Pincode is required')
+        .required('Pincode is required'),
+      notes: Yup.string()
     });
 
     const initialValues = {
@@ -110,7 +111,8 @@ export default function Home() {
       address: '',
       city: '',
       state: '',
-      pincode: ''
+      pincode: '',
+      notes: ''
     };
 
     if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
@@ -437,6 +439,12 @@ export default function Home() {
                         />
                       </Grid>
                     </Grid>
+                  </Box>
+
+                  {/* Appointment Notes */}
+                  <Box mt={5}>
+                    <Typography variant="h6">Appointment Notes</Typography>
+                    <TextField name="notes" value={values.notes} label="Type here" multiline rows={2} fullWidth />
                   </Box>
 
                   {/* Submit Button */}

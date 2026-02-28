@@ -166,6 +166,7 @@ const bookAppointmentController = async (req, res) => {
       time,
       service,
       location,
+      notes,
     } = req.body;
 
     console.log("Location: ", location);
@@ -184,6 +185,7 @@ const bookAppointmentController = async (req, res) => {
         time,
         client: existingClient._id,
         tenant: uid,
+        notes,
       }).save();
 
       // Populate service and client
@@ -233,6 +235,7 @@ const bookAppointmentController = async (req, res) => {
       time,
       client: newClientDetails._id,
       tenant: uid,
+      notes,
     }).save();
 
     // Populate service and client

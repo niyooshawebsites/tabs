@@ -14,7 +14,7 @@ export default function CreateAppointment() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
-  const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
+  const { legalName, phone, altPhone, address, name, email, isDoctor } = useSelector((state) => state.admin_slice);
   const [submittingClientInfo, setSubmittingClientInfo] = useState(false);
   const [bookingAppointment, setBookingAppointment] = useState(false);
   const [isClientSearchModalOpen, setIsClientSearchModalOpen] = useState(false);
@@ -31,7 +31,8 @@ export default function CreateAppointment() {
     address: '',
     city: '',
     state: '',
-    pincode: ''
+    pincode: '',
+    notes: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -81,7 +82,8 @@ export default function CreateAppointment() {
             address: data?.data?.address || '',
             city: data?.data?.city || '',
             state: data?.data?.state || '',
-            pincode: data?.data?.pincode || ''
+            pincode: data?.data?.pincode || '',
+            notes: data?.data?.notes || ''
           };
         });
         setIsClientSearchModalOpen(false);
@@ -121,7 +123,8 @@ export default function CreateAppointment() {
     state: Yup.string().required('State is required'),
     pincode: Yup.string()
       .matches(/^[0-9]{6}$/, 'Enter valid 6-digit pincode')
-      .required('Pincode is required')
+      .required('Pincode is required'),
+    notes: Yup.string()
   });
 
   if (!legalName || !phone || !altPhone || !address || !name || !email) {
@@ -451,6 +454,12 @@ export default function CreateAppointment() {
                     </Grid>
                   </Box>
 
+                  {/* Appointment Notes */}
+                  <Box mt={5}>
+                    <Typography variant="h6">Appointment Notes</Typography>
+                    <TextField name="notes" value={values.notes} label="Type here" multiline rows={2} fullWidth />
+                  </Box>
+
                   {/* Submit Button */}
                   <Box mt={5}>
                     <Button type="submit" fullWidth variant="contained" color="primary" disabled={loading}>
@@ -472,7 +481,7 @@ export default function CreateAppointment() {
       <ClientSearchModal
         isOpen={isClientSearchModalOpen}
         onClose={() => setIsClientSearchModalOpen(false)}
-        title="Search Client"
+        title={`${isDoctor == 'yes' ? 'Search Patient' : 'Search Client'}`}
         handleSubmitClientInfo={handleSubmitClientInfo}
         submittingClientInfo={submittingClientInfo}
       />
