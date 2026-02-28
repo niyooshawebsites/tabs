@@ -19,6 +19,7 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { adminSliceActions } from '../../store/slices/AdminSlice';
 import DashboardHeading from '../../components/DashboardHeading';
+import { useNavigate } from 'react-router-dom';
 
 const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -28,6 +29,9 @@ export default function DashboardEditProfile() {
   const { id } = useSelector((state) => state.admin_slice);
   const dispatch = useDispatch();
   const [updatingProfile, setUpdatingProfile] = useState(false);
+  const navigate = useNavigate();
+  const { legalName, gstNo, name, isDoctor, experience, proffessinalCourse, phone, altPhone, email, address, workingDays, timings } =
+    useSelector((state) => state.admin_slice);
 
   const handleSubmit = async (values, { resetForm }) => {
     if (role === 3 && isAuthenticated) {
@@ -178,25 +182,25 @@ export default function DashboardEditProfile() {
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       <Grid size={{ xs: 12, md: 8, lg: 6 }}>
-        <Grid container alignItems="center" justifyContent="start">
+        <Grid container alignItems="center" justifyContent="start" sx={{ marginBottom: '30px' }}>
           <DashboardHeading title="Edit Service" />
         </Grid>
         <Grid container spacing={3}>
           <Grid size={12}>
             <Formik
               initialValues={{
-                legalName: '',
-                gstNo: '',
-                address: '',
-                isDoctor: '',
-                experience: '',
-                proffessinalCourse: '',
-                name: '',
-                email: '',
-                phone: '',
-                altPhone: '',
-                workingDays: [],
-                timings: {
+                legalName: legalName || '',
+                gstNo: gstNo || '',
+                address: address || '',
+                isDoctor: isDoctor || '',
+                experience: experience || '',
+                proffessinalCourse: proffessinalCourse || '',
+                name: name || '',
+                email: email || '',
+                phone: phone || '',
+                altPhone: altPhone || '',
+                workingDays: workingDays || [],
+                timings: timings || {
                   shiftType: '',
                   fullDay: { start: '', end: '' },
                   partDay: {

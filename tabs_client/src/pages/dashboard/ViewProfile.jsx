@@ -1,16 +1,29 @@
-import { Breadcrumbs, Grid, Stack, Typography } from '@mui/material';
+import { Breadcrumbs, Grid, Stack, Typography, Box, Button } from '@mui/material';
 import { useSelector } from 'react-redux';
 import MainCard from 'components/MainCard';
 import DashboardHeading from '../../components/DashboardHeading';
+import { useNavigate } from 'react-router';
 
 export default function DashboardViewProfile() {
   const { legalName, gstNo, name, isDoctor, experience, proffessinalCourse, phone, altPhone, email, address, workingDays, timings } =
     useSelector((state) => state.admin_slice);
+  const navigate = useNavigate();
+
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, lg: 6 }}>
         <Stack sx={{ gap: 3 }}>
-          <DashboardHeading title="Profile Details" />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <DashboardHeading title="Profile Details" />
+            <Button
+              sx={{ p: 1 }}
+              onClick={() => {
+                navigate('/dashboard/settings/profile/update');
+              }}
+            >
+              Edit
+            </Button>
+          </Box>
 
           <MainCard title="Business name">
             <Breadcrumbs aria-label="breadcrumb">

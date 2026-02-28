@@ -29,7 +29,7 @@ const headCells = [
     id: 'ID',
     align: 'left',
     disablePadding: false,
-    label: 'ID.'
+    label: 'Appointment ID.'
   },
   {
     id: 'Service',

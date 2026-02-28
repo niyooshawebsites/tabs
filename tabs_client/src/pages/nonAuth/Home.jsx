@@ -173,7 +173,7 @@ export default function Home() {
                 mt: 3
               }}
             >
-              <Typography variant="h3">Book Appointment</Typography>
+              <Typography variant="h3">{legalName}</Typography>
 
               <Typography
                 variant="body1"

@@ -159,7 +159,7 @@ export default function DashboardDefault() {
       ) : (
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
           <Grid size={{ xs: 12, md: 12, lg: 12 }}>
-            <Grid size={12} container direction="row" alignItems="center" justifyContent="space-between">
+            <Grid size={12} container direction="row" alignItems="center" justifyContent="space-between" sx={{ marginBottom: '30px' }}>
               <DashboardHeading
                 title={`Today's Appointments (${
                   pagination.totalAppointments < 10 ? `0${pagination.totalAppointments}` : pagination.totalAppointments

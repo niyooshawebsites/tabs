@@ -180,7 +180,7 @@ export default function DashboardClientAppointments() {
                           })`
                     }
                   />
-                  <AppointmentFilter setFilters={setFilters} setIsFiltered={setIsFiltered} setPage={setPage} setStatus={setStatus} />
+
                   <Typography
                     variant="body1"
                     color="primary"
@@ -195,6 +195,20 @@ export default function DashboardClientAppointments() {
                   >
                     Refresh
                   </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', md: 'row' },
+                    justifyContent: 'space-between',
+                    alignItems: { xs: 'flex-start', md: 'center' },
+                    width: '100%',
+                    px: 3,
+                    mt: 3,
+                    gap: 2
+                  }}
+                >
+                  <AppointmentFilter setFilters={setFilters} setIsFiltered={setIsFiltered} setPage={setPage} setStatus={setStatus} />
                 </Box>
               </Grid>
 

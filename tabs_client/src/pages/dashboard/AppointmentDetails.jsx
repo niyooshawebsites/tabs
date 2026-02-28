@@ -1,4 +1,4 @@
-import { Breadcrumbs, Grid, Stack, Typography, Button } from '@mui/material';
+import { Breadcrumbs, Grid, Stack, Typography, Button, Box } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
@@ -141,7 +141,17 @@ export default function DashboardAppointmentDetails() {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, lg: 6 }}>
                 <Stack sx={{ gap: 1 }}>
-                  <DashboardHeading title="Appointment Details" />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <DashboardHeading title="Appointment Details" />
+                    <Button
+                      sx={{ p: 1 }}
+                      onClick={() => {
+                        navigate('/dashboard/appointments');
+                      }}
+                    >
+                      Back to Appointments
+                    </Button>
+                  </Box>
 
                   <MainCard title="Appointment ID">
                     <Breadcrumbs aria-label="breadcrumb">

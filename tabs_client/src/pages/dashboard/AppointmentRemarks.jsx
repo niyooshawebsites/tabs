@@ -1,6 +1,6 @@
-import { Breadcrumbs, Grid, Stack, Typography } from '@mui/material';
+import { Breadcrumbs, Grid, Stack, Typography, Box, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -20,6 +20,7 @@ export default function DashboardAppointmentRemarks() {
   const { aid } = useParams();
   const [remarks, setRemarks] = useState([]);
   const [fetchingAppointmentRemarks, setFetchingAppointmentRemarks] = useState(false);
+  const navigate = useNavigate();
 
   const fetchAppointmentRemarks = async (aid) => {
     try {
@@ -105,7 +106,17 @@ export default function DashboardAppointmentRemarks() {
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Stack sx={{ gap: 3 }}>
-              <DashboardHeading title="Appointment Remarks" />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <DashboardHeading title="Appointment Details" />
+                <Button
+                  sx={{ p: 1 }}
+                  onClick={() => {
+                    navigate('/dashboard/appointments');
+                  }}
+                >
+                  Back to Appointments
+                </Button>
+              </Box>
               {remarks.length > 0 ? (
                 <>
                   <MainCard>
