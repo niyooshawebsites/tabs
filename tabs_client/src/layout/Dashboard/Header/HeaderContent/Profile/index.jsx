@@ -104,7 +104,7 @@ export default function Profile() {
   };
 
   const greeting = (role) => {
-    if (role == 1) return `${name.uppercase()}} - ${empId.uppercase()}`;
+    if (role == 1) return `${name} - ${empId}`;
     if (role == 2) return 'ADMIN';
     if (role == 3) return 'PLATFORM OWNER';
   };

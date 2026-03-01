@@ -81,6 +81,8 @@ const loginController = async (req, res) => {
       uid: user._id,
       email: user.email,
       role: user.role,
+      name: user.name,
+      empId: user.empId,
     };
 
     // generate the authToken
