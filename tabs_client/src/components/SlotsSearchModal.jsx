@@ -116,7 +116,7 @@ const SlotsSearchModal = ({
                     <MenuItem value="">Select Service</MenuItem>
                     {services.map((service) => (
                       <MenuItem key={service._id} value={service._id}>
-                        {service.name}
+                        {service.name} - Rs {service.charges}
                       </MenuItem>
                     ))}
                   </Select>

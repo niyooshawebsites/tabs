@@ -444,7 +444,17 @@ export default function Home() {
                   {/* Appointment Notes */}
                   <Box mt={5}>
                     <Typography variant="h6">Appointment Notes</Typography>
-                    <TextField name="notes" value={values.notes} label="Type here" multiline rows={2} fullWidth />
+                    <TextField
+                      name="notes"
+                      value={values.notes}
+                      label="Type here"
+                      onChange={handleChange}
+                      error={touched.notes && Boolean(errors.notes)}
+                      helperText={touched.notes && errors.notes}
+                      multiline
+                      rows={2}
+                      fullWidth
+                    />
                   </Box>
 
                   {/* Submit Button */}

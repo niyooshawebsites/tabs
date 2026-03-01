@@ -30,7 +30,8 @@ export default function DashboardAppointmentDetails() {
     address: null,
     city: null,
     state: null,
-    pincode: null
+    pincode: null,
+    notes: null
   });
 
   const [fetchingAppointmentDetails, setFetchingAppointmentDetails] = useState(false);
@@ -61,7 +62,8 @@ export default function DashboardAppointmentDetails() {
             address: data.data?.client?.address,
             city: data.data?.client?.city,
             state: data.data?.client?.state,
-            pincode: data.data?.client?.pincode
+            pincode: data.data?.client?.pincode,
+            notes: data.data?.notes
           };
         });
         setFetchingAppointmentDetails(false);
@@ -234,6 +236,12 @@ export default function DashboardAppointmentDetails() {
                   <MainCard title="Pincode">
                     <Breadcrumbs aria-label="breadcrumb">
                       <Typography variant="h6">{appointment?.pincode || 'No Data'}</Typography>
+                    </Breadcrumbs>
+                  </MainCard>
+
+                  <MainCard title="Notes">
+                    <Breadcrumbs aria-label="breadcrumb">
+                      <Typography variant="h6">{appointment?.notes || 'No Data'}</Typography>
                     </Breadcrumbs>
                   </MainCard>
 
