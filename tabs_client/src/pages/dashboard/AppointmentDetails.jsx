@@ -10,6 +10,7 @@ import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
+import '../../assets/style.css';
 
 export default function DashboardAppointmentDetails() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -142,7 +143,7 @@ export default function DashboardAppointmentDetails() {
           {appointment !== null ? (
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, lg: 6 }}>
-                <Stack sx={{ gap: 1 }}>
+                <Stack sx={{ gap: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <DashboardHeading title="Appointment Details" />
                     <Button
@@ -155,89 +156,103 @@ export default function DashboardAppointmentDetails() {
                     </Button>
                   </Box>
 
-                  <MainCard title="Appointment ID">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.id || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Appointment ID
+                    </Typography>
+                    <Typography variant="h6">{appointment?.id || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Client ID">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.cid || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Client ID
+                    </Typography>
+                    <Typography variant="h6">{appointment?.cid || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Name">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.clientName || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Name
+                    </Typography>
+                    <Typography variant="h6">{appointment?.clientName || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Gender">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.gender || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Gender
+                    </Typography>
+                    <Typography variant="h6">{appointment?.gender || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="DOB">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{moment(appointment.dob).format('DD-MM-YYYY') || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      DOB
+                    </Typography>
+                    <Typography variant="h6">{moment(appointment.dob).format('DD-MM-YYYY') || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Service">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.service || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Service
+                    </Typography>
+                    <Typography variant="h6">{appointment?.service || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Date">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{moment(appointment?.date).format('DD-MM-YYYY') || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Date
+                    </Typography>
+                    <Typography variant="h6">{moment(appointment?.date).format('DD-MM-YYYY') || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Time">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.time || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Time
+                    </Typography>
+                    <Typography variant="h6">{appointment?.time || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Email">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.email || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Email
+                    </Typography>
+                    <Typography variant="h6">{appointment?.email || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Phone">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.phone || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Phone
+                    </Typography>
+                    <Typography variant="h6">{appointment?.phone || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Address">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.address || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Address
+                    </Typography>
+                    <Typography variant="h6">{appointment?.address || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="City">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.city || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      City
+                    </Typography>
+                    <Typography variant="h6">{appointment?.city || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="State">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.state || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      State
+                    </Typography>
+                    <Typography variant="h6">{appointment?.state || 'No Data'}</Typography>
+                  </Box>
 
-                  <MainCard title="Pincode">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{appointment?.pincode || 'No Data'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Pincode
+                    </Typography>
+                    <Typography variant="h6">{appointment?.pincode || 'No Data'}</Typography>
+                  </Box>
 
                   <MainCard title="Notes">
                     <Breadcrumbs aria-label="breadcrumb">
@@ -245,7 +260,10 @@ export default function DashboardAppointmentDetails() {
                     </Breadcrumbs>
                   </MainCard>
 
-                  <MainCard title="Action">
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Action
+                    </Typography>
                     <Button
                       sx={{ p: 1 }}
                       onClick={() => {
@@ -254,7 +272,7 @@ export default function DashboardAppointmentDetails() {
                     >
                       Back to Appointments
                     </Button>
-                  </MainCard>
+                  </Box>
                 </Stack>
               </Grid>
             </Grid>

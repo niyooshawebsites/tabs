@@ -10,6 +10,7 @@ import NoInfo from '../../components/NoInfo';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
+import '../../assets/style.css';
 
 export default function DashboardAppointmentRemarks() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
@@ -105,9 +106,9 @@ export default function DashboardAppointmentRemarks() {
       ) : (
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Stack sx={{ gap: 3 }}>
+            <Stack sx={{ gap: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <DashboardHeading title="Appointment Details" />
+                <DashboardHeading title="Appointment Remarks" />
                 <Button
                   sx={{ p: 1 }}
                   onClick={() => {
@@ -119,22 +120,29 @@ export default function DashboardAppointmentRemarks() {
               </Box>
               {remarks.length > 0 ? (
                 <>
-                  <MainCard>
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">Appointment ID: {aid}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Appointment ID
+                    </Typography>
+                    <Typography variant="h6">{aid}</Typography>
+                  </Box>
+
                   {remarks.map((remark) => (
-                    <MainCard
-                      title={`${moment(remark.createdAt).format('MMM DD, YYYY [at] hh:mm A')} by ${
-                        empId ? `${empName} - ${empId}` : 'ADMIN'
-                      }`}
-                      key={remark._id}
-                    >
-                      <Breadcrumbs aria-label="breadcrumb">
+                    <Box className="remarks-details">
+                      <Box className="details" sx={{ border: 'none !important', padding: '0px !important' }}>
+                        <Typography variant="h6" className="details-heading">
+                          Remarks
+                        </Typography>
+                        <Typography variant="h6">
+                          {`${moment(remark.createdAt).format('MMM DD, YYYY [at] hh:mm A')}`} |{' '}
+                          <span className="details-heading">{empId ? `${empName} - ${empId}` : 'ADMIN'}</span>
+                        </Typography>
+                      </Box>
+
+                      <Breadcrumbs aria-label="breadcrumb" sx={{ marginTop: '10px' }}>
                         <Typography variant="h6">{remark?.message}</Typography>
                       </Breadcrumbs>
-                    </MainCard>
+                    </Box>
                   ))}
                 </>
               ) : (

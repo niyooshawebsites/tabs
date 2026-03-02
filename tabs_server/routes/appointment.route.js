@@ -43,7 +43,7 @@ const {
 // Check appointment time slots route
 router.post(
   "/check-available-slots",
-  appointmentSlotsAvailabilityCheckController
+  appointmentSlotsAvailabilityCheckController,
 );
 
 // book appointment for a tenant route
@@ -52,15 +52,15 @@ router.post(
   validateQuery(querySchema),
   validateBody(bookAppointmentSchema),
   checkPlan,
-  bookAppointmentController
+  bookAppointmentController,
 );
 
-// fetch all appointment route
+// fetch all appointment route - for tenant
 router.get(
   "/fetch-all-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchAllApointmentsController
+  fetchAllApointmentsController,
 );
 
 // fetch an appointment
@@ -69,7 +69,7 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   validateParams(generateParamSchema("aid")),
-  fetchAnAppointmentController
+  fetchAnAppointmentController,
 );
 
 // search an appointment without login
@@ -77,7 +77,7 @@ router.get(
   "/search-appointment/:aid",
   validateQuery(querySchema),
   validateParams(generateParamSchema("aid")),
-  searchAnAppointmentController
+  searchAnAppointmentController,
 );
 
 // dashboard search an appointment
@@ -86,7 +86,7 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   validateParams(generateParamSchema("aid")),
-  dashboardSearchAnAppointmentController
+  dashboardSearchAnAppointmentController,
 );
 
 // update an appointment
@@ -96,7 +96,7 @@ router.patch(
   validateQuery(querySchema),
   validateParams(generateParamSchema("aid")),
   validateBody(updateAppointmentSchema),
-  updateAppointmentController
+  updateAppointmentController,
 );
 
 // fetch all appointments for a client
@@ -105,7 +105,7 @@ router.get(
   isTenantOrStaff,
   validateParams(generateParamSchema("cid")),
   validateQuery(querySchema),
-  fetchClientAppointmentsController
+  fetchClientAppointmentsController,
 );
 
 // fetch all filtered ppointments for a client
@@ -114,7 +114,7 @@ router.get(
   isTenantOrStaff,
   validateParams(generateParamSchema("cid")),
   validateQuery(querySchema),
-  fetchFilteredClientAppointmentsController
+  fetchFilteredClientAppointmentsController,
 );
 
 // fetch today appointments
@@ -122,7 +122,7 @@ router.get(
   "/fetch-today-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchTodayAppointmentsController
+  fetchTodayAppointmentsController,
 );
 
 // fetch last 7 days appointments appointments
@@ -130,7 +130,7 @@ router.get(
   "/fetch-last-7-days-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchLast7DaysAppointmentsController
+  fetchLast7DaysAppointmentsController,
 );
 
 // fetch whole year appointments appointments
@@ -138,7 +138,7 @@ router.get(
   "/fetch-yearly-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchYearlyAppointmentsController
+  fetchYearlyAppointmentsController,
 );
 
 // fetch filtered appointments
@@ -146,7 +146,7 @@ router.get(
   "/fetch-filtered-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchFilteredAppointmentsController
+  fetchFilteredAppointmentsController,
 );
 
 // fetch filtered appointments for plaform owner
@@ -154,7 +154,7 @@ router.get(
   "/fetch-filtered-appointments-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchFilteredAppointmentsForPlatformOwnerController
+  fetchFilteredAppointmentsForPlatformOwnerController,
 );
 
 // fetch today's filtered appointments
@@ -162,7 +162,7 @@ router.get(
   "/fetch-today-filtered-appointments",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchTodayFilteredAppointmentsController
+  fetchTodayFilteredAppointmentsController,
 );
 
 // fetch alls appointments for platform owner route
@@ -170,7 +170,7 @@ router.get(
   "/fetch-all-appointments-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAllAppointmentsForPlatformOwnerController
+  fetchAllAppointmentsForPlatformOwnerController,
 );
 
 module.exports = router;

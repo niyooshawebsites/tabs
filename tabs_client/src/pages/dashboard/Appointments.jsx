@@ -13,7 +13,7 @@ import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 
 export default function DashboardAppointments() {
-  const { role, isAuthenticated } = useSelector((state) => state.login_slice);
+  const { uid: loginId, role, isAuthenticated } = useSelector((state) => state.login_slice);
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
@@ -62,8 +62,8 @@ export default function DashboardAppointments() {
         endPoint = isFiltered ? `fetch-filtered-appointments` : `fetch-all-appointments`;
 
         query = isFiltered
-          ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&uid=${tenantId}`
-          : `?page=${page}&limit=${limit}&uid=${tenantId}`;
+          ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
+          : `?page=${page}&limit=${limit}&tid=${tenantId}&role=${role}&loginId=${loginId}`;
       }
 
       const { data } = await axios.get(`${baseUrl}${endPoint}${query}`, {

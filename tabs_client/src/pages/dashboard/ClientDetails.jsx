@@ -1,17 +1,18 @@
-import { Breadcrumbs, Grid, Stack, Typography, Button } from '@mui/material';
+import { Grid, Stack, Typography, Button, Box } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import MainCard from 'components/MainCard';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
+import '../../assets/style.css';
 
 export default function DashboardClientDetails() {
+  const { role } = useSelector((state) => state.login_slice);
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
@@ -133,70 +134,98 @@ export default function DashboardClientDetails() {
           {client.id !== null ? (
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, lg: 4 }}>
-                <Stack sx={{ gap: 3 }}>
-                  <DashboardHeading title={isDoctor == 'yes' ? `Patient Details` : `Client Details`} />
+                <Stack sx={{ gap: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <DashboardHeading title={isDoctor == 'yes' ? `Patient Details` : `Client Details`} />
+                    <Button
+                      sx={{ p: 1 }}
+                      onClick={() => {
+                        if (role == 1) {
+                          navigate('/dashboard/appointments');
+                          return;
+                        }
 
-                  <MainCard title="ID">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.cid || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                        if (role == 2) {
+                          navigate('/dashboard/clients');
+                          return;
+                        }
+                      }}
+                    >
+                      Back to {`${role == 2 ? 'Clients' : 'Dashboard'} `}
+                    </Button>
+                  </Box>
 
-                  <MainCard title="Name">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.name || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Client ID
+                    </Typography>
+                    <Typography variant="h6">{client?.cid || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Gender">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.gender || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Name
+                    </Typography>
+                    <Typography variant="h6">{client?.name || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="DOB">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{moment(client?.dob).format('DD-MM-YYYY') || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Gender
+                    </Typography>
+                    <Typography variant="h6">{client?.gender || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Email">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.email || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      DOB
+                    </Typography>
+                    <Typography variant="h6">{moment(client?.dob).format('DD-MM-YYYY') || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Phone">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.phone || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Email
+                    </Typography>
+                    <Typography variant="h6">{client?.email || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Address">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.address || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Phone
+                    </Typography>
+                    <Typography variant="h6">{client?.phone || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="City">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.city || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Address
+                    </Typography>
+                    <Typography variant="h6">{client?.address || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="State">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.state || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      City
+                    </Typography>
+                    <Typography variant="h6">{client?.city || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Pincode">
-                    <Breadcrumbs aria-label="breadcrumb">
-                      <Typography variant="h6">{client?.pincode || 'N/A'}</Typography>
-                    </Breadcrumbs>
-                  </MainCard>
+                  <Box className="details">
+                    <Typography variant="h6" className="details-heading">
+                      State
+                    </Typography>
+                    <Typography variant="h6">{client?.state || 'N/A'}</Typography>
+                  </Box>
 
-                  <MainCard title="Action">
+                  <Box title="ID" className="details">
+                    <Typography variant="h6" className="details-heading">
+                      Pincode
+                    </Typography>
+                    <Typography variant="h6">{client?.pincode || 'N/A'}</Typography>
+                  </Box>
+
+                  <Box className="details">
                     <Button
                       sx={{ p: 1 }}
                       onClick={() => {
@@ -211,9 +240,9 @@ export default function DashboardClientDetails() {
                         navigate(`/dashboard/client/appointments/${client.cid}`);
                       }}
                     >
-                      Appointments
+                      Back to Appointments
                     </Button>
-                  </MainCard>
+                  </Box>
                 </Stack>
               </Grid>
             </Grid>

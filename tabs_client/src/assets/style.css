@@ -1,3 +1,26 @@
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+.details {
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgb(237, 236, 236);
+  border-radius: 5px;
+}
+
+.details-heading {
+  font-weight: bold;
+}
+
+.remarks-details {
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(237, 236, 236);
+  border-radius: 5px;
+}

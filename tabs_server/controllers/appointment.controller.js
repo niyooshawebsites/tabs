@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Service = require("../models/service.model");
+const Staff = require("../models/staff.model");
 const Location = require("../models/location.model");
 const Appointment = require("../models/appointment.model");
 const Client = require("../models/client.model");
@@ -268,42 +269,104 @@ const bookAppointmentController = async (req, res) => {
 // show all appointments
 const fetchAllApointmentsController = async (req, res) => {
   try {
-    const { uid } = req.query;
+    const { tid } = req.query;
+    const { role } = req.query;
+    const { loginId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const totalAppointments = await Appointment.countDocuments({ tenant: uid });
+    // if the role is tenant
+    if (role == 2) {
+      const totalAppointments = await Appointment.countDocuments({
+        tenant: tid,
+      });
 
-    const appointments = await Appointment.find({ tenant: uid })
-      .populate("service")
-      .populate("location")
-      .populate("client")
-      .populate("tenant")
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+      const appointments = await Appointment.find({ tenant: tid })
+        .populate("service")
+        .populate("location")
+        .populate("client")
+        .populate("tenant")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
 
-    if (appointments.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No appointments found",
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointment fetched successfully",
+        data: appointments,
+        pagination: {
+          totalAppointments,
+          page,
+          limit,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Appointment fetched successfully",
-      data: appointments,
-      pagination: {
-        totalAppointments,
-        page,
-        limit,
-        totalPages: Math.ceil(totalAppointments / limit),
-        hasNextPage: page * limit < totalAppointments,
-        hasPrevPage: page > 1,
-      },
-    });
+    // if the role is staff - location and service
+    if (role == 1) {
+      const staff = await Staff.findById(loginId);
+
+      if (!staff) {
+        return res.status(404).json({
+          success: false,
+          message: "Invalid staff",
+        });
+      }
+
+      // Build dynamic filter
+      let filter = {
+        tenant: tid,
+        location: staff.location,
+      };
+
+      // If staff does NOT handle all services, filter by their services
+      if (!staff.handlesAllServices) {
+        filter.service = { $in: staff.services };
+      }
+
+      const totalAppointments = await Appointment.countDocuments(filter);
+
+      const appointments = await Appointment.find(filter)
+        .populate("service")
+        .populate("location")
+        .populate("client")
+        .populate("tenant")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointment fetched successfully",
+        data: appointments,
+        pagination: {
+          totalAppointments,
+          page,
+          limit,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -627,7 +690,9 @@ const fetchFilteredClientAppointmentsController = async (req, res) => {
 // fetch today appointments for a tenant route
 const fetchTodayAppointmentsController = async (req, res) => {
   try {
-    const { uid } = req.query;
+    const { tid } = req.query;
+    const { role } = req.query;
+    const { loginId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -636,7 +701,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     const endDate = moment().endOf("day").toDate();
 
     const totalAppointments = await Appointment.countDocuments({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
@@ -644,7 +709,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     });
 
     const completedAppointments = await Appointment.countDocuments({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
@@ -653,7 +718,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     });
 
     const confirmedAppointments = await Appointment.countDocuments({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
@@ -662,7 +727,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     });
 
     const pendingAppointments = await Appointment.countDocuments({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
@@ -671,7 +736,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     });
 
     const cancelledAppointments = await Appointment.countDocuments({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
@@ -680,7 +745,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
     });
 
     const appointments = await Appointment.find({
-      tenant: uid,
+      tenant: tid,
       date: {
         $gte: startDate,
         $lte: endDate,
