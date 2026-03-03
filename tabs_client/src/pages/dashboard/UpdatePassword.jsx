@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 
 export default function DashboardUpdatePassword() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
+  const { uid, role } = useSelector((state) => state.login_slice);
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -20,7 +21,17 @@ export default function DashboardUpdatePassword() {
     }
     try {
       setUpdatingPassword(true);
-      const addApiURL = `${import.meta.env.VITE_API_URL}update-tenant/${tenantId}`;
+      let addApiURL;
+      if (role == 3) {
+        addApiURL = `${import.meta.env.VITE_API_URL}update-platform-owener-password/${uid}`;
+      } else if (role == 2) {
+        addApiURL = `${import.meta.env.VITE_API_URL}update-tenant-password/${tenantId}`;
+      } else if (role == 1) {
+        addApiURL = `${import.meta.env.VITE_API_URL}update-staff-password/${uid}`;
+      } else {
+        addApiURL = `${import.meta.env.VITE_API_URL}update-client-password/${uid}`;
+      }
+
       const { data } = await axios.patch(
         addApiURL,
         {

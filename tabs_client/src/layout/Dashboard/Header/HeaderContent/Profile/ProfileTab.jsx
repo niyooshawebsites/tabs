@@ -9,11 +9,12 @@ import UserOutlined from '@ant-design/icons/UserOutlined';
 import axios from 'axios';
 import { loginSliceActions } from '../../../../../store/slices/LoginSlice';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 
 export default function ProfileTab() {
+  const { role } = useSelector((state) => state.login_slice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,19 @@ export default function ProfileTab() {
       setLoading(false);
     }
   };
+
+  if (role == 1) {
+    return (
+      <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
+        <ListItemButton onClick={logout}>
+          <ListItemIcon>
+            <LogoutOutlined />
+          </ListItemIcon>
+          <ListItemText primary={loading ? 'Logging out...' : 'Logout'} />
+        </ListItemButton>
+      </List>
+    );
+  }
 
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>

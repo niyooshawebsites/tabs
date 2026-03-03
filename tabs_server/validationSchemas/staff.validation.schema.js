@@ -65,4 +65,14 @@ const staffUpdationSchema = z.object({
   sid: z.array(objectIdSchema).nonempty("Select at least one service"), // ensures array is not empty
 });
 
-module.exports = { staffCreationSchema, staffLoginSchema, staffUpdationSchema };
+// updation schema
+const staffPasswordUpdationSchema = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+module.exports = {
+  staffCreationSchema,
+  staffLoginSchema,
+  staffUpdationSchema,
+  staffPasswordUpdationSchema,
+};

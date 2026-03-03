@@ -46,6 +46,14 @@ const staffSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpire: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

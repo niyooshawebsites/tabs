@@ -37,11 +37,11 @@ router.post("/logout", logoutController);
 
 // update tenant route
 router.patch(
-  "/update-tenant/:uid",
+  "/update-tenant-password/:uid",
   isTenant,
   validateParams(generateParamSchema("uid")),
   validateBody(updateUserSchema),
-  updateUserController
+  updateUserController,
 );
 
 router.get("/does-tenant-exist", doesTenantExistController);

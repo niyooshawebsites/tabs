@@ -195,7 +195,7 @@ export default function AuthLogin({ isDemo = false }) {
                   <Typography
                     variant="h6"
                     sx={{ color: 'red', cursor: 'pointer' }}
-                    onClick={() => window.location.replace(`http://${import.meta.env.VITE_FRONTEND_URL}/reset-password`)}
+                    onClick={() => window.location.replace(`http://${import.meta.env.VITE_FRONTEND_URL}/forgot-password`)}
                   >
                     Forgot Password?
                   </Typography>

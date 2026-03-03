@@ -28,7 +28,7 @@ const Register = Loadable(lazy(() => import('pages/auth/Register')));
 const SearchAppointment = Loadable(lazy(() => import('pages/nonAuth/SearchAppointment')));
 const NotFound = Loadable(lazy(() => import('pages/nonAuth/NotFound')));
 const Login = Loadable(lazy(() => import('pages/auth/Login')));
-const ResetPassword = Loadable(lazy(() => import('pages/nonAuth/ResetPassword')));
+const ForgotPassword = Loadable(lazy(() => import('pages/nonAuth/ForgotPassword')));
 const ProtectedRoute = Loadable(lazy(() => import('layout/Dashboard/index')));
 
 const MainRoutes = {
@@ -48,8 +48,8 @@ const MainRoutes = {
       element: <Login />
     },
     {
-      path: 'reset-password',
-      element: <ResetPassword />
+      path: 'forgot-password',
+      element: <ForgotPassword />
     },
     {
       path: 'search/appointment/:aid',

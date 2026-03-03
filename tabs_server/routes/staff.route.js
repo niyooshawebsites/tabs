@@ -25,6 +25,7 @@ const {
   staffCreationSchema,
   staffLoginSchema,
   staffUpdationSchema,
+  staffPasswordUpdationSchema,
 } = require("../validationSchemas/staff.validation.schema");
 
 const {
@@ -66,7 +67,7 @@ router.patch(
   "/update-staff-password/:staffId",
   isStaff,
   validateParams(generateParamSchema("staffId")),
-  validateBody(staffUpdationSchema),
+  validateBody(staffPasswordUpdationSchema),
   updateStaffPasswordController,
 );
 

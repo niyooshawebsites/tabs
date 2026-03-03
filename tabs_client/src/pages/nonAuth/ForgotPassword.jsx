@@ -25,9 +25,9 @@ import ShowSlotsModal from '../../components/ShowSlotsModal';
 import { useSelector } from 'react-redux';
 import states from '../../constants/states';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
-import ResetPasswordForm from '../../sections/auth/ResetPasswordForm';
+import ForgotPasswordForm from '../../sections/auth/ForgotPasswordForm';
 
-export default function Home() {
+export default function ForgotPassword() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
@@ -509,14 +509,14 @@ export default function Home() {
       <Grid container spacing={3}>
         <Grid size={12}>
           <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'space-between', mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Reset Password</Typography>
+            <Typography variant="h3">Forgot Password</Typography>
             <Typography component={Link} to="/" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
               <span sx={{ color: 'blue' }}>My Account</span>
             </Typography>
           </Stack>
         </Grid>
         <Grid size={12}>
-          <ResetPasswordForm />
+          <ForgotPasswordForm />
         </Grid>
       </Grid>
     </AuthWrapper>
