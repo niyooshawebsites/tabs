@@ -192,9 +192,13 @@ export default function AuthLogin({ isDemo = false }) {
               </Grid>
               <Grid sx={{ mt: -1 }} size={12}>
                 <Stack direction="row" sx={{ gap: 2, alignItems: 'baseline', justifyContent: 'space-between' }}>
-                  <Link variant="h6" component={RouterLink} to="reset-password" sx={{ color: 'red' }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: 'red', cursor: 'pointer' }}
+                    onClick={() => window.location.replace(`http://${import.meta.env.VITE_FRONTEND_URL}/reset-password`)}
+                  >
                     Forgot Password?
-                  </Link>
+                  </Typography>
                 </Stack>
               </Grid>
               <Grid size={12}>

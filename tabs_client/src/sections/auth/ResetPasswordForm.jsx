@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import AnimateButton from 'components/@extended/AnimateButton';
 
-export default function UsernameLoginPage() {
+export default function ResetPasswordForm() {
   const handleSubmit = async (values) => {
     try {
       // Example redirect
@@ -59,7 +59,7 @@ export default function UsernameLoginPage() {
             <Grid size={12}>
               <AnimateButton>
                 <Button type="submit" fullWidth size="large" variant="contained" color="primary">
-                  Proceed to My Account
+                  Submit
                 </Button>
               </AnimateButton>
             </Grid>
@@ -70,4 +70,4 @@ export default function UsernameLoginPage() {
   );
 }
 
-UsernameLoginPage.propTypes = { isDemo: PropTypes.bool };
+ResetPasswordForm.propTypes = { isDemo: PropTypes.bool };
