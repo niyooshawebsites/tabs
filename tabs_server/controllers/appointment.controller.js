@@ -270,7 +270,7 @@ const bookAppointmentController = async (req, res) => {
 const fetchAllApointmentsController = async (req, res) => {
   try {
     const { tid } = req.query;
-    const { role } = req.query;
+    const role = parseInt(req.query.role);
     const { loginId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -691,7 +691,7 @@ const fetchFilteredClientAppointmentsController = async (req, res) => {
 const fetchTodayAppointmentsController = async (req, res) => {
   try {
     const { tid } = req.query;
-    const { role } = req.query;
+    const role = parseInt(req.query.role);
     const { loginId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -700,88 +700,170 @@ const fetchTodayAppointmentsController = async (req, res) => {
     const startDate = moment().startOf("day").toDate();
     const endDate = moment().endOf("day").toDate();
 
-    const totalAppointments = await Appointment.countDocuments({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-    });
+    if (role == 2) {
+      const totalAppointments = await Appointment.countDocuments({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      });
 
-    const completedAppointments = await Appointment.countDocuments({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-      status: "Completed",
-    });
+      const completedAppointments = await Appointment.countDocuments({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        status: "Completed",
+      });
 
-    const confirmedAppointments = await Appointment.countDocuments({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-      status: "Confirmed",
-    });
+      const confirmedAppointments = await Appointment.countDocuments({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        status: "Confirmed",
+      });
 
-    const pendingAppointments = await Appointment.countDocuments({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-      status: "Pending",
-    });
+      const pendingAppointments = await Appointment.countDocuments({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        status: "Pending",
+      });
 
-    const cancelledAppointments = await Appointment.countDocuments({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-      status: "Cancelled",
-    });
+      const cancelledAppointments = await Appointment.countDocuments({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        status: "Cancelled",
+      });
 
-    const appointments = await Appointment.find({
-      tenant: tid,
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-    })
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .populate("service")
-      .populate("client")
-      .populate("tenant");
+      const appointments = await Appointment.find({
+        tenant: tid,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
 
-    if (appointments.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No appointments for today",
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments for today",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          completedAppointments,
+          confirmedAppointments,
+          pendingAppointments,
+          cancelledAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Appointments found",
-      data: appointments,
-      pagination: {
-        limit,
-        page,
-        totalAppointments,
-        completedAppointments,
-        confirmedAppointments,
-        pendingAppointments,
-        cancelledAppointments,
-        totalPages: Math.ceil(totalAppointments / limit),
-        hasNextPage: page * limit < totalAppointments,
-        hasPrevPage: page > 1,
-      },
-    });
+    if (role == 1) {
+      const staff = await Staff.findById(loginId);
+
+      if (!staff) {
+        return res.status(404).json({
+          success: false,
+          message: "Invalid staff",
+        });
+      }
+
+      let filter = {
+        tenant: tid,
+        location: staff.location,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+
+      // If staff does NOT handle all services, filter by their services
+      if (!staff.handlesAllServices) {
+        filter.service = { $in: staff.services };
+      }
+
+      const totalAppointments = await Appointment.countDocuments(filter);
+
+      const completedAppointments = await Appointment.countDocuments({
+        ...filter,
+        status: "Completed",
+      });
+
+      const confirmedAppointments = await Appointment.countDocuments({
+        ...filter,
+        status: "Confirmed",
+      });
+
+      const pendingAppointments = await Appointment.countDocuments({
+        ...filter,
+        status: "Pending",
+      });
+
+      const cancelledAppointments = await Appointment.countDocuments({
+        ...filter,
+        status: "Cancelled",
+      });
+
+      const appointments = await Appointment.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
+
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments for today",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          completedAppointments,
+          confirmedAppointments,
+          pendingAppointments,
+          cancelledAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -887,63 +969,133 @@ const fetchYearlyAppointmentsController = async (req, res) => {
 // fetch filtered appointments route
 const fetchFilteredAppointmentsController = async (req, res) => {
   try {
+    const role = parseInt(req.query.role);
+    const { loginId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, startDate, endDate, status, uid } = req.query;
+    const { service, startDate, endDate, status, tid } = req.query;
 
-    // build a dynamic mongodb query
-    const filter = { tenant: uid };
+    if (role == 2) {
+      // build a dynamic mongodb query
+      const filter = { tenant: uid };
 
-    // if service is provided
-    if (service) {
-      filter.service = service;
-    }
+      // if service is provided
+      if (service) {
+        filter.service = service;
+      }
 
-    // if start and end date is provided
-    if (startDate && endDate) {
-      filter.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
-    }
+      // if start and end date is provided
+      if (startDate && endDate) {
+        filter.date = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        };
+      }
 
-    // if status is provided
-    if (status) {
-      filter.status = status;
-    }
+      // if status is provided
+      if (status) {
+        filter.status = status;
+      }
 
-    const totalAppointments = await Appointment.countDocuments(filter);
+      const totalAppointments = await Appointment.countDocuments(filter);
 
-    const appointments = await Appointment.find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .populate("service")
-      .populate("client")
-      .populate("tenant");
+      const appointments = await Appointment.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
 
-    if (appointments.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No appointments found",
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Appointments found",
-      data: appointments,
-      pagination: {
-        limit,
-        page,
-        totalAppointments,
-        totalPages: Math.ceil(totalAppointments / limit),
-        hasNextPage: page * limit < totalAppointments,
-        hasPrevPage: page > 1,
-      },
-    });
+    if (role == 1) {
+      const staff = await Staff.findById(loginId);
+
+      if (!staff) {
+        return res.status(404).json({
+          success: false,
+          message: "Invalid staff",
+        });
+      }
+
+      // Build dynamic filter
+      let filter = {
+        tenant: tid,
+        location: staff.location,
+      };
+
+      // if service is provided
+      if (service) {
+        filter.service = service;
+      }
+
+      // if start and end date is provided
+      if (startDate && endDate) {
+        filter.date = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        };
+      }
+
+      // if status is provided
+      if (status) {
+        filter.status = status;
+      }
+
+      const totalAppointments = await Appointment.countDocuments(filter);
+
+      const appointments = await Appointment.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
+
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -1028,64 +1180,130 @@ const fetchFilteredAppointmentsForPlatformOwnerController = async (
 // fetch taday's filtered appointments route
 const fetchTodayFilteredAppointmentsController = async (req, res) => {
   try {
+    const role = parseInt(req.query.role);
+    const loginId = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, status, uid } = req.query;
+    const { service, status, tid } = req.query;
 
     const startOfDay = moment().startOf("day").toDate();
     const endOfDay = moment().endOf("day").toDate();
 
-    // build a dymanic mondodb query
-    const filter = {
-      tenant: uid,
-      date: {
-        $gte: startOfDay,
-        $lte: endOfDay,
-      },
-    };
+    if (role == 2) {
+      // build a dymanic mondodb query
+      const filter = {
+        tenant: tid,
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      };
 
-    // if service is provided
-    if (service) {
-      filter.service = service;
-    }
+      // if service is provided
+      if (service) {
+        filter.service = service;
+      }
 
-    // if status is provided
-    if (status) {
-      filter.status = status;
-    }
+      // if status is provided
+      if (status) {
+        filter.status = status;
+      }
 
-    const totalAppointments = await Appointment.countDocuments(filter);
+      const totalAppointments = await Appointment.countDocuments(filter);
 
-    const appointments = await Appointment.find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .populate("service")
-      .populate("client")
-      .populate("tenant");
+      const appointments = await Appointment.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
 
-    if (appointments.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No appointments found",
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Appointments found",
-      data: appointments,
-      pagination: {
-        limit,
-        page,
-        totalAppointments,
-        totalPages: Math.ceil(totalAppointments / limit),
-        hasNextPage: page * limit < totalAppointments,
-        hasPrevPage: page > 1,
-      },
-    });
+    if (role == 1) {
+      const staff = await Staff.findById(loginId);
+
+      if (!staff) {
+        return res.status(404).json({
+          success: false,
+          message: "Invalid staff",
+        });
+      }
+
+      // build a dymanic mondodb query
+      const filter = {
+        tenant: tid,
+        location: staff.location,
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      };
+
+      // if service is provided
+      if (service) {
+        filter.service = service;
+      }
+
+      // if status is provided
+      if (status) {
+        filter.status = status;
+      }
+
+      const totalAppointments = await Appointment.countDocuments(filter);
+
+      const appointments = await Appointment.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("service")
+        .populate("client")
+        .populate("tenant");
+
+      if (appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No appointments found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments found",
+        data: appointments,
+        pagination: {
+          limit,
+          page,
+          totalAppointments,
+          totalPages: Math.ceil(totalAppointments / limit),
+          hasNextPage: page * limit < totalAppointments,
+          hasPrevPage: page > 1,
+        },
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
