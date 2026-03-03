@@ -9,6 +9,8 @@ const {
   fetchAStaffController,
   fetchStaffController,
   deleteAStaffController,
+  fetchAllStaffServicesController,
+  fetchAllStaffLocationsController,
 } = require("../controllers/staff.controller");
 
 const { isTenant, isStaff } = require("../middlewares/auth.middleware");
@@ -36,14 +38,14 @@ router.post(
   isTenant,
   validateParams(generateParamSchema("uid")),
   validateBody(staffCreationSchema),
-  staffCreationController
+  staffCreationController,
 );
 
 // login staff route
 router.post(
   "/staff-login",
   validateBody(staffLoginSchema),
-  staffLoginController
+  staffLoginController,
 );
 
 // staff logout route
@@ -56,7 +58,7 @@ router.patch(
   validateParams(generateParamSchema("staffId")),
   validateQuery(querySchema),
   validateBody(staffUpdationSchema),
-  updateStaffDetailsController
+  updateStaffDetailsController,
 );
 
 // update password staff route
@@ -65,7 +67,7 @@ router.patch(
   isStaff,
   validateParams(generateParamSchema("staffId")),
   validateBody(staffUpdationSchema),
-  updateStaffPasswordController
+  updateStaffPasswordController,
 );
 
 // get a staff route
@@ -74,7 +76,7 @@ router.get(
   isTenant,
   validateParams(generateParamSchema("staffId")),
   validateQuery(querySchema),
-  fetchAStaffController
+  fetchAStaffController,
 );
 
 // get staff route
@@ -82,7 +84,7 @@ router.get(
   "/fetch-staff",
   isTenant,
   validateQuery(querySchema),
-  fetchStaffController
+  fetchStaffController,
 );
 
 // delete staff route
@@ -91,7 +93,21 @@ router.delete(
   isTenant,
   validateParams(generateParamSchema("staffId")),
   validateQuery(querySchema),
-  deleteAStaffController
+  deleteAStaffController,
+);
+
+// fetch all staff services route
+router.get(
+  "/fetch-all-staff-services",
+  validateQuery(querySchema),
+  fetchAllStaffServicesController,
+);
+
+// fetch all staff locations route
+router.get(
+  "/fetch-all-staff-locations",
+  validateQuery(querySchema),
+  fetchAllStaffLocationsController,
 );
 
 module.exports = router;

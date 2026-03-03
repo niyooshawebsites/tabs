@@ -314,6 +314,66 @@ const deleteAStaffController = async (req, res) => {
   }
 };
 
+const fetchAllStaffServicesController = async (req, res) => {
+  try {
+    const { empId } = req.query;
+    const { tid } = req.query;
+
+    const staff = await Staff.findOne({ empId: empId, tenant: tid }).populate(
+      "services",
+    );
+
+    if (!staff) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Staff services fetched successfully",
+      data: staff.services,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
+const fetchAllStaffLocationsController = async (req, res) => {
+  try {
+    const { empId } = req.query;
+    const { tid } = req.query;
+
+    const staff = await Staff.findOne({ empId: empId, tenant: tid }).populate(
+      "location",
+    );
+
+    if (!staff) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Staff locations fetched successfully",
+      data: [staff.location],
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   staffCreationController,
   staffLoginController,
@@ -323,4 +383,6 @@ module.exports = {
   fetchAStaffController,
   fetchStaffController,
   deleteAStaffController,
+  fetchAllStaffServicesController,
+  fetchAllStaffLocationsController,
 };

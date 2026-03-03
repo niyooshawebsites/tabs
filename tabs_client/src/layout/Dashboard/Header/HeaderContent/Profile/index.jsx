@@ -23,7 +23,11 @@ import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import avatar1 from 'assets/images/users/avatar-1.png';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { loginSliceActions } from '../../../../../store/slices/LoginSlice';
+import { useNavigate } from 'react-router';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -43,6 +47,8 @@ function a11yProps(index) {
 
 export default function Profile() {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { name, empId, role } = useSelector((state) => state.login_slice);
   const { legalName } = useSelector((state) => state.admin_slice);
   const [loading, setLoading] = useState(false);
@@ -104,7 +110,7 @@ export default function Profile() {
   };
 
   const greeting = (role) => {
-    if (role == 1) return `${name} - ${empId}`;
+    if (role == 1) return `${name.toUpperCase()} - ${empId.toUpperCase()}`;
     if (role == 2) return 'ADMIN';
     if (role == 3) return 'PLATFORM OWNER';
   };
@@ -129,7 +135,7 @@ export default function Profile() {
         <Stack direction="row" sx={{ gap: 1.25, alignItems: 'center', p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            Welcome!
+            Welcome 🙂 {greeting(role)}
           </Typography>
         </Stack>
       </ButtonBase>

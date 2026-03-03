@@ -206,7 +206,7 @@ export default function Home() {
                         {/* Column 1 - Service */}
                         <Grid size={{ xs: 12, md: 3 }}>
                           <FormControl fullWidth>
-                            <InputLabel>Service</InputLabel>
+                            <InputLabel>Service Name</InputLabel>
                             <Select
                               name="service"
                               value={values.service}
@@ -242,7 +242,7 @@ export default function Home() {
                               <MenuItem value="">Select Location</MenuItem>
                               {locations.map((location) => (
                                 <MenuItem key={location._id} value={location._id}>
-                                  {location.name}
+                                  {location.name[0].toUpperCase() + location.name.slice(1)}
                                 </MenuItem>
                               ))}
                             </Select>

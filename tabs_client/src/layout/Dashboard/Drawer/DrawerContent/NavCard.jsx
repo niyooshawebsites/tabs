@@ -7,9 +7,13 @@ import MainCard from 'components/MainCard';
 import avatar from 'assets/images/users/avatar-group.png';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
 
 export default function NavCard() {
+  const { role } = useSelector((state) => state.login_slice);
   const navigate = useNavigate();
+
+  if (role == 1) return <></>;
   return (
     <MainCard sx={{ bgcolor: 'grey.50', m: 3 }}>
       <Stack alignItems="center" spacing={2.5}>
