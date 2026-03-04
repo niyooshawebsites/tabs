@@ -69,13 +69,13 @@ const TenantDetails = () => {
       if (data.success) {
         dispatch(
           locationSliceActions.captureLocationDetails({
-            locations: data?.data,
-            totalLocations: data?.pagination?.totalLocations,
-            totalPages: data?.pagination?.totalPages,
-            hasNextPage: data?.pagination?.hasNextPage,
-            hasPrevPage: data?.pagination?.hasPrevPage,
-            limit: data?.pagination?.limit,
-            page: data?.pagination?.page
+            locations: data?.data || [],
+            totalLocations: data?.pagination?.totalLocations || 0,
+            totalPages: data?.pagination?.totalPages || 0,
+            hasNextPage: data?.pagination?.hasNextPage || false,
+            hasPrevPage: data?.pagination?.hasPrevPage || false,
+            limit: data?.pagination?.limit || 10,
+            page: data?.pagination?.page || 1
           })
         );
       }
@@ -102,13 +102,13 @@ const TenantDetails = () => {
       if (data.success) {
         dispatch(
           serviceSliceActions.captureServiceDetails({
-            services: data?.data,
-            totalServices: data?.pagination?.totalServices,
-            totalPages: data?.pagination?.totalPages,
-            hasNextPage: data?.pagination?.hasNextPage,
-            hasPrevPage: data?.pagination?.hasPrevPage,
-            limit: data?.pagination?.limit,
-            page: data?.pagination?.page
+            services: data?.data || [],
+            totalServices: data?.pagination?.totalServices || 0,
+            totalPages: data?.pagination?.totalPages || 0,
+            hasNextPage: data?.pagination?.hasNextPage || false,
+            hasPrevPage: data?.pagination?.hasPrevPage || false,
+            limit: data?.pagination?.limit || 10,
+            page: data?.pagination?.page || 1
           })
         );
       }

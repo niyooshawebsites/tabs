@@ -16,7 +16,7 @@ export default function DashboardServices() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services, page, limit } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
-  const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
+  const { id } = useSelector((state) => state.admin_slice);
   const [fetchingAllServices, serFetchingAllServices] = useState(false);
   const [pagination, setPagination] = useState({});
   const [deletingService, serDeletingService] = useState(false);
@@ -111,48 +111,15 @@ export default function DashboardServices() {
   }, [serviceDeleted]);
 
   if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (locations.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (services.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   return (

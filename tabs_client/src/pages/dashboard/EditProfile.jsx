@@ -141,6 +141,26 @@ export default function DashboardEditProfile() {
           });
           if (data.success) {
             toast.success(data.message);
+
+            dispatch(
+              adminSliceActions.captureAdminDetails({
+                id: data?.data?._id,
+                legalName: data?.data?.legalName,
+                gstNo: data?.data?.gstNo,
+                name: data?.data?.name,
+                isDoctor: data?.data?.isDoctor,
+                experience: data?.data?.experience,
+                proffessinalCourse: data?.data?.proffessinalCourse,
+                phone: data?.data?.phone,
+                altPhone: data?.data?.altPhone,
+                email: data?.data?.email,
+                address: data?.data?.address,
+                tenantId: data?.data?.tenant,
+                workingDays: data?.data?.workingDays,
+                timings: data?.data?.timings
+              })
+            );
+            resetForm();
             setUpdatingProfile(false);
             navigate('/dashboard/settings/profile');
           }

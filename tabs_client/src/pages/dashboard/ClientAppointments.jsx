@@ -17,7 +17,7 @@ export default function DashboardClientAppointments() {
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
   const { isDoctor } = useSelector((state) => state.admin_slice);
-  const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
+  const { id } = useSelector((state) => state.admin_slice);
   const [appointments, setAppointments] = useState([]);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const [status, setStatus] = useState('');
@@ -103,49 +103,16 @@ export default function DashboardClientAppointments() {
     fetchClientAppointments();
   }, [page, filters, isModalOpen, isRefreshed]);
 
-  if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+  if (!id) {
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (locations.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (services.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   return (

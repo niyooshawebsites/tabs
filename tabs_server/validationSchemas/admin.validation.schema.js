@@ -20,36 +20,27 @@ const partDaySchema = z.object({
 });
 
 // Main timings schema
-const timingsSchema = z
-  .object({
-    shiftType: z.enum(["full", "part"]),
+const timingsSchema = z.discriminatedUnion("shiftType", [
+  // FULL TIME
+  z.object({
+    shiftType: z.literal("full"),
+    fullDay: z.object({
+      start: z.string().min(1, "Start time is required"),
+      end: z.string().min(1, "End time is required"),
+    }),
+  }),
 
-    fullDay: fullDaySchema.optional(),
-    partDay: partDaySchema.optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.shiftType === "full") {
-        return data.fullDay?.start && data.fullDay?.end;
-      }
-      return true;
-    },
-    { message: "Start time and End time are required for Full Day" }
-  )
-  .refine(
-    (data) => {
-      if (data.shiftType === "part") {
-        return (
-          data.partDay?.morningStart &&
-          data.partDay?.morningEnd &&
-          data.partDay?.eveningStart &&
-          data.partDay?.eveningEnd
-        );
-      }
-      return true;
-    },
-    { message: "All Part Day timings are required" }
-  );
+  // PART TIME
+  z.object({
+    shiftType: z.literal("part"),
+    partDay: z.object({
+      morningStart: z.string().min(1, "Morning start time is required"),
+      morningEnd: z.string().min(1, "Morning end time is required"),
+      eveningStart: z.string().min(1, "Evening start time is required"),
+      eveningEnd: z.string().min(1, "Evening end time is required"),
+    }),
+  }),
+]);
 
 const addAdminDetailsSchema = z.object({
   legalName: z.string().min(3, "Legal name must be greater than 3 characters"),
