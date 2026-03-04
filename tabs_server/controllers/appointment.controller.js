@@ -697,60 +697,68 @@ const fetchTodayAppointmentsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const startDate = moment().startOf("day").toDate();
-    const endDate = moment().endOf("day").toDate();
+    // const startDate = moment().startOf("day").toDate();
+    // const endDate = moment().endOf("day").toDate();
+
+    const today = moment.utc().startOf("day").toDate();
 
     if (role == 2) {
       const totalAppointments = await Appointment.countDocuments({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
       });
 
       const completedAppointments = await Appointment.countDocuments({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
         status: "Completed",
       });
 
       const confirmedAppointments = await Appointment.countDocuments({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
         status: "Confirmed",
       });
 
       const pendingAppointments = await Appointment.countDocuments({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
         status: "Pending",
       });
 
       const cancelledAppointments = await Appointment.countDocuments({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
         status: "Cancelled",
       });
 
       const appointments = await Appointment.find({
         tenant: tid,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        // date: {
+        //   $gte: startDate,
+        //   $lte: endDate,
+        // },
+        date: today,
       })
         .skip(skip)
         .limit(limit)

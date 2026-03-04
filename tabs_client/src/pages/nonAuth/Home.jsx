@@ -32,7 +32,7 @@ export default function Home() {
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
   const { announcement } = useSelector((state) => state.announcement_slice);
-  const { id } = useSelector((state) => state.admin_slice);
+  const { id, legalName } = useSelector((state) => state.admin_slice);
   const [bookingAppointment, setBookingAppointment] = useState(false);
   const [isSlotsSearchModalOpen, setIsSlotsSearchModalOpen] = useState(false);
   const [isShowSlotsModalOpen, setIsShowSlotsModalOpen] = useState(false);
@@ -44,8 +44,6 @@ export default function Home() {
   const [hideServiceDetails, setHideServiceDetails] = useState(true);
   const { subDomain } = useSelector((state) => state.subDomain_slice);
   const navigate = useNavigate();
-
-  console.log('Locations on Homepage', services);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -144,7 +142,7 @@ export default function Home() {
                 mt: 3
               }}
             >
-              <Typography variant="h3">{legalName}</Typography>
+              <Typography variant="h3">{legalName ? legalName : 'Book Appointment'}</Typography>
 
               <Typography
                 variant="body1"

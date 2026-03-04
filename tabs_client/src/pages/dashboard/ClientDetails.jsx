@@ -16,7 +16,7 @@ export default function DashboardClientDetails() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
-  const { legalName, phone, altPhone, address, name, email } = useSelector((state) => state.admin_slice);
+  const { id } = useSelector((state) => state.admin_slice);
   const [client, setClient] = useState({
     cid: null,
     name: null,
@@ -80,49 +80,16 @@ export default function DashboardClientDetails() {
     fetchClientDetails();
   }, [clientInfo]);
 
-  if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+  if (!id) {
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (locations.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   if (services.length === 0) {
-    return (
-      <CheckMissingInfo
-        legalName={legalName}
-        phone={phone}
-        altPhone={altPhone}
-        address={address}
-        name={name}
-        email={email}
-        locations={locations}
-        services={services}
-      />
-    );
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
   return (

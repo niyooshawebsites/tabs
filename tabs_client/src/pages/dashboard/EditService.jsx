@@ -132,7 +132,7 @@ export default function EditService() {
     fetchServiceToUpdate();
   }, [sid]);
 
-  if (legalName == null || phone == null || altPhone == null || address == null || name == null || email == null) {
+  if (!id) {
     return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
