@@ -117,11 +117,11 @@ export default function DashboardLocations() {
     return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
-  if (locations.length === 0) {
+  if (locations.length == 0) {
     return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 
-  if (services.length === 0) {
+  if (services.length == 0) {
     return <CheckMissingInfo id={id} locations={locations} services={services} />;
   }
 

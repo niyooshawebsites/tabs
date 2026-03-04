@@ -5,7 +5,7 @@ const addLocationController = async (req, res) => {
     const { uid } = req.params;
     const { name } = req.body;
 
-    const existingLocation = await Location.findOne({ name });
+    const existingLocation = await Location.findOne({ name, tenant: uid });
 
     if (existingLocation) {
       return res.status(409).json({
@@ -41,7 +41,7 @@ const updateLocationController = async (req, res) => {
     const updatedLocation = await Location.findByIdAndUpdate(
       lid,
       { name },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedLocation) {

@@ -45,6 +45,8 @@ export default function Home() {
   const { subDomain } = useSelector((state) => state.subDomain_slice);
   const navigate = useNavigate();
 
+  console.log('Locations on Homepage', services);
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setBookingAppointment(true);
