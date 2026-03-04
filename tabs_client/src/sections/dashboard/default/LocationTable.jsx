@@ -83,7 +83,7 @@ export default function LocationTable({
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.name}</span>
+                        <span color="secondary">{row?.name[0].toUpperCase() + row?.name.slice(1)}</span>
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
