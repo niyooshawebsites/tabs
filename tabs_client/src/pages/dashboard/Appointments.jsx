@@ -63,7 +63,7 @@ export default function DashboardAppointments() {
         endPoint = isFiltered ? `fetch-filtered-appointments` : `fetch-all-appointments`;
 
         query = isFiltered
-          ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
+          ? `?service=${filters.service}&location=${filters.location}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
           : `?page=${page}&limit=${limit}&tid=${tenantId}&role=${role}&loginId=${loginId}`;
       }
 
