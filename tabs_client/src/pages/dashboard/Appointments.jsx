@@ -33,6 +33,7 @@ export default function DashboardAppointments() {
   });
   const [filters, setFilters] = useState({
     service: '',
+    location: '',
     startDate: '',
     endDate: '',
     status: 'Pending'

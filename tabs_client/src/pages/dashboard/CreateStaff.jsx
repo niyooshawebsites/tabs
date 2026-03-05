@@ -100,7 +100,7 @@ export default function DashboardCreateStaff() {
               empId: '',
               sid: [],
               email: '',
-              password: '',
+              password: 'Password@123',
               handlesAllServices: false,
               lid: ''
             }}
@@ -310,6 +310,7 @@ export default function DashboardCreateStaff() {
                           </InputAdornment>
                         }
                         placeholder="Enter password"
+                        readOnly
                       />
                     </Stack>
                     {touched.password && errors.password && (

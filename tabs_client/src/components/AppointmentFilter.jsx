@@ -5,9 +5,11 @@ import { useSelector } from 'react-redux';
 
 const AppointmentFilter = ({ setFilters, setIsFiltered, setPage, setStatus }) => {
   const [service, setService] = useState('');
+  const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const { services } = useSelector((state) => state.service_slice);
+  const { locations } = useSelector((state) => state.location_slice);
 
   const handleFilter = () => {
     setIsFiltered(true);
@@ -15,6 +17,7 @@ const AppointmentFilter = ({ setFilters, setIsFiltered, setPage, setStatus }) =>
 
     setFilters({
       service,
+      location,
       startDate,
       endDate,
       status
@@ -76,6 +79,24 @@ const AppointmentFilter = ({ setFilters, setIsFiltered, setPage, setStatus }) =>
             </FormControl>
           </Grid>
 
+          {/* Location */}
+          <Grid item xs={12} sm={6} md={3}>
+            <FormControl fullWidth sx={{ minWidth: '100px' }}>
+              <InputLabel>Location</InputLabel>
+              <Select value={location} label="Location" onChange={(e) => setLocation(e.target.value)}>
+                <MenuItem value="">
+                  <em>Select Location</em>
+                </MenuItem>
+
+                {locations.map((loc) => (
+                  <MenuItem key={loc._id} value={loc._id}>
+                    {loc?.name[0].toUpperCase() + loc?.name?.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
           {/* Start Date */}
           <Grid item xs={12} sm={6} md={3}>
             <TextField
@@ -130,12 +151,14 @@ const AppointmentFilter = ({ setFilters, setIsFiltered, setPage, setStatus }) =>
                 color="secondary"
                 onClick={() => {
                   setService('');
+                  setLocation('');
                   setStartDate('');
                   setEndDate('');
                   setStatus('');
 
                   setFilters({
                     service: '',
+                    location: '',
                     startDate: '',
                     endDate: '',
                     status: ''

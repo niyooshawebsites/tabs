@@ -530,6 +530,7 @@ const updateAppointmentController = async (req, res) => {
         { new: true },
       )
         .populate("service")
+        .populate("location")
         .populate("client");
     } else {
       updatedAppointment = await Appointment.findByIdAndUpdate(
@@ -582,7 +583,8 @@ const fetchClientAppointmentsController = async (req, res) => {
       .limit(limit)
       .skip(skip)
       .populate("client")
-      .populate("service");
+      .populate("service")
+      .populate("location");
 
     const totalAppointments = await Appointment.countDocuments({
       client: cid,
@@ -626,7 +628,7 @@ const fetchFilteredClientAppointmentsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, startDate, endDate, status, uid } = req.query;
+    const { service, location, startDate, endDate, status, uid } = req.query;
 
     // build a dyncmic mongodb query
     const filter = { client: cid, tenant: uid };
@@ -634,6 +636,11 @@ const fetchFilteredClientAppointmentsController = async (req, res) => {
     // if service is provided
     if (service) {
       filter.service = service;
+    }
+
+    // if location is provided
+    if (location) {
+      filter.location = location;
     }
 
     // if dates are provided
@@ -656,7 +663,8 @@ const fetchFilteredClientAppointmentsController = async (req, res) => {
       .limit(limit)
       .skip(skip)
       .populate("client")
-      .populate("service");
+      .populate("service")
+      .populate("location");
 
     if (totalAppointments === 0) {
       return res.status(404).json({
@@ -697,73 +705,66 @@ const fetchTodayAppointmentsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // const startDate = moment().startOf("day").toDate();
-    // const endDate = moment().endOf("day").toDate();
-
-    const today = moment.utc().startOf("day").toDate();
+    const startDate = moment().startOf("day").toDate();
+    const endDate = moment().endOf("day").toDate();
 
     if (role == 2) {
       const totalAppointments = await Appointment.countDocuments({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
       });
 
       const completedAppointments = await Appointment.countDocuments({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
         status: "Completed",
       });
 
       const confirmedAppointments = await Appointment.countDocuments({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
         status: "Confirmed",
       });
 
       const pendingAppointments = await Appointment.countDocuments({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
         status: "Pending",
       });
 
       const cancelledAppointments = await Appointment.countDocuments({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
         status: "Cancelled",
       });
 
       const appointments = await Appointment.find({
         tenant: tid,
-        // date: {
-        //   $gte: startDate,
-        //   $lte: endDate,
-        // },
-        date: today,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
       })
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -844,6 +845,7 @@ const fetchTodayAppointmentsController = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -983,11 +985,16 @@ const fetchFilteredAppointmentsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, startDate, endDate, status, tid } = req.query;
+    const { service, location, startDate, endDate, status, tid } = req.query;
 
     if (role == 2) {
       // build a dynamic mongodb query
-      const filter = { tenant: uid };
+      const filter = { tenant: tid };
+
+      // if location is provided
+      if (location) {
+        filter.location = location;
+      }
 
       // if service is provided
       if (service) {
@@ -1014,6 +1021,7 @@ const fetchFilteredAppointmentsController = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -1060,6 +1068,11 @@ const fetchFilteredAppointmentsController = async (req, res) => {
         filter.service = service;
       }
 
+      // if location is provided
+      if (location) {
+        filter.location = location;
+      }
+
       // if start and end date is provided
       if (startDate && endDate) {
         filter.date = {
@@ -1080,6 +1093,7 @@ const fetchFilteredAppointmentsController = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -1123,7 +1137,7 @@ const fetchFilteredAppointmentsForPlatformOwnerController = async (
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, startDate, endDate, status } = req.query;
+    const { service, location, startDate, endDate, status } = req.query;
 
     // build a dynamic mongodb query
     const filter = {};
@@ -1131,6 +1145,11 @@ const fetchFilteredAppointmentsForPlatformOwnerController = async (
     // if service is provided
     if (service) {
       filter.service = service;
+    }
+
+    // if location is provided
+    if (location) {
+      filter.location = location;
     }
 
     // if start and end date is provided
@@ -1153,6 +1172,7 @@ const fetchFilteredAppointmentsForPlatformOwnerController = async (
       .limit(limit)
       .sort({ createdAt: -1 })
       .populate("service")
+      .populate("location")
       .populate("client")
       .populate("tenant");
 
@@ -1194,7 +1214,7 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { service, status, tid } = req.query;
+    const { service, location, status, tid } = req.query;
 
     const startOfDay = moment().startOf("day").toDate();
     const endOfDay = moment().endOf("day").toDate();
@@ -1214,6 +1234,11 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
         filter.service = service;
       }
 
+      // if location is provided
+      if (location) {
+        filter.location = location;
+      }
+
       // if status is provided
       if (status) {
         filter.status = status;
@@ -1226,6 +1251,7 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -1276,6 +1302,11 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
         filter.service = service;
       }
 
+      // if location is provided
+      if (location) {
+        filter.location = location;
+      }
+
       // if status is provided
       if (status) {
         filter.status = status;
@@ -1288,6 +1319,7 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 })
         .populate("service")
+        .populate("location")
         .populate("client")
         .populate("tenant");
 
@@ -1335,6 +1367,7 @@ const fetchAllAppointmentsForPlatformOwnerController = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 })
       .populate("service")
+      .populate("location")
       .populate("client")
       .populate("tenant");
 

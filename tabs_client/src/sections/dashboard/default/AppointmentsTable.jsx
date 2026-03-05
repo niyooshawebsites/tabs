@@ -38,6 +38,12 @@ const headCells = [
     label: 'Service'
   },
   {
+    id: 'Location',
+    align: 'left',
+    disablePadding: true,
+    label: 'Location'
+  },
+  {
     id: 'Name',
     align: 'left',
     disablePadding: false,
@@ -205,6 +211,9 @@ export default function AppointmentsTable({
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row">
                           <span color="secondary">{row?.service?.name}</span>
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row">
+                          <span color="secondary">{row?.location?.name[0]?.toUpperCase() + row?.location?.name?.slice(1)}</span>
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row">
                           <span color="secondary">{row?.client?.name}</span>

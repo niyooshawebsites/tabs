@@ -35,6 +35,7 @@ export default function DashboardDefault() {
   const [status, setStatus] = useState('');
   const [filters, setFilters] = useState({
     service: '',
+    location: '',
     startDate: '',
     endDate: ''
   });
@@ -66,7 +67,7 @@ export default function DashboardDefault() {
       const endPoint = isFiltered ? `fetch-today-filtered-appointments` : `fetch-today-appointments`;
 
       const query = isFiltered
-        ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
+        ? `?service=${filters.service}&location=${filters.location}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
         : `?page=${page}&limit=${limit}&tid=${tenantId}&role=${role}&loginId=${loginId}`;
 
       const { data } = await axios.get(`${baseUrl}${endPoint}${query}`, {

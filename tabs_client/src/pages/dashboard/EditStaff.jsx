@@ -1,17 +1,4 @@
-import {
-  Grid,
-  Stack,
-  Button,
-  FormControl,
-  Select,
-  MenuItem,
-  Typography,
-  FormHelperText,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton
-} from '@mui/material';
+import { Grid, Stack, Button, FormControl, Select, MenuItem, Typography, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -23,7 +10,6 @@ import DashboardHeading from '../../components/DashboardHeading';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router';
 import Loader from '../../components/Loader';
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 
@@ -37,7 +23,6 @@ export default function DashboardEditStaff() {
     empId: '',
     sid: [],
     email: '',
-    password: '',
     handlesAllServices: false,
     lid: ''
   });
@@ -45,15 +30,6 @@ export default function DashboardEditStaff() {
   const [updating, setUpdating] = useState(false);
   const navigate = useNavigate();
   const { staffId } = useParams();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
 
   const fetchStaffToUpdate = async () => {
     setFetchingStaffToUpdate(true);
@@ -69,7 +45,6 @@ export default function DashboardEditStaff() {
             empId: data?.data?.empId,
             sid: data?.data?.services?.map((s) => s._id) || [], // <-- fixed
             email: data?.data?.email,
-            password: data?.data?.password,
             handlesAllServices: data?.data?.handlesAllServices || false,
             lid: data?.data?.location?._id
           };
@@ -339,41 +314,6 @@ export default function DashboardEditStaff() {
                             {touched.email && errors.email && (
                               <FormHelperText error id="standard-weight-helper-text-email-login">
                                 {errors.email}
-                              </FormHelperText>
-                            )}
-                          </Grid>
-
-                          <Grid size={12}>
-                            <Stack sx={{ gap: 1 }}>
-                              <InputLabel htmlFor="password-login">Password</InputLabel>
-                              <OutlinedInput
-                                fullWidth
-                                error={Boolean(touched.password && errors.password)}
-                                id="-password-login"
-                                type={showPassword ? 'text' : 'password'}
-                                value={values.password}
-                                name="password"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                endAdornment={
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      aria-label="toggle password visibility"
-                                      onClick={handleClickShowPassword}
-                                      onMouseDown={handleMouseDownPassword}
-                                      edge="end"
-                                      color="secondary"
-                                    >
-                                      {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                                    </IconButton>
-                                  </InputAdornment>
-                                }
-                                placeholder="Enter password"
-                              />
-                            </Stack>
-                            {touched.password && errors.password && (
-                              <FormHelperText error id="standard-weight-helper-text-password-login">
-                                {errors.password}
                               </FormHelperText>
                             )}
                           </Grid>
