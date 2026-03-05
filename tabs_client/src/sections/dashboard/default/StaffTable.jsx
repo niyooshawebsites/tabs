@@ -1,6 +1,11 @@
 import { Box, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid } from '@mui/material';
 import PropTypes from 'prop-types';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useState } from 'react';
+import Loader from '../../../components/Loader';
 
 const headCells = [
   {
@@ -16,10 +21,10 @@ const headCells = [
     label: 'Name'
   },
   {
-    id: 'Employee ID',
+    id: 'Staff ID',
     align: 'left',
     disablePadding: false,
-    label: 'Employee ID'
+    label: 'Staff ID'
   },
   {
     id: 'Email ID',
@@ -67,8 +72,44 @@ function StaffTableHead({ order, orderBy }) {
 }
 
 export default function StaffTable({ staff, handlePrev, handleNext, editStaff, deleteStaff, pagination, page, deletingAStaff }) {
+  const { tenantId } = useSelector((state) => state.tenant_slice);
+  const [updating, setUpdating] = useState(false);
   const order = 'asc';
   const orderBy = 'tracking_no';
+
+  const resetPassword = async (staffId) => {
+    try {
+      setUpdating(true);
+
+      const payload = {
+        password: 'Password@123'
+      };
+
+      const updateApiURL = `${import.meta.env.VITE_API_URL}update-staff-details/${staffId}?uid=${tenantId}`;
+
+      const { data } = await axios.patch(updateApiURL, payload, { withCredentials: true });
+
+      if (data.success) {
+        toast.success('Password Reset Successfully');
+        setUpdating(false);
+      }
+    } catch (err) {
+      console.log(err);
+      const errorData = err.response?.data;
+
+      if (errorData?.errors && Array.isArray(errorData.errors)) {
+        // Multiple validation errors (Zod)
+        errorData.errors.forEach((msg) => toast.error(msg));
+      } else {
+        // Generic error
+        const errorMessage = errorData?.message || 'Something went wrong';
+        toast.error(errorMessage);
+      }
+      setUpdating(false);
+    }
+  };
+
+  if (updating) return <Loader />;
 
   return (
     <Box>
@@ -98,11 +139,18 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.name}</span>
+                        <span color="secondary">
+                          {row?.name
+                            .split(' ')
+                            .map((el) => {
+                              return el.toUpperCase();
+                            })
+                            .join(' ')}
+                        </span>
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.empId}</span>
+                        <span color="secondary">{row?.empId.toUpperCase()}</span>
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
@@ -120,7 +168,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.location.name}</span>
+                        <span color="secondary">{row?.location.name[0].toUpperCase() + row?.location.name.slice(1)}</span>
                       </TableCell>
 
                       <TableCell component="th" id={labelId} scope="row">
@@ -131,6 +179,10 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
 
                           <Typography color="error" sx={{ cursor: 'pointer' }} onClick={() => deleteStaff(row._id)}>
                             {deletingAStaff ? 'Deleting...' : 'Delete'}
+                          </Typography>
+
+                          <Typography color="primary" sx={{ cursor: 'pointer' }} onClick={() => resetPassword(row._id)}>
+                            Reset Password
                           </Typography>
                         </Grid>
                       </TableCell>

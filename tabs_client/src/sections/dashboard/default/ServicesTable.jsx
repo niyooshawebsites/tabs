@@ -25,7 +25,7 @@ const headCells = [
     id: 'Avg Service Duration (mins)',
     align: 'left',
     disablePadding: false,
-    label: 'Avg Service Duration (mins)'
+    label: 'Avg Service Duration'
   },
   {
     id: 'Action',
@@ -91,7 +91,7 @@ export default function ServicesTable({ services, handlePrev, handleNext, editSe
                         <span color="secondary">&#8377; {row?.charges}</span>
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.duration}</span>
+                        <span color="secondary">{row?.duration} mins</span>
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
                         <Grid container direction="row" alignItems="center" gap={2}>

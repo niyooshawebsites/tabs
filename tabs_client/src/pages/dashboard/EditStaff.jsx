@@ -320,7 +320,7 @@ export default function DashboardEditStaff() {
                           <Grid size={12}>
                             <AnimateButton>
                               <Button fullWidth size="large" variant="contained" color="primary" type="submit" disabled={updating}>
-                                {updating ? 'Updating Service...' : 'Update Service'}
+                                {updating ? 'Updating Staff Details...' : 'Update Staff Details'}
                               </Button>
                             </AnimateButton>
                           </Grid>

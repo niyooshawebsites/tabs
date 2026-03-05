@@ -175,7 +175,7 @@ export default function DashboardEditLocation() {
                               <OutlinedInput
                                 type="text"
                                 name="name"
-                                value={values.name}
+                                value={values.name[0].toUpperCase() + values.name.slice(1)}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 placeholder="Enter location name"
