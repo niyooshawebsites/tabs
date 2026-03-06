@@ -1,9 +1,9 @@
 import { Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, IconButton } from '@mui/material';
 import PropTypes from 'prop-types';
-import Dot from 'components/@extended/Dot';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 
 const headCells = [
@@ -11,7 +11,7 @@ const headCells = [
     id: 'ID',
     align: 'left',
     disablePadding: false,
-    label: 'ID.'
+    label: 'ID'
   },
   {
     id: 'Name',
@@ -67,36 +67,6 @@ function OrderTableHead({ order, orderBy }) {
         ))}
       </TableRow>
     </TableHead>
-  );
-}
-
-function OrderStatus({ status }) {
-  let color;
-  let title;
-
-  switch (status) {
-    case 0:
-      color = 'warning';
-      title = 'Pending';
-      break;
-    case 1:
-      color = 'success';
-      title = 'Approved';
-      break;
-    case 2:
-      color = 'error';
-      title = 'Rejected';
-      break;
-    default:
-      color = 'primary';
-      title = 'None';
-  }
-
-  return (
-    <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
-      <Dot color={color} />
-      <Typography>{title}</Typography>
-    </Stack>
   );
 }
 

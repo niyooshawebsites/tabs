@@ -5,7 +5,6 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import MainCard from '../../components/MainCard';
 import NoInfo from '../../components/NoInfo';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';

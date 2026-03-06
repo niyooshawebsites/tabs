@@ -158,6 +158,7 @@ export default function DashboardClientAppointments() {
                     }}
                     onClick={() => {
                       setIsRefreshed((prev) => !prev);
+                      toast.success('Data refreshed successfully');
                     }}
                   >
                     Refresh

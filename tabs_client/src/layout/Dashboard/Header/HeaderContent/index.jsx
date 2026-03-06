@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 export default function HeaderContent() {
   const dispatch = useDispatch();
   const downLG = useMediaQuery((theme) => theme.breakpoints.down('lg'));
-  const { empId } = useSelector((state) => state.login_slice);
+  const { empId, role } = useSelector((state) => state.login_slice);
   const { tenantId } = useSelector((state) => state.tenant_slice);
 
   const fetchAllLocations = async (tid) => {
@@ -84,9 +84,11 @@ export default function HeaderContent() {
   };
 
   useEffect(() => {
-    fetchAllServices(tenantId);
-    fetchAllLocations(tenantId);
-  }, []);
+    if (role == 1) {
+      fetchAllServices(tenantId);
+      fetchAllLocations(tenantId);
+    }
+  }, [empId]);
 
   return (
     <>

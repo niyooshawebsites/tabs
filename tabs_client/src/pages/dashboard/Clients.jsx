@@ -30,6 +30,7 @@ export default function DashboardClients() {
   const navigate = useNavigate();
   const { isDoctor } = useSelector((state) => state.admin_slice);
   const [fetchingClients, setFetchingClients] = useState(false);
+  const [isRefreshed, setIsRefreshed] = useState(false);
 
   const fetchAllClients = async () => {
     try {
@@ -79,7 +80,7 @@ export default function DashboardClients() {
     if (locations.length > 0) {
       fetchAllClients();
     }
-  }, [page]);
+  }, [page, isRefreshed]);
 
   if (!id) {
     return <CheckMissingInfo id={id} locations={locations} services={services} />;
@@ -119,6 +120,7 @@ export default function DashboardClients() {
                   }}
                   onClick={() => {
                     setIsRefreshed((prev) => !prev);
+                    toast.success('Data refreshed successfully');
                   }}
                 >
                   Refresh

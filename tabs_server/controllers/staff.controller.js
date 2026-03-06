@@ -374,6 +374,40 @@ const fetchAllStaffLocationsController = async (req, res) => {
   }
 };
 
+const resetStaffPasswordController = async (req, res) => {
+  try {
+    const { uid } = req.query;
+    const { staffId } = req.params;
+    const { password } = req.body;
+    const encryptedPassword = await encryptPassword(password);
+    const updatedStaff = await Staff.findOneAndUpdate(
+      { _id: staffId, tenant: uid },
+      {
+        password: encryptedPassword,
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedStaff) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   staffCreationController,
   staffLoginController,
@@ -385,4 +419,5 @@ module.exports = {
   deleteAStaffController,
   fetchAllStaffServicesController,
   fetchAllStaffLocationsController,
+  resetStaffPasswordController,
 };

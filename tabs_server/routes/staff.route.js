@@ -11,6 +11,7 @@ const {
   deleteAStaffController,
   fetchAllStaffServicesController,
   fetchAllStaffLocationsController,
+  resetStaffPasswordController,
 } = require("../controllers/staff.controller");
 
 const { isTenant, isStaff } = require("../middlewares/auth.middleware");
@@ -109,6 +110,15 @@ router.get(
   "/fetch-all-staff-locations",
   validateQuery(querySchema),
   fetchAllStaffLocationsController,
+);
+
+// reset staff password route
+router.patch(
+  "/reset-staff-password/:staffId",
+  isTenant,
+  validateQuery(querySchema),
+  validateParams(generateParamSchema("staffId")),
+  resetStaffPasswordController,
 );
 
 module.exports = router;

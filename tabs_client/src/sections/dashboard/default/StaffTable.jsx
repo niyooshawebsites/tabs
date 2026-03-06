@@ -79,13 +79,17 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
 
   const resetPassword = async (staffId) => {
     try {
+      const confirmation = confirm('Are you sure you want to reset the password?');
+
+      if (!confirmation) return;
+
       setUpdating(true);
 
       const payload = {
         password: 'Password@123'
       };
 
-      const updateApiURL = `${import.meta.env.VITE_API_URL}update-staff-details/${staffId}?uid=${tenantId}`;
+      const updateApiURL = `${import.meta.env.VITE_API_URL}/reset-staff-password/${staffId}?uid=${tenantId}`;
 
       const { data } = await axios.patch(updateApiURL, payload, { withCredentials: true });
 
