@@ -36,7 +36,7 @@ export default function ResetPasswordForm({ accountType, token }) {
       setLoading(true);
 
       let apiURL = `${import.meta.env.VITE_API_URL}reset-password?accountType=${accountType}&token=${token}`;
-      const { data } = await axios.post(apiURL, values, { withCredentials: true });
+      const { data } = await axios.patch(apiURL, values, { withCredentials: true });
 
       if (data.success) {
         toast.success(data.message);

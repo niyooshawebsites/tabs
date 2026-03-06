@@ -1,17 +1,20 @@
 import { FormControl, Select, MenuItem, Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import AnimateButton from 'components/@extended/AnimateButton';
+import axios from 'axios';
 
 export default function ForgotPasswordForm() {
+  const [loading, setLoading] = useState();
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
       let apiURL = `${import.meta.env.VITE_API_URL}forgot-password`;
 
-      const { data } = await axios.post(apiURL, values, { withCredentials: true });
+      const { data } = await axios.patch(apiURL, values, { withCredentials: true });
 
       if (data.success) {
         toast.success(data.message);
@@ -90,7 +93,7 @@ export default function ForgotPasswordForm() {
             <Grid size={12}>
               <AnimateButton>
                 <Button type="submit" fullWidth size="large" variant="contained" color="primary">
-                  Submit
+                  {loading ? 'Submitting...' : 'Submit'}
                 </Button>
               </AnimateButton>
             </Grid>

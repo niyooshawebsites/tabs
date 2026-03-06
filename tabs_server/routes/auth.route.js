@@ -14,7 +14,7 @@ router.get("/check-auth", isAuthenticated, (req, res) => {
   });
 });
 
-// forot password
+// forgot password
 router.patch("/forgot-password", validateBody, forgotPasswordController);
 
 // reset password
