@@ -79,7 +79,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
 
   const resetPassword = async (staffId) => {
     try {
-      const confirmation = confirm('Are you sure you want to reset the password?');
+      const confirmation = confirm(`This is reset the password to default: "Password@123". Are you sure you want to reset the password?`);
 
       if (!confirmation) return;
 
