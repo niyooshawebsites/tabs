@@ -175,8 +175,8 @@ const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
         <strong style="color: #FF6600;">${
           admin.legalName
         }</strong> is <strong style="color: #FF6600;">${
-    appointment.staus
-  }</strong>
+          appointment.staus
+        }</strong>
       </p>
 
       <p>Request you to kindly rebook the appointment or pay us a visit</p>
@@ -228,7 +228,65 @@ const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
   });
 };
 
+const sendPasswordResetEmail = (resetLink, recipient) => {
+  const msg = `
+    <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; font-family: Arial, sans-serif; color: #333;">
+    <h1 style="color: #000; text-align:center">IABS</h1>
+
+    <hr style="margin: 30px 0"/>
+
+      <h4 style="color: #000; text-align:center">Hello Mr./Miss,</h4>
+
+      <p style="font-size: 16px; color: #555; text-align:center">
+        We have received a password reset request for account with mail id :
+        <span style="color: #FF6600;">${recipient.email}</span>
+      </p>
+
+      <p style="font-size: 16px; color: #555; text-align:center">
+        Your account password reset link:
+        <a style="color: #FF6600;" href=${resetLink}>${resetLink}</a>
+      </p>
+
+      <p style="font-size: 14px; color: #555; margin-top: 30px; text-align: center">
+        If you have raised the request then please use the above link to reset your password.
+      </p>
+
+      <p style="font-size: 12px; color: #aaa; margin-top: 40px; text-align: center;">
+        If you have any questions, feel free to reach us.
+      </p>
+    </div>
+  `;
+
+  // Create the transporter
+  const transporter = mailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  // Set email options
+  const mailOptions = {
+    from: process.env.ADMIN_EMAIL,
+    to: recipient.email,
+    subject: "Reset Password",
+    html: msg,
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log("❌ Email send failed:", err);
+    } else {
+      console.log(`✅ Email sent: ${info.response}`);
+    }
+  });
+};
+
 module.exports = {
   sendAppointmentBookingEmail,
   sendAppointmentStatusChangeEmail,
+  sendPasswordResetEmail,
 };

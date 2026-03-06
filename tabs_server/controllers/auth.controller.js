@@ -1,8 +1,10 @@
 const crypto = require("crypto");
 const User = require("../models/user.model");
 const Staff = require("../models/staff.model");
+const { sendPasswordResetEmail } = require("../utils/mail.util");
+const { encryptPassword } = require("../utils/securePassword.util");
 
-const resetPasswordController = async (req, res) => {
+const forgotPasswordController = async (req, res) => {
   try {
     const { accountType, email } = req.body;
 
@@ -14,7 +16,7 @@ const resetPasswordController = async (req, res) => {
     }
 
     if (accountType === "tenant") {
-      const user = await User.find({ email });
+      const user = await User.findOne({ email });
 
       if (!user) {
         return res.status(404).json({
@@ -23,10 +25,10 @@ const resetPasswordController = async (req, res) => {
         });
       }
 
-      // 1️⃣ Generate random token
+      // Generate random token
       const resetToken = crypto.randomBytes(32).toString("hex");
 
-      // 2️⃣ Hash token before saving
+      // Hash token before saving
       const hashedToken = crypto
         .createHash("sha256")
         .update(resetToken)
@@ -40,9 +42,10 @@ const resetPasswordController = async (req, res) => {
 
       await user.save({ validateBeforeSave: false });
 
-      const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+      const resetLink = `${process.env.CLIENT_URL}/reset-password?accountType=${accountType}&token=${resetToken}`;
 
       // Send email with resetLink
+      sendPasswordResetEmail(resetLink, user);
 
       res.status(200).json({
         success: true,
@@ -51,7 +54,7 @@ const resetPasswordController = async (req, res) => {
     }
 
     if (accountType === "staff") {
-      const staff = await Staff.find({ email });
+      const staff = await Staff.findOne({ email });
 
       if (!staff) {
         return res.status(404).json({
@@ -60,10 +63,10 @@ const resetPasswordController = async (req, res) => {
         });
       }
 
-      // 1️⃣ Generate random token
+      // Generate random token
       const resetToken = crypto.randomBytes(32).toString("hex");
 
-      // 2️⃣ Hash token before saving
+      // Hash token before saving
       const hashedToken = crypto
         .createHash("sha256")
         .update(resetToken)
@@ -77,46 +80,10 @@ const resetPasswordController = async (req, res) => {
 
       await staff.save({ validateBeforeSave: false });
 
-      const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+      const resetLink = `${process.env.CLIENT_URL}/reset-password?accountType=${accountType}&token=${resetToken}`;
 
       // Send email with resetLink
-
-      res.status(200).json({
-        success: true,
-        message: "If that email exists, a reset link has been sent.",
-      });
-    }
-
-    if (accountType === "client") {
-      const client = await Staff.find({ email });
-
-      if (!client) {
-        return res.status(404).json({
-          success: false,
-          message: "Account not found!",
-        });
-      }
-
-      // 1️⃣ Generate random token
-      const resetToken = crypto.randomBytes(32).toString("hex");
-
-      // 2️⃣ Hash token before saving
-      const hashedToken = crypto
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
-
-      client.resetPasswordToken = hashedToken;
-
-      // 🔥 THIS IS THE EXPIRY PART
-      client.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
-      // 15 minutes from now
-
-      await client.save({ validateBeforeSave: false });
-
-      const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
-
-      // Send email with resetLink
+      sendPasswordResetEmail(resetLink, staff);
 
       res.status(200).json({
         success: true,
@@ -132,4 +99,60 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
-module.exports = { resetPasswordController };
+const resetPasswordController = async (req, res) => {
+  try {
+    const { accountType, token } = req.query;
+    const { password } = req.body;
+
+    if (!token || !password || !accountType) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    // hash the token from URL
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // choose model
+    const Model = accountType === "tenant" ? User : Staff;
+
+    // find account
+    const account = await Model.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!account) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    // encrypting the password
+    const encryptedPassword = await encryptPassword(password);
+
+    // update password
+    account.password = encryptedPassword;
+
+    // clear reset fields
+    account.resetPasswordToken = null;
+    account.resetPasswordExpire = null;
+
+    await account.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+};
+
+module.exports = { forgotPasswordController, resetPasswordController };

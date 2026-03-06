@@ -9,19 +9,7 @@ export default function ForgotPasswordForm() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
-      let apiURL;
-
-      if (values.accountType === 'admin') {
-        apiURL = `${import.meta.env.VITE_API_URL}reset-tenant-password`;
-      }
-
-      if (values.accountType === 'staff') {
-        apiURL = `${import.meta.env.VITE_API_URL}reset-staff-password`;
-      }
-
-      if (values.accountType === 'client') {
-        apiURL = `${import.meta.env.VITE_API_URL}reset-client-password`;
-      }
+      let apiURL = `${import.meta.env.VITE_API_URL}forgot-password`;
 
       const { data } = await axios.post(apiURL, values, { withCredentials: true });
 
@@ -71,7 +59,6 @@ export default function ForgotPasswordForm() {
                   <MenuItem value="">Select Type</MenuItem>
                   <MenuItem value="tenant">Admin</MenuItem>
                   <MenuItem value="staff">Staff</MenuItem>
-                  <MenuItem value="client">Client/Patient</MenuItem>
                 </Select>
                 {touched.accountType && errors.accountType && (
                   <Typography color="error" variant="caption">
