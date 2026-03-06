@@ -1,6 +1,5 @@
-import { Breadcrumbs, Grid, Stack, Typography, Box, Button } from '@mui/material';
+import { Grid, Stack, Typography, Box, Button } from '@mui/material';
 import { useSelector } from 'react-redux';
-import MainCard from 'components/MainCard';
 import DashboardHeading from '../../components/DashboardHeading';
 import { useNavigate } from 'react-router';
 
@@ -11,8 +10,8 @@ export default function DashboardViewProfile() {
 
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, lg: 6 }}>
-        <Stack sx={{ gap: 3 }}>
+      <Grid size={{ xs: 12, lg: 12 }}>
+        <Stack sx={{ gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <DashboardHeading title="Profile Details" />
             <Button
@@ -25,68 +24,82 @@ export default function DashboardViewProfile() {
             </Button>
           </Box>
 
-          <MainCard title="Business name">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{legalName || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Legal Business name
+            </Typography>
+            <Typography variant="h6">{legalName || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="GST No">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{gstNo || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              GST No
+            </Typography>
+            <Typography variant="h6">{gstNo || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Name">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{name || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Name
+            </Typography>
+            <Typography variant="h6">{name || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Are you Doctor?">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{isDoctor || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Are you Doctor?
+            </Typography>
+            <Typography variant="h6">{isDoctor || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Experience">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{`${experience} Years` || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Experience
+            </Typography>
+            <Typography variant="h6">{`${experience} Years` || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Professional Course">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{proffessinalCourse || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Professional Course
+            </Typography>
+            <Typography variant="h6">{proffessinalCourse || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Phone">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{phone || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Phone
+            </Typography>
+            <Typography variant="h6">{phone || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Alternate phone">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{altPhone || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Alternate phone
+            </Typography>
+            <Typography variant="h6">{altPhone || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Email">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{email || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Email
+            </Typography>
+            <Typography variant="h6">{email || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Address">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="h6">{address || 'N/A'}</Typography>
-            </Breadcrumbs>
-          </MainCard>
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Address
+            </Typography>
+            <Typography variant="h6">{address || 'N/A'}</Typography>
+          </Box>
 
-          <MainCard title="Working Days">
-            <Breadcrumbs aria-label="breadcrumb">
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Working Days
+            </Typography>
+            <Typography variant="h6">
+              {' '}
               {Array.isArray(workingDays) && workingDays.length > 0 ? (
                 <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
                   {workingDays.map((day, index) => {
@@ -103,17 +116,23 @@ export default function DashboardViewProfile() {
               ) : (
                 <Typography variant="h6">N/A</Typography>
               )}
-            </Breadcrumbs>
-          </MainCard>
+            </Typography>
+          </Box>
 
-          <MainCard title="Timings">
-            <Breadcrumbs aria-label="breadcrumb">
+          <Box className="details">
+            <Typography variant="h6" className="details-heading">
+              Timings
+            </Typography>
+            <Typography variant="h6">
+              {' '}
               {!timings || typeof timings !== 'object' ? (
                 <Typography variant="h6">N/A</Typography>
               ) : (
                 <Stack spacing={1}>
                   {/* Shift Type */}
-                  <Typography variant="h6">Shift Type: {timings.shiftType === 'full' ? 'Full Day' : 'Part Day'}</Typography>
+                  <Typography variant="h6">
+                    <span className="details-heading">Shift Type:</span> {timings.shiftType === 'full' ? 'Full Day' : 'Part Day'}
+                  </Typography>
 
                   {/* Full Day */}
                   {timings.shiftType === 'full' && (
@@ -142,8 +161,8 @@ export default function DashboardViewProfile() {
                   )}
                 </Stack>
               )}
-            </Breadcrumbs>
-          </MainCard>
+            </Typography>
+          </Box>
         </Stack>
       </Grid>
     </Grid>

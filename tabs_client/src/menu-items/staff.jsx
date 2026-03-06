@@ -16,7 +16,7 @@ const staff = {
   type: 'group',
   children: [
     {
-      title: 'Create Staff',
+      title: 'Add Staff',
       type: 'item',
       url: '/dashboard/staff/create',
       icon: icons.PlusCircleOutlined,

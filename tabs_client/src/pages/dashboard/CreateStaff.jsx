@@ -89,9 +89,9 @@ export default function DashboardCreateStaff() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 12, lg: 12 }}>
         <Grid container alignItems="center" justifyContent="start">
-          <DashboardHeading title="Create Staff" />
+          <DashboardHeading title="Add Staff" />
         </Grid>
         <MainCard sx={{ mt: 2, p: 5 }} content={false}>
           <Formik
@@ -323,7 +323,7 @@ export default function DashboardCreateStaff() {
                   <Grid size={12}>
                     <AnimateButton>
                       <Button fullWidth size="large" variant="contained" color="primary" type="submit" disabled={creatingStaff}>
-                        {creatingStaff ? 'Creating Staff...' : 'Create Staff'}
+                        {creatingStaff ? 'Adding Staff...' : 'Add Staff'}
                       </Button>
                     </AnimateButton>
                   </Grid>

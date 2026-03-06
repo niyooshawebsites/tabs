@@ -109,7 +109,7 @@ export default function DashboardAppointmentDetails() {
         <>
           {appointment !== null ? (
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, lg: 6 }}>
+              <Grid size={{ xs: 12, lg: 12 }}>
                 <Stack sx={{ gap: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <DashboardHeading title="Appointment Details" />

@@ -16,7 +16,7 @@ const appointments = {
   type: 'group',
   children: [
     {
-      title: 'Create Appointment',
+      title: 'Book Appointment',
       type: 'item',
       url: '/dashboard/appointment/create',
       icon: icons.PlusCircleOutlined,

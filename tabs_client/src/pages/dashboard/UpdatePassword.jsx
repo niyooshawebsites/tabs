@@ -63,9 +63,9 @@ export default function DashboardUpdatePassword() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 12, lg: 12 }}>
         <Grid container alignItems="center" justifyContent="start">
-          <DashboardHeading title="Add Service" />
+          <DashboardHeading title="Update Password" />
         </Grid>
         <MainCard sx={{ mt: 2, p: 5 }} content={false}>
           <Formik

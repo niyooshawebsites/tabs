@@ -66,9 +66,9 @@ export default function AddAnnouncement() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      <Grid size={{ xs: 12, md: 8, lg: 6 }}>
+      <Grid size={{ xs: 12, md: 12, lg: 12 }}>
         <Grid container alignItems="center" justifyContent="start">
-          <DashboardHeading title="Publish Announcement" />
+          <DashboardHeading title="Add Announcement" />
         </Grid>
         <MainCard sx={{ mt: 2, p: 5 }} content={false}>
           <Formik
@@ -106,7 +106,7 @@ export default function AddAnnouncement() {
                   <Grid size={12}>
                     <AnimateButton>
                       <Button fullWidth size="large" variant="contained" color="primary" type="submit" disabled={announcing}>
-                        {announcing ? 'Announcing' : 'Announce'}
+                        {announcing ? 'Pulishing Announcement' : 'Publish Announcement'}
                       </Button>
                     </AnimateButton>
                   </Grid>

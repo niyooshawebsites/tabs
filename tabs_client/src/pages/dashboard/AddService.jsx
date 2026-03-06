@@ -92,7 +92,7 @@ export default function AddService() {
   if (services.length >= 0) {
     return (
       <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <Grid container alignItems="center" justifyContent="start">
             <DashboardHeading title="Add Service" />
           </Grid>
