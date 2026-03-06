@@ -108,7 +108,7 @@ export default function DashboardClientDetails() {
                       sx={{ p: 1 }}
                       onClick={() => {
                         if (role == 1) {
-                          navigate('/dashboard/appointments');
+                          navigate(`/dashboard/client/appointments/${client?.cid}`);
                           return;
                         }
 
@@ -118,7 +118,7 @@ export default function DashboardClientDetails() {
                         }
                       }}
                     >
-                      Back to {`${role == 2 ? 'Clients' : 'Dashboard'} `}
+                      {`${role == 2 ? 'Clients' : 'Dashboard'} `}
                     </Button>
                   </Box>
 

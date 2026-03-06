@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
 import moment from 'moment';
 
 const headCells = [
@@ -151,5 +150,3 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
 }
 
 OrderTableHead.propTypes = { order: PropTypes.any, orderBy: PropTypes.string };
-
-OrderStatus.propTypes = { status: PropTypes.number };

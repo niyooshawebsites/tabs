@@ -1,10 +1,9 @@
-import { Breadcrumbs, Grid, Stack, Typography, Button, Box } from '@mui/material';
+import { Grid, Stack, Typography, Button, Box } from '@mui/material';
 import { useState } from 'react';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import MainCard from 'components/MainCard';
 import DashboardHeading from '../../components/DashboardHeading';
 import CheckMissingInfo from '../../components/CheckMissingInfo';
 import { announcementSliceActions } from '../../store/slices/AnnouncementSlice';
@@ -64,40 +63,36 @@ export default function DashboardAnnouncement() {
     <>
       {announcement ? (
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 12 }}>
             <Stack sx={{ gap: 3 }}>
-              <DashboardHeading title="Announcement Details" />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <DashboardHeading title="Announcement Details" />
+                <Button
+                  sx={{ p: 1, cursor: 'pointer' }}
+                  disabled={announcement == null || deletingannouncement}
+                  onClick={() => deleteAnnouncement(announcement?._id)}
+                  color="error"
+                >
+                  {deletingannouncement ? 'Deleting Announcement...' : 'Delete Announcement'}
+                </Button>
+              </Box>
 
-              <MainCard title="Announcement">
-                <Breadcrumbs aria-label="breadcrumb">
-                  <Typography variant="h6">{announcement?.message || 'No Data'}</Typography>
-                </Breadcrumbs>
-              </MainCard>
+              <Box className="details">
+                <Typography variant="h6" className="details-heading">
+                  Announcement
+                </Typography>
+                <Typography variant="h6">{announcement?.message || 'No Data'}</Typography>
+              </Box>
 
-              <MainCard title="Announcement Date">
-                <Breadcrumbs aria-label="breadcrumb">
-                  <Typography variant="h6">
-                    {announcement?.createdAt ? moment(announcement.createdAt).format('DD-MM-YYYY') : 'No Data'}
-                  </Typography>
-                </Breadcrumbs>
-              </MainCard>
-
-              <MainCard title="Announcement Time">
-                <Breadcrumbs aria-label="breadcrumb">
-                  <Typography variant="h6">
-                    {announcement?.createdAt ? moment(announcement.createdAt).format('HH:mm') : 'No Data'}
-                  </Typography>
-                </Breadcrumbs>
-              </MainCard>
-
-              <Button
-                sx={{ p: 1, cursor: 'pointer' }}
-                disabled={announcement == null || deletingannouncement}
-                onClick={() => deleteAnnouncement(announcement?._id)}
-                color="error"
-              >
-                {deletingannouncement ? 'Deleting Announcement...' : 'Delete Announcement'}
-              </Button>
+              <Box className="details">
+                <Typography variant="h6" className="details-heading">
+                  Announcement Date & Time
+                </Typography>
+                <Typography variant="h6">
+                  {announcement?.createdAt ? moment(announcement.createdAt).format('DD-MM-YYYY') : 'No Data'} |{' '}
+                  {announcement?.createdAt ? moment(announcement.createdAt).format('HH:mm') : 'No Data'}
+                </Typography>
+              </Box>
             </Stack>
           </Grid>
         </Grid>
