@@ -1,32 +1,32 @@
-const Admin = require("../models/admin.model");
+const TenantDetail = require("../models/tenantDetail.model");
 const Tenant = require("../models/tenant.model");
 const Appointment = require("../models/admin.model");
 const Client = require("../models/client.model");
 const mongoose = require("mongoose");
 
-// add admin details
-const addAdminDetailsController = async (req, res) => {
+// add tenant details
+const addTenantDetailController = async (req, res) => {
   try {
     const { uid } = req.query;
 
-    const existingAdminDetails = await Admin.findOne({ tenant: uid });
+    const existingTenantDetail = await TenantDetail.findOne({ tenant: uid });
 
-    if (existingAdminDetails) {
+    if (existingTenantDetail) {
       return res.status(409).json({
         success: false,
-        message: "Admin details already exists",
+        message: "Tenant detail already exists",
       });
     }
 
-    const adminDetails = await new Admin({
+    const tenantDetail = await new TenantDetail({
       ...req.body,
       tenant: uid,
     }).save();
 
     return res.status(200).json({
       success: true,
-      message: "Admin details added successfully",
-      data: adminDetails,
+      message: "Tenant detail added successfully",
+      data: tenantDetail,
     });
   } catch (err) {
     return res.status(500).json({
@@ -37,12 +37,12 @@ const addAdminDetailsController = async (req, res) => {
   }
 };
 
-// udpate admin details
-const updateAdminDetailsController = async (req, res) => {
+// udpate tenant details
+const updateTenantDetailController = async (req, res) => {
   try {
     const { uid } = req.query;
 
-    const updatedAdminDetails = await Admin.findOneAndUpdate(
+    const updatedTenantDetail = await TenantDetail.findOneAndUpdate(
       { tenant: uid },
       req.body,
       {
@@ -53,8 +53,8 @@ const updateAdminDetailsController = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Admin details updated successfully",
-      data: updatedAdminDetails,
+      message: "Tenant detail updated successfully",
+      data: updatedTenantDetail,
     });
   } catch (err) {
     return res.status(500).json({

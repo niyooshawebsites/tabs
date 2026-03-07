@@ -23,7 +23,7 @@ const timingSchema = new mongoose.Schema(
   { _id: false },
 );
 
-const adminSchema = new mongoose.Schema(
+const tenantDetailSchema = new mongoose.Schema(
   {
     legalName: {
       type: String,
@@ -98,4 +98,4 @@ const adminSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model("TenantDetail", tenantDetailSchema);
