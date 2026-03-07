@@ -28,14 +28,9 @@ export default function ResetPasswordForm({ accountType, token }) {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      if (values.password != values.confirmPassword) {
-        toast.error('Password mismatch!');
-        return;
-      }
-
       setLoading(true);
 
-      let apiURL = `${import.meta.env.VITE_API_URL}reset-password?accountType=${accountType}&token=${token}`;
+      const apiURL = `${import.meta.env.VITE_API_URL}reset-password?accountType=${accountType}&token=${token}`;
       const { data } = await axios.patch(apiURL, values, { withCredentials: true });
 
       if (data.success) {
@@ -66,8 +61,11 @@ export default function ResetPasswordForm({ accountType, token }) {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          password: Yup.string().min(5, 'The password length must be >= 5 characters').required('Password is required'),
-          cofirmPassword: Yup.string().min(5, 'The password length must be >= 5 characters').required('Password is required')
+          password: Yup.string().min(5, 'Password must be at least 5 characters').required('Password is required'),
+
+          confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Confirm password is required')
         })}
         onSubmit={handleSubmit}
       >
@@ -159,4 +157,4 @@ export default function ResetPasswordForm({ accountType, token }) {
   );
 }
 
-AuthLogin.propTypes = { isDemo: PropTypes.bool };
+ResetPasswordForm.propTypes = { isDemo: PropTypes.bool };

@@ -8,7 +8,15 @@ const CheckMissingInfo = ({ id, locations, services }) => {
 
   if (!id) {
     return (
-      <Grid container flex flexDirection={'column'} justifyContent={'start'} alignItems={'center'} spacing={3} sx={{ height: '100vh' }}>
+      <Grid
+        container
+        flex
+        flexDirection={'column'}
+        justifyContent={'start'}
+        alignItems={'center'}
+        spacing={3}
+        sx={{ height: '100vh', marginTop: '50px' }}
+      >
         <Grid size={5}>
           <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'start', mb: { xs: -0.5, sm: 0.5 } }}>
             <Typography variant="h3">Information missing:</Typography>

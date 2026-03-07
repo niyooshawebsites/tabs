@@ -20,7 +20,7 @@ const timingSchema = new mongoose.Schema(
       eveningEnd: { type: String, default: null },
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const adminSchema = new mongoose.Schema(
@@ -89,13 +89,13 @@ const adminSchema = new mongoose.Schema(
     timings: timingSchema,
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
       required: true,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Admin", adminSchema);

@@ -26,12 +26,12 @@ const loginSchema = z.object({
   password: z.string("Password is required"),
 });
 
-// update user schema
+// update tenant schema
 const updateUserSchema = z.object({
   password: z.string().min(3, "Password must be at least 6 characters long"),
 });
 
-// create user schema
+// create tenant schema
 const createUserSchema = z.object({
   email: z.email("Invalid email"),
   password: z.string().min(6, "Password too short"),

@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 const Staff = require("../models/staff.model");
 const { sendPasswordResetEmail } = require("../utils/mail.util");
 const { encryptPassword } = require("../utils/securePassword.util");
@@ -16,9 +16,9 @@ const forgotPasswordController = async (req, res) => {
     }
 
     if (accountType === "tenant") {
-      const user = await User.findOne({ email });
+      const tenant = await Tenant.findOne({ email });
 
-      if (!user) {
+      if (!tenant) {
         return res.status(404).json({
           success: false,
           message: "Account not found!",
@@ -34,18 +34,18 @@ const forgotPasswordController = async (req, res) => {
         .update(resetToken)
         .digest("hex");
 
-      user.resetPasswordToken = hashedToken;
+      tenant.resetPasswordToken = hashedToken;
 
       // 🔥 THIS IS THE EXPIRY PART
-      user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+      tenant.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
       // 15 minutes from now
 
-      await user.save({ validateBeforeSave: false });
+      await tenant.save({ validateBeforeSave: false });
 
       const resetLink = `${process.env.CLIENT_URL}/reset-password?accountType=${accountType}&token=${resetToken}`;
 
       // Send email with resetLink
-      sendPasswordResetEmail(resetLink, user);
+      sendPasswordResetEmail(resetLink, tenant);
 
       res.status(200).json({
         success: true,
@@ -115,7 +115,7 @@ const resetPasswordController = async (req, res) => {
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // choose model
-    const Model = accountType === "tenant" ? User : Staff;
+    const Model = accountType === "tenant" ? Tenant : Staff;
 
     // find account
     const account = await Model.findOne({

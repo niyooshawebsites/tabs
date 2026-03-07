@@ -34,7 +34,7 @@ export default function AuthRegister() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
-      const apiURL = `${import.meta.env.VITE_API_URL}register`;
+      const apiURL = `${import.meta.env.VITE_API_URL}tenant-registration`;
       const { data } = await axios.post(apiURL, values, {
         withCredentials: true
       });

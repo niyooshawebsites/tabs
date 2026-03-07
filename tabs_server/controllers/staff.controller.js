@@ -22,7 +22,7 @@ const staffCreationController = async (req, res) => {
     // encrypting the password
     const encryptedPassword = await encryptPassword(password);
 
-    // initiate a new user and save it the DB
+    // initiate a new staff and save it the DB
     const newStaff = await new Staff({
       name,
       empId,
@@ -93,7 +93,7 @@ const staffLoginController = async (req, res) => {
       path: "/",
     });
 
-    // saving the user in the requrest object for isAdmin middleware access
+    // saving the staff in the requrest object for isAdmin middleware access
     req.user = loginDetails;
 
     return res.status(200).json({

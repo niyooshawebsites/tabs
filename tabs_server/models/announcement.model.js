@@ -9,12 +9,12 @@ const announcementSchema = new mongoose.Schema(
     },
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Announcement", announcementSchema);

@@ -9,7 +9,7 @@ const locationSchema = new mongoose.Schema(
     },
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
     },
     location: {
       type: mongoose.Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const locationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Location", locationSchema);

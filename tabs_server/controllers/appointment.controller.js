@@ -5,7 +5,7 @@ const Location = require("../models/location.model");
 const Appointment = require("../models/appointment.model");
 const Client = require("../models/client.model");
 const Admin = require("../models/admin.model");
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 const moment = require("moment");
 const {
   sendAppointmentBookingEmail,
@@ -422,18 +422,18 @@ const searchAnAppointmentController = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ username });
+    const tenant = await Tenant.findOne({ username });
 
-    if (!user) {
+    if (!tenant) {
       return res.status(404).json({
         success: false,
-        message: "Invalid user",
+        message: "Invalid tenant",
       });
     }
 
     const appointment = await Appointment.findOne({
       _id: aid,
-      tenant: user._id,
+      tenant: tenant._id,
     })
       .populate("service")
       .populate("location")

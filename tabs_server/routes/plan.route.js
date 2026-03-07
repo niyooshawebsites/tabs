@@ -1,7 +1,7 @@
 const express = require("express");
 const Razorpay = require("razorpay");
 const CryptoJS = require("crypto-js");
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 const router = express.Router();
 
 const razorpay = new Razorpay({
@@ -63,8 +63,8 @@ router.post("/verify", async (req, res) => {
   if (generated_signature !== razorpay_signature)
     return res.status(400).json({ message: "Invalid payment signature" });
 
-  const user = await User.findById(userId);
-  if (!user) return res.status(404).json({ message: "User not found" });
+  const tenant = await Tenant.findById(userId);
+  if (!tenant) return res.status(404).json({ message: "Tenant not found" });
 
   let duration = 0;
   let amount = 0;
@@ -81,7 +81,7 @@ router.post("/verify", async (req, res) => {
   const endDate = new Date();
   endDate.setDate(startDate.getDate() + duration);
 
-  user.plan = {
+  tenant.plan = {
     name: planType,
     price: amount,
     startDate,
@@ -89,7 +89,7 @@ router.post("/verify", async (req, res) => {
     isActive: true,
   };
 
-  await user.save();
+  await tenant.save();
   res.json({ success: true, message: "Payment verified, plan activated." });
 });
 

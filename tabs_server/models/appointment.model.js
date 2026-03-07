@@ -55,7 +55,7 @@ const appointmentSchema = new mongoose.Schema(
     remarks: [remarksSchema],
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
     },
     notes: {
       type: String,

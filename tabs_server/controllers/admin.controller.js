@@ -1,5 +1,5 @@
 const Admin = require("../models/admin.model");
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 const Appointment = require("../models/admin.model");
 const Client = require("../models/client.model");
 const mongoose = require("mongoose");
@@ -48,7 +48,7 @@ const updateAdminDetailsController = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     return res.status(200).json({
@@ -70,18 +70,18 @@ const fetchAdminDetailsController = async (req, res) => {
   const { username } = req.query;
 
   try {
-    const user = await User.findOne({ username });
+    const tenant = await Tenant.findOne({ username });
 
-    if (!user) {
+    if (!tenant) {
       return res.status(404).json({
         success: false,
-        message: "No such user found",
+        message: "No such tenant found",
         data: username,
-        user: user,
+        user: tenant,
       });
     }
 
-    const uid = user._id;
+    const uid = tenant._id;
     const adminDetails = await Admin.findOne({ tenant: uid });
     const noOfEntries = await Admin.countDocuments({ tenant: uid });
 
@@ -221,7 +221,7 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
 
     console.log(
       "Tenant IDs for query:",
-      tenantIds.map((id) => id.toString())
+      tenantIds.map((id) => id.toString()),
     );
 
     // ✅ Aggregate counts
@@ -240,10 +240,10 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
 
     // ✅ Create lookup maps
     const appointmentMap = new Map(
-      appointmentsCounts.map((item) => [item._id.toString(), item.count])
+      appointmentsCounts.map((item) => [item._id.toString(), item.count]),
     );
     const clientMap = new Map(
-      clientsCounts.map((item) => [item._id.toString(), item.count])
+      clientsCounts.map((item) => [item._id.toString(), item.count]),
     );
 
     // ✅ Enrich admins with counts
@@ -283,7 +283,7 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
 // fetch filtered admin details form platform ownner controller
 const fetchAFilteredAdminDetailsForPlatformOwnerController = async (
   req,
-  res
+  res,
 ) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -389,7 +389,7 @@ const updatePlatformOwnerDetailsController = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     return res.status(200).json({

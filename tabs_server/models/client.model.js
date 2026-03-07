@@ -51,7 +51,7 @@ const clientSchema = new mongoose.Schema(
     },
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
     },
     resetPasswordToken: {
       type: String,

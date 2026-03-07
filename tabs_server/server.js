@@ -9,7 +9,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const connection = require("./config/db");
-const userRoutes = require("./routes/user.route");
+const tenantRoutes = require("./routes/tenant.route");
 const appointmentRoutes = require("./routes/appointment.route");
 const serviceRoutes = require("./routes/service.route");
 const clientRoutes = require("./routes/client.route");
@@ -91,8 +91,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// user routes
-app.use(process.env.API_VERSION, userRoutes);
+// tenant routes
+app.use(process.env.API_VERSION, tenantRoutes);
 
 // appointment routes
 app.use(process.env.API_VERSION, appointmentRoutes);

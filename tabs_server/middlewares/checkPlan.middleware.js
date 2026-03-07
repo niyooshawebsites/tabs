@@ -1,17 +1,17 @@
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 
 const checkPlan = async (req, res, next) => {
   try {
     const { uid } = req.query || req.user.uid;
-    const user = await User.findById(uid);
+    const tenant = await Tenant.findById(uid);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found." });
     }
 
     // Free Plan Limit Check
-    if (user.plan.name === "free") {
-      if (user.totalAppointments >= 1000 || user.totalClients >= 500) {
+    if (tenant.plan.name === "free") {
+      if (tenant.totalAppointments >= 1000 || tenant.totalClients >= 500) {
         return res.status(403).json({
           success: false,
           message: "Free plan limit reached. Please upgrade your plan.",
@@ -20,13 +20,13 @@ const checkPlan = async (req, res, next) => {
     }
 
     // Paid Plan Expiry Check
-    else if (user.plan.isActive) {
+    else if (tenant.plan.isActive) {
       const now = new Date();
-      const endDate = new Date(user.plan.endDate);
+      const endDate = new Date(tenant.plan.endDate);
 
       if (now > endDate) {
-        user.plan.isActive = false;
-        await user.save();
+        tenant.plan.isActive = false;
+        await tenant.save();
         return res.status(403).json({
           success: false,
           message: "Your plan has expired. Please renew to continue.",

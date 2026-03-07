@@ -115,6 +115,10 @@ export default function Home() {
       notes: ''
     };
 
+    if (subDomain == 'admin') {
+      navigate('/admin/login');
+    }
+
     if (!id) {
       return <CheckMissingInfo id={id} locations={locations} services={services} />;
     }

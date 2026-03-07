@@ -190,8 +190,10 @@ const TenantDetails = () => {
             subDomain: subDomain
           })
         );
-        subDomainSliceActions;
-        fetchTenantDetails(subDomain);
+        // subDomainSliceActions;
+        if (subDomain != 'admin') {
+          fetchTenantDetails(subDomain);
+        }
       }
     }
 

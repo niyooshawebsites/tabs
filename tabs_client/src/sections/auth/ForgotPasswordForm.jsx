@@ -9,6 +9,7 @@ import axios from 'axios';
 
 export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState();
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);

@@ -1,16 +1,4 @@
-import {
-  Button,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-  FormControl,
-  Select,
-  MenuItem
-} from '@mui/material';
+import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +14,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 
-export default function AuthLogin() {
+export default function ALogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -42,15 +30,7 @@ export default function AuthLogin() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
-      let apiURL;
-
-      if (values.loginType === 'admin') {
-        apiURL = `${import.meta.env.VITE_API_URL}tenant-login`;
-      }
-
-      if (values.loginType === 'staff') {
-        apiURL = `${import.meta.env.VITE_API_URL}staff-login`;
-      }
+      let apiURL = `${import.meta.env.VITE_API_URL}/admin-login`;
 
       const { data } = await axios.post(apiURL, values, { withCredentials: true });
 
@@ -97,13 +77,11 @@ export default function AuthLogin() {
     <>
       <Formik
         initialValues={{
-          loginType: '',
           email: '',
           password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          loginType: Yup.string().required('Service is required'),
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().required('Password is required')
         })}
@@ -112,28 +90,6 @@ export default function AuthLogin() {
         {({ errors, handleBlur, handleChange, touched, values, handleSubmit }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid size={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Login Type</InputLabel>
-                  <Select
-                    name="loginType"
-                    value={values.loginType}
-                    label="Login Type"
-                    onChange={handleChange}
-                    error={touched.loginType && Boolean(errors.loginType)}
-                  >
-                    <MenuItem value="">Select Type</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                    <MenuItem value="staff">Staff</MenuItem>
-                  </Select>
-                  {touched.loginType && errors.loginType && (
-                    <Typography color="error" variant="caption">
-                      {errors.loginType}
-                    </Typography>
-                  )}
-                </FormControl>
-              </Grid>
-
               <Grid size={12}>
                 <Stack sx={{ gap: 1 }}>
                   <InputLabel htmlFor="email-login">Email Address</InputLabel>
@@ -189,17 +145,6 @@ export default function AuthLogin() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid sx={{ mt: -1 }} size={12}>
-                <Stack direction="row" sx={{ gap: 2, alignItems: 'baseline', justifyContent: 'space-between' }}>
-                  <Typography
-                    variant="h6"
-                    sx={{ color: 'red', cursor: 'pointer' }}
-                    onClick={() => window.location.replace(`http://${import.meta.env.VITE_FRONTEND_URL}/forgot-password`)}
-                  >
-                    Forgot Password?
-                  </Typography>
-                </Stack>
-              </Grid>
               <Grid size={12}>
                 <AnimateButton>
                   <Button type="submit" fullWidth size="large" variant="contained" color="primary" disabled={loading}>
@@ -215,4 +160,4 @@ export default function AuthLogin() {
   );
 }
 
-AuthLogin.propTypes = { isDemo: PropTypes.bool };
+ALogin.propTypes = { isDemo: PropTypes.bool };

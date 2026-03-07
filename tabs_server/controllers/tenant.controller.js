@@ -1,4 +1,4 @@
-const User = require("../models/user.model");
+const Tenant = require("../models/tenant.model");
 const {
   encryptPassword,
   decryptPassword,
@@ -6,20 +6,20 @@ const {
 const generateAuthToken = require("../utils/authToken.util");
 
 // registration controller
-const registerController = async (req, res) => {
+const tenantRegistrationController = async (req, res) => {
   try {
     // Ensure the response is not cached
     res.setHeader("Cache-Control", "no-store");
 
     const { username, email, password, profession } = req.body;
 
-    // check for existing user
-    const user = await User.findOne({
+    // check for existing tenant
+    const tenant = await Tenant.findOne({
       $or: [{ email }, { username }],
     });
 
-    // if user found
-    if (user) {
+    // if tenant found
+    if (tenant) {
       return res.status(409).json({
         success: false,
         message: "Account exists! Please login",
@@ -29,8 +29,8 @@ const registerController = async (req, res) => {
     // encrypting the password
     const encryptedPassword = await encryptPassword(password);
 
-    // initiate a new user and save it the DB
-    const newUser = await new User({
+    // initiate a new tenant and save it the DB
+    const newTenant = await new Tenant({
       username,
       email,
       password: encryptedPassword,
@@ -40,7 +40,7 @@ const registerController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Registration successful",
-      data: newUser,
+      data: newTenant,
     });
   } catch (err) {
     return res.status(500).json({
@@ -52,15 +52,15 @@ const registerController = async (req, res) => {
 };
 
 // login controller
-const loginController = async (req, res) => {
+const tenantLoginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // check for existing user
-    const user = await User.findOne({ email });
+    // check for existing tenant
+    const tenant = await Tenant.findOne({ email });
 
-    // if no user found
-    if (!user) {
+    // if no tenant found
+    if (!tenant) {
       return res.status(404).json({
         success: false,
         message: "Invalid credentials",
@@ -68,7 +68,10 @@ const loginController = async (req, res) => {
     }
 
     // verify the password
-    const passwordVerfication = await decryptPassword(password, user.password);
+    const passwordVerfication = await decryptPassword(
+      password,
+      tenant.password,
+    );
 
     if (!passwordVerfication) {
       return res.status(403).json({
@@ -78,11 +81,11 @@ const loginController = async (req, res) => {
     }
 
     const loginDetails = {
-      uid: user._id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-      empId: user.empId,
+      uid: tenant._id,
+      email: tenant.email,
+      role: tenant.role,
+      name: tenant.name,
+      empId: tenant.empId,
     };
 
     // generate the authToken
@@ -98,7 +101,7 @@ const loginController = async (req, res) => {
       path: "/",
     });
 
-    // saving the user in the requrest object for isAdmin middleware access
+    // saving the tenant in the requrest object for isAdmin middleware access
     req.user = loginDetails;
 
     return res.status(200).json({
@@ -140,8 +143,8 @@ const logoutController = async (req, res) => {
   }
 };
 
-// update user controller
-const updateUserController = async (req, res) => {
+// update tenant controller
+const updateTenantController = async (req, res) => {
   try {
     const { uid } = req.params;
 
@@ -149,22 +152,22 @@ const updateUserController = async (req, res) => {
 
     const encryptedPassword = await encryptPassword(password);
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const updatedTenant = await Tenant.findByIdAndUpdate(
       uid,
       { password: encryptedPassword },
       { new: true, runValidators: true },
     );
 
-    if (!updatedUser) {
+    if (!updatedTenant) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Tenant not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "User details updated successfully",
+      message: "Tenant updated successfully",
     });
   } catch (err) {
     return res.status(500).json({
@@ -179,20 +182,20 @@ const doesTenantExistController = async (req, res) => {
   try {
     const { username } = req.query;
 
-    const user = await User.findOne({ username });
+    const tenant = await Tenant.findOne({ username });
 
-    if (!user) {
+    if (!tenant) {
       return res.status(404).json({
         success: false,
-        message: "User does not exist",
+        message: "Tenant does not exist",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "User exists",
+      message: "Tenant exists",
       data: {
-        id: user._id,
+        id: tenant._id,
       },
     });
   } catch (err) {
@@ -205,9 +208,9 @@ const doesTenantExistController = async (req, res) => {
 };
 
 module.exports = {
-  registerController,
-  loginController,
+  tenantRegistrationController,
+  tenantLoginController,
   logoutController,
-  updateUserController,
+  updateTenantController,
   doesTenantExistController,
 };

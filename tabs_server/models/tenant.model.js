@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const tenantSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: Number,
       required: true,
-      enum: [0, 1, 2, 3], // 0 for endUser, 1 for staff, 2 for tenant, 3 for platform owner
+      enum: [0, 1, 2], // 0 for endUser, 1 for staff, 2 for tenant
       default: 2,
     },
     totalAppointments: {
@@ -72,4 +72,4 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Tenant", tenantSchema);
