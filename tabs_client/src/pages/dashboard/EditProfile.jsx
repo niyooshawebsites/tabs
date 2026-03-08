@@ -101,8 +101,8 @@ export default function DashboardEditProfile() {
 
         const apiURL =
           id !== null
-            ? `${import.meta.env.VITE_API_URL}update-admin-details?uid=${tenantId}`
-            : `${import.meta.env.VITE_API_URL}add-admin-details?uid=${tenantId}`;
+            ? `${import.meta.env.VITE_API_URL}update-tenant-detail?uid=${tenantId}`
+            : `${import.meta.env.VITE_API_URL}add-tenant-detail?uid=${tenantId}`;
 
         if (id) {
           const { data } = await axios.patch(apiURL, values, {

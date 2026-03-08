@@ -19,7 +19,7 @@ const TenantDetails = () => {
   const fetchAdminDetails = async (subDomain) => {
     try {
       if (subDomain) {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-admin-details?username=${subDomain}`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-detail?username=${subDomain}`, {
           withCredentials: true
         });
 

@@ -66,7 +66,7 @@ const updateTenantDetailController = async (req, res) => {
 };
 
 // fetch admin details
-const fetchAdminDetailsController = async (req, res) => {
+const fetchTenantDetailController = async (req, res) => {
   const { username } = req.query;
 
   try {
@@ -82,20 +82,20 @@ const fetchAdminDetailsController = async (req, res) => {
     }
 
     const uid = tenant._id;
-    const adminDetails = await Admin.findOne({ tenant: uid });
-    const noOfEntries = await Admin.countDocuments({ tenant: uid });
+    const tenantDetail = await TenantDetail.findOne({ tenant: uid });
+    const noOfEntries = await TenantDetail.countDocuments({ tenant: uid });
 
-    if (!adminDetails) {
+    if (!tenantDetail) {
       return res.status(404).json({
         success: false,
-        message: "Admin details not found",
+        message: "Tenant detail not found",
       });
     }
 
     return res.status(200).json({
       success: true,
       message: "Admin details fetched successfully",
-      data: adminDetails,
+      data: tenantDetail,
       detailsExist: noOfEntries ? true : false,
     });
   } catch (err) {
@@ -186,32 +186,32 @@ const fetchAdminDetailsController = async (req, res) => {
 //   }
 // };
 
-const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
+const fetchAllTenantDetailForPlatformOwnerController = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    const totalAdmins = await Admin.countDocuments();
+    const totalTenantDetail = await TenantDetail.countDocuments();
 
-    const allAdmins = await Admin.find()
+    const allTenantDetail = await TenantDetail.find()
       .skip(skip)
       .limit(limit)
       .populate("tenant")
       .sort({ createdAt: -1 })
       .lean();
 
-    if (allAdmins.length === 0) {
+    if (allTenantDetail.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "No tenant details found",
+        message: "No tenant detail found",
       });
     }
 
     // ✅ Convert to ObjectId properly - handle both populated and unpopulated cases
-    const tenantIds = allAdmins
-      .map((admin) => {
-        const tenantRef = admin.tenant?._id || admin.tenant;
+    const tenantIds = allTenantDetail
+      .map((td) => {
+        const tenantRef = td.tenant?._id || td.tenant;
         // Ensure we're working with ObjectId, not plain object
         return mongoose.Types.ObjectId.isValid(tenantRef)
           ? new mongoose.Types.ObjectId(tenantRef.toString())
@@ -236,7 +236,7 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
       ]),
     ]);
 
-    console.log("Appointments counts:", appointmentsCounts);
+    // console.log("Appointments counts:", appointmentsCounts);
 
     // ✅ Create lookup maps
     const appointmentMap = new Map(
@@ -247,11 +247,11 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
     );
 
     // ✅ Enrich admins with counts
-    const enrichedAdmins = allAdmins.map((admin) => {
-      const tenantId = (admin.tenant?._id || admin.tenant).toString();
+    const enrichedAllTenantDetail = allTenantDetail.map((td) => {
+      const tenantId = (td.tenant?._id || td.tenant).toString();
 
       return {
-        ...admin,
+        ...td,
         appointmentCount: appointmentMap.get(tenantId) || 0,
         clientCount: clientMap.get(tenantId) || 0,
       };
@@ -260,13 +260,13 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Tenant details found",
-      data: enrichedAdmins,
+      data: enrichedAllTenantDetail,
       pagination: {
-        totalTenants: totalAdmins,
+        totalTenants: totalTenantDetail,
         limit,
         page,
-        totalPages: Math.ceil(totalAdmins / limit),
-        hasNextPage: page * limit < totalAdmins,
+        totalPages: Math.ceil(totalTenantDetail / limit),
+        hasNextPage: page * limit < totalTenantDetail,
         hasPrevPage: page > 1,
       },
     });
@@ -280,8 +280,8 @@ const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
   }
 };
 
-// fetch filtered admin details form platform ownner controller
-const fetchAFilteredAdminDetailsForPlatformOwnerController = async (
+// fetch filtered tenant details form platform ownner controller
+const fetchAFilteredTenantDetailForPlatformOwnerController = async (
   req,
   res,
 ) => {
@@ -308,31 +308,31 @@ const fetchAFilteredAdminDetailsForPlatformOwnerController = async (
       };
     }
 
-    const totalAdmins = await Admin.countDocuments(filter);
+    const totalTenantDetail = await TenantDetail.countDocuments(filter);
 
-    const admins = await Admin.find(filter)
+    const tenantDetail = await TenantDetail.find(filter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 })
       .populate("tenant");
 
-    if (totalAdmins.length === 0) {
+    if (totalTenantDetail.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "No tenant details found",
+        message: "No tenant detail found",
       });
     }
 
     return res.status(200).json({
       success: true,
       message: "Tenant details found",
-      data: admins,
+      data: tenantDetail,
       pagination: {
         limit,
         page,
-        totalTenants: totalAdmins,
-        totalPages: Math.ceil(totalAdmins / limit),
-        hasNextPage: page * limit < totalAdmins,
+        totalTenants: totalTenantDetail,
+        totalPages: Math.ceil(totalTenantDetail / limit),
+        hasNextPage: page * limit < totalTenantDetail,
         hasPrevPage: page > 1,
       },
     });
@@ -350,7 +350,9 @@ const addPlatformOwnerDetailsController = async (req, res) => {
   try {
     const { uid } = req.query;
 
-    const existingPlatformOwnerDetails = await Admin.findOne({ tenant: uid });
+    const existingPlatformOwnerDetails = await TenantDetail.findOne({
+      tenant: uid,
+    });
 
     if (existingPlatformOwnerDetails) {
       return res.status(409).json({
@@ -359,7 +361,7 @@ const addPlatformOwnerDetailsController = async (req, res) => {
       });
     }
 
-    const platformOwnerDetails = await new Admin({
+    const platformOwnerDetails = await new TenantDetail({
       ...req.body,
       tenant: uid,
     }).save();
@@ -383,7 +385,7 @@ const updatePlatformOwnerDetailsController = async (req, res) => {
   try {
     const { uid } = req.query;
 
-    const updatedplatformOwnerDetails = await Admin.findOneAndUpdate(
+    const updatedplatformOwnerDetails = await TenantDetail.findOneAndUpdate(
       { tenant: uid },
       req.body,
       {
@@ -407,11 +409,11 @@ const updatePlatformOwnerDetailsController = async (req, res) => {
 };
 
 module.exports = {
-  addAdminDetailsController,
-  updateAdminDetailsController,
-  fetchAdminDetailsController,
-  fetchAllAdminsForPlatformOwnerController,
-  fetchAFilteredAdminDetailsForPlatformOwnerController,
+  addTenantDetailController,
+  updateTenantDetailController,
+  fetchTenantDetailController,
+  fetchAllTenantDetailForPlatformOwnerController,
+  fetchAFilteredTenantDetailForPlatformOwnerController,
   addPlatformOwnerDetailsController,
   updatePlatformOwnerDetailsController,
 };

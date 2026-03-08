@@ -1,13 +1,13 @@
 const router = require("express").Router();
 const {
-  addAdminDetailsController,
-  updateAdminDetailsController,
-  fetchAdminDetailsController,
-  fetchAllAdminsForPlatformOwnerController,
-  fetchAFilteredAdminDetailsForPlatformOwnerController,
+  addTenantDetailController,
+  updateTenantDetailController,
+  fetchTenantDetailController,
+  fetchAllTenantDetailForPlatformOwnerController,
+  fetchAFilteredTenantDetailForPlatformOwnerController,
   addPlatformOwnerDetailsController,
   updatePlatformOwnerDetailsController,
-} = require("../controllers/admin.controller");
+} = require("../controllers/tenantDetail.controller");
 const { isTenant, isPlatformOwner } = require("../middlewares/auth.middleware");
 const {
   validateBody,
@@ -28,7 +28,7 @@ router.post(
   isPlatformOwner,
   validateQuery(querySchema),
   validateBody(addAdminDetailsSchema),
-  addPlatformOwnerDetailsController
+  addPlatformOwnerDetailsController,
 );
 
 // update plaform owner details
@@ -37,48 +37,48 @@ router.patch(
   isPlatformOwner,
   validateQuery(querySchema),
   validateBody(addAdminDetailsSchema),
-  updatePlatformOwnerDetailsController
+  updatePlatformOwnerDetailsController,
 );
 
-// add admin details route
+// add tenant details route
 router.post(
   "/add-admin-details",
   isTenant,
   validateQuery(querySchema),
   validateBody(addAdminDetailsSchema),
-  addAdminDetailsController
+  addTenantDetailController,
 );
 
-// update admin details route
+// update tenant details route
 router.patch(
   "/update-admin-details",
   isTenant,
   validateQuery(querySchema),
   validateBody(updateAdminDetailsSchema),
-  updateAdminDetailsController
+  updateTenantDetailController,
 );
 
-// fetch admin details route
+// fetch tenant details route
 router.get(
   "/fetch-admin-details",
   validateQuery(querySchema),
-  fetchAdminDetailsController
+  fetchTenantDetailController,
 );
 
-// fetch alls admins for platform owner route
+// fetch alls tenant for platform owner route
 router.get(
   "/fetch-all-admin-details-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAllAdminsForPlatformOwnerController
+  fetchAllTenantDetailForPlatformOwnerController,
 );
 
-// fetch alls admins for platform owner route
+// fetch alls tenants for platform owner route
 router.get(
   "/fetch-filtered-admin-details-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAFilteredAdminDetailsForPlatformOwnerController
+  fetchAFilteredTenantDetailForPlatformOwnerController,
 );
 
 module.exports = router;

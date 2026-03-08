@@ -13,7 +13,7 @@ const tenantRoutes = require("./routes/tenant.route");
 const appointmentRoutes = require("./routes/appointment.route");
 const serviceRoutes = require("./routes/service.route");
 const clientRoutes = require("./routes/client.route");
-const adminRoutes = require("./routes/admin.route");
+const tenantDetailRoutes = require("./routes/tenantDetail.route");
 const invoiceRoutes = require("./routes/invoice.route");
 const authRoutes = require("./routes/auth.route");
 const announcementRoutes = require("./routes/announcement.route");
@@ -103,8 +103,8 @@ app.use(process.env.API_VERSION, serviceRoutes);
 // cleint routes
 app.use(process.env.API_VERSION, clientRoutes);
 
-// admin routes
-app.use(process.env.API_VERSION, adminRoutes);
+// tenant Detail routes
+app.use(process.env.API_VERSION, tenantDetailRoutes);
 
 // invoice routes
 app.use(process.env.API_VERSION, invoiceRoutes);
