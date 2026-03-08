@@ -14,7 +14,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 
-export default function ALogin() {
+export default function POLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -160,4 +160,4 @@ export default function ALogin() {
   );
 }
 
-ALogin.propTypes = { isDemo: PropTypes.bool };
+POLogin.propTypes = { isDemo: PropTypes.bool };

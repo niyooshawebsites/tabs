@@ -42,7 +42,7 @@ router.patch(
 
 // add tenant details route
 router.post(
-  "/add-admin-details",
+  "/add-tenant-detail",
   isTenant,
   validateQuery(querySchema),
   validateBody(addAdminDetailsSchema),
@@ -51,7 +51,7 @@ router.post(
 
 // update tenant details route
 router.patch(
-  "/update-admin-details",
+  "/update-tenant-detail",
   isTenant,
   validateQuery(querySchema),
   validateBody(updateAdminDetailsSchema),
@@ -60,14 +60,14 @@ router.patch(
 
 // fetch tenant details route
 router.get(
-  "/fetch-admin-details",
+  "/fetch-tenant-detail",
   validateQuery(querySchema),
   fetchTenantDetailController,
 );
 
 // fetch alls tenant for platform owner route
 router.get(
-  "/fetch-all-admin-details-for-platform-owner",
+  "/fetch-all-tenant-detail-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
   fetchAllTenantDetailForPlatformOwnerController,
@@ -75,7 +75,7 @@ router.get(
 
 // fetch alls tenants for platform owner route
 router.get(
-  "/fetch-filtered-admin-details-for-platform-owner",
+  "/fetch-filtered-tenant-detail-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
   fetchAFilteredTenantDetailForPlatformOwnerController,

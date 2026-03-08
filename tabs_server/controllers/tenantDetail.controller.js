@@ -1,6 +1,6 @@
 const TenantDetail = require("../models/tenantDetail.model");
 const Tenant = require("../models/tenant.model");
-const Appointment = require("../models/admin.model");
+const Appointment = require("../models/appointment.model");
 const Client = require("../models/client.model");
 const mongoose = require("mongoose");
 

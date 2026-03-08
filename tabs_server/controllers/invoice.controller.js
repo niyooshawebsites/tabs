@@ -1,6 +1,6 @@
 const PDFDocument = require("pdfkit");
 const Appointment = require("../models/appointment.model");
-const Admin = require("../models/admin.model");
+const TenantDetail = require("../models/tenantDetail.model");
 
 const generateInvoiceController = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ const generateInvoiceController = async (req, res) => {
       .populate("service")
       .populate("client");
 
-    const adminDetails = await Admin.findOne({ tenant: uid });
+    const tenantDetail = await TenantDetail.findOne({ tenant: uid });
     const doc = new PDFDocument({ margin: 50 });
 
     let buffers = [];
@@ -31,14 +31,14 @@ const generateInvoiceController = async (req, res) => {
     doc
       .fontSize(16)
       .font("Helvetica-Bold")
-      .text(`${adminDetails.legalName}`, { align: "left" });
+      .text(`${tenantDetail.legalName}`, { align: "left" });
     doc
       .fontSize(10)
       .font("Helvetica")
-      .text(`${adminDetails.address}`, { align: "left" })
-      .text(`Phone: ${adminDetails.phone}`, { align: "left" })
-      .text(`Email: ${adminDetails.email}`, { align: "left" })
-      .text(`GST: ${adminDetails.gstNo}`, { align: "left" });
+      .text(`${tenantDetail.address}`, { align: "left" })
+      .text(`Phone: ${tenantDetail.phone}`, { align: "left" })
+      .text(`Email: ${tenantDetail.email}`, { align: "left" })
+      .text(`GST: ${tenantDetail.gstNo}`, { align: "left" });
 
     doc.moveDown(1);
 

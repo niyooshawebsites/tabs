@@ -125,7 +125,19 @@ export default function AuthRegister() {
                   />
                 </Stack>
                 <Typography variant="body2" sx={{ color: 'gray' }}>
+                  <Box component="span" sx={{ color: '#ed2b28' }}>
+                    Note:
+                  </Box>{' '}
                   No spaces, no special characters, no captial letters are allowed{' '}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'gray' }}>
+                  <Box component="span" sx={{ color: '#ed2b28' }}>
+                    Note:
+                  </Box>{' '}
+                  Check your username carefully before registering as your URL will be{' '}
+                  <Box component="span" sx={{ textDecoration: 'underline', color: '#ed2b28' }}>
+                    username.domain.in
+                  </Box>
                 </Typography>
                 {touched.username && errors.username && (
                   <FormHelperText error id="helper-text-username">

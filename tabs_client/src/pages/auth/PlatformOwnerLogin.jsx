@@ -1,8 +1,8 @@
 import { Grid, Stack, Typography } from '@mui/material';
 import AuthWrapper from 'sections/auth/AuthWrapper';
-import ALogin from 'sections/auth/ALogin';
+import POLogin from 'sections/auth/POLogin';
 
-export default function AdminLogin() {
+export default function PlatformOwnerLogin() {
   return (
     <AuthWrapper>
       <Grid container spacing={3}>
@@ -12,7 +12,7 @@ export default function AdminLogin() {
           </Stack>
         </Grid>
         <Grid size={12}>
-          <ALogin />
+          <POLogin />
         </Grid>
       </Grid>
     </AuthWrapper>

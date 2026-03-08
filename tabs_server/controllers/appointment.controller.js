@@ -4,7 +4,7 @@ const Staff = require("../models/staff.model");
 const Location = require("../models/location.model");
 const Appointment = require("../models/appointment.model");
 const Client = require("../models/client.model");
-const Admin = require("../models/admin.model");
+const TenantDetail = require("../models/tenantDetail.model");
 const Tenant = require("../models/tenant.model");
 const moment = require("moment");
 const {
@@ -32,9 +32,9 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
       return res.status(404).json({ message: "Location not found" });
     }
 
-    const admin = await Admin.findOne({ tenant: uid });
-    if (!admin) {
-      return res.status(404).json({ message: "Tenant Details not found" });
+    const tenantDetail = await TenantDetail.findOne({ tenant: uid });
+    if (!tenantDetail) {
+      return res.status(404).json({ message: "Tenant Detail not found" });
     }
 
     const duration = service.duration;
@@ -44,8 +44,11 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
     // -----------------------------
     let workingHours = [];
 
-    if (admin.timings.shiftType === "full") {
-      if (!admin.timings.fullDay.start || !admin.timings.fullDay.end) {
+    if (tenantDetail.timings.shiftType === "full") {
+      if (
+        !tenantDetail.timings.fullDay.start ||
+        !tenantDetail.timings.fullDay.end
+      ) {
         return res.status(400).json({
           success: false,
           message: "Full day timings missing",
@@ -53,13 +56,13 @@ const appointmentSlotsAvailabilityCheckController = async (req, res) => {
       }
 
       workingHours.push({
-        start: admin.timings.fullDay.start,
-        end: admin.timings.fullDay.end,
+        start: tenantDetail.timings.fullDay.start,
+        end: tenantDetail.timings.fullDay.end,
       });
     }
 
-    if (admin.timings.shiftType === "part") {
-      const p = admin.timings.partDay;
+    if (tenantDetail.timings.shiftType === "part") {
+      const p = tenantDetail.timings.partDay;
 
       if (
         !p.morningStart ||
@@ -174,7 +177,7 @@ const bookAppointmentController = async (req, res) => {
 
     // check for exisitng client
     const existingClient = await Client.findOne({ email, tenant: uid });
-    const admin = await Admin.findOne({ tenant: uid });
+    const tenantDetail = await TenantDetail.findOne({ tenant: uid });
 
     // if client exists
     if (existingClient) {
@@ -199,7 +202,11 @@ const bookAppointmentController = async (req, res) => {
         .populate("tenant");
 
       // send email to the client for appointment confirmation
-      sendAppointmentBookingEmail(existingClient, populatedAppointment, admin);
+      sendAppointmentBookingEmail(
+        existingClient,
+        populatedAppointment,
+        tenantDetail,
+      );
 
       return res.status(201).json({
         success: true,
@@ -246,7 +253,11 @@ const bookAppointmentController = async (req, res) => {
       .populate("client");
 
     // send email to the client for appointment confirmation
-    sendAppointmentBookingEmail(newClientDetails, populatedAppointment, admin);
+    sendAppointmentBookingEmail(
+      newClientDetails,
+      populatedAppointment,
+      tenantDetail,
+    );
 
     return res.status(201).json({
       success: true,
@@ -498,7 +509,7 @@ const updateAppointmentController = async (req, res) => {
     const { uid } = req.query;
     const { aid } = req.params;
     const { status, date, time, remarks } = req.body;
-    const admin = await Admin.findOne({ tenant: uid });
+    const tenantDetail = await TenantDetail.findOne({ tenant: uid });
 
     const updateFields = { status };
 
@@ -553,7 +564,11 @@ const updateAppointmentController = async (req, res) => {
     };
 
     // send email to the client for appointment status change
-    sendAppointmentStatusChangeEmail(clientDetails, updatedAppointment, admin);
+    sendAppointmentStatusChangeEmail(
+      clientDetails,
+      updatedAppointment,
+      tenantDetail,
+    );
 
     return res.status(200).json({
       success: true,
