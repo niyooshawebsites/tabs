@@ -2,7 +2,6 @@ const router = require("express").Router();
 const {
   tenantRegistrationController,
   tenantLoginController,
-  logoutController,
   updateTenantController,
   doesTenantExistController,
 } = require("../controllers/tenant.controller");
@@ -33,9 +32,6 @@ router.post(
 
 // login route
 router.post("/tenant-login", validateBody(loginSchema), tenantLoginController);
-
-// logout route
-router.post("/logout", logoutController);
 
 // update tenant route
 router.patch(

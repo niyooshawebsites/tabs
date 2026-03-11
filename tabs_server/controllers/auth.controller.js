@@ -1,8 +1,16 @@
 const crypto = require("crypto");
 const Tenant = require("../models/tenant.model");
 const Staff = require("../models/staff.model");
+const Session = require("../models/session.model");
 const { sendPasswordResetEmail } = require("../utils/mail.util");
 const { encryptPassword } = require("../utils/securePassword.util");
+const { hashToken } = require("../utils/tokenHash.util");
+const jwt = require("jsonwebtoken");
+const UAParser = require("ua-parser-js");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/authToken.util");
 
 const forgotPasswordController = async (req, res) => {
   try {
@@ -155,4 +163,140 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
-module.exports = { forgotPasswordController, resetPasswordController };
+// logout controller
+const logoutController = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "No refresh token, no logout",
+      });
+    }
+
+    const hashedRefreshToken = hashToken(token);
+
+    await Session.deleteOne({ refreshTokenHash: hashedRefreshToken });
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
+const refreshTokenController = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Refresh token missing",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    if (!decoded) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    const hashedToken = hashToken(refreshToken);
+
+    const session = await Session.findOne({
+      refreshTokenHash: hashedToken,
+    });
+
+    // TOKEN REUSE DETECTION
+    if (!session) {
+      await Session.deleteMany({
+        userId: decoded.id,
+      });
+
+      return res.status(403).json({
+        success: false,
+        message: "Refresh token reuse detected",
+      });
+    }
+
+    // session expiry
+    if (session.expiresAt < new Date()) {
+      await Session.deleteOne({ _id: session._id });
+
+      return res.status(403).json({
+        success: false,
+        message: "Session expired. Please login again.",
+      });
+    }
+
+    // delete old session
+    await Session.deleteOne({ _id: session._id });
+
+    const newRefreshToken = generateRefreshToken(decoded.id);
+    const accessToken = generateAccessToken(decoded.id);
+
+    const newRefreshTokenHash = hashToken(newRefreshToken);
+
+    const parser = new UAParser(req.headers["user-agent"]);
+    const device = parser.getDevice();
+    const browser = parser.getBrowser();
+    const os = parser.getOS();
+
+    await Session.create({
+      userId: decoded.id,
+      refreshTokenHash: newRefreshTokenHash,
+      ip: req?.ip,
+      userAgent: req.headers["user-agent"],
+      device: device?.model,
+      browser: browser?.name,
+      os: os?.name,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: process.env.COOKIE_HTTPONLY === "true",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+      path: "/",
+    });
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: process.env.COOKIE_HTTPONLY === "true",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    return res.json({
+      success: true,
+      message: "Tokens refreshed",
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(403).json({
+      success: false,
+      message: "Invalid refresh token",
+    });
+  }
+};
+
+module.exports = {
+  forgotPasswordController,
+  resetPasswordController,
+  logoutController,
+  refreshTokenController,
+};

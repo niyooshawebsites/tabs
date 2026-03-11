@@ -1,9 +1,11 @@
 const Staff = require("../models/staff.model");
+const Session = require("../models/session.model");
+const UAParser = require("ua-parser-js");
 const {
-  encryptPassword,
-  decryptPassword,
-} = require("../utils/securePassword.util");
-const generateAuthToken = require("../utils/authToken.util");
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/authToken.util");
+const { hashToken } = require("../utils/tokenHash.util");
 
 const staffCreationController = async (req, res) => {
   try {
@@ -19,9 +21,6 @@ const staffCreationController = async (req, res) => {
       });
     }
 
-    // encrypting the password
-    const encryptedPassword = await encryptPassword(password);
-
     // initiate a new staff and save it the DB
     const newStaff = await new Staff({
       name,
@@ -30,7 +29,7 @@ const staffCreationController = async (req, res) => {
       location: lid,
       tenant: uid,
       email,
-      password: encryptedPassword,
+      password,
     }).save();
 
     return res.status(200).json({
@@ -60,12 +59,9 @@ const staffLoginController = async (req, res) => {
       });
     }
 
-    const passwordVerfication = await decryptPassword(
-      password,
-      existingStaff.password,
-    );
+    const isMatch = await existingStaff.comparePassword(password);
 
-    if (!passwordVerfication) {
+    if (!isMatch) {
       return res.status(403).json({
         success: false,
         message: "Invalid credentials",
@@ -80,16 +76,46 @@ const staffLoginController = async (req, res) => {
       empId: existingStaff.empId,
     };
 
-    // generate the authToken
-    const authToken = await generateAuthToken(loginDetails, "1d");
+    // generate the authTokens
+    const accessToken = generateAccessToken(loginDetails, "15m");
+    const refreshToken = generateRefreshToken(loginDetails, "7d");
+    const hashedRefreshToken = hashToken(refreshToken);
 
-    // set the cookie
-    res.cookie("authToken", authToken, {
+    const parser = new UAParser(req.headers["user-agent"]);
+    const device = parser.getDevice();
+    const browser = parser.getBrowser();
+    const os = parser.getOS();
+
+    // creating session
+    await Session.create({
+      userType: "Tenant",
+      userId: existingStaff._id,
+      refreshTokenHash: hashedRefreshToken,
+      id: req?.ip,
+      userAgent: req?.headers["user-agent"],
+      device: device?.model,
+      browser: browser?.name,
+      os: os?.name,
+      expirestAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    // set the cookie with access token
+    res.cookie("accessToken", accessToken, {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
       // sameSite: "None",
       sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 15 * 60 * 1000, // 15 mins
+      path: "/",
+    });
+
+    // set the cookie with refresh token
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: process.env.COOKIE_HTTPONLY === "true",
+      secure: process.env.NODE_ENV === "production",
+      // sameSite: "None",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
     });
 
@@ -99,29 +125,9 @@ const staffLoginController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      authToken,
+      accessToken,
+      refreshToken,
       data: loginDetails,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error!",
-      err: err.message,
-    });
-  }
-};
-
-const staffLogoutController = async (req, res) => {
-  try {
-    res.clearCookie("authToken", {
-      httpOnly: process.env.COOKIE_HTTPONLY === "true",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged out successfully",
     });
   } catch (err) {
     return res.status(500).json({
@@ -136,11 +142,10 @@ const updateStaffPasswordController = async (req, res) => {
   try {
     const { staffId } = req.params;
     const { password } = req.body;
-    const encryptedPassword = await encryptPassword(password);
 
     const updatedStaff = await Staff.findByIdAndUpdate(
       staffId,
-      { password: encryptedPassword },
+      { password },
       { new: true, runValidators: true },
     );
 
@@ -170,15 +175,13 @@ const updateStaffDetailsController = async (req, res) => {
     const { staffId } = req.params;
     const { name, empId, email, password, sid, lid } = req.body;
 
-    const encryptedPassword = await encryptPassword(password);
-
     const updatedStaff = await Staff.findByIdAndUpdate(
       staffId,
       {
         name,
         empId,
         email,
-        password: encryptedPassword,
+        password,
         services: sid,
         location: lid,
         tenant: uid,
@@ -379,12 +382,9 @@ const resetStaffPasswordController = async (req, res) => {
     const { uid } = req.query;
     const { staffId } = req.params;
     const { password } = req.body;
-    const encryptedPassword = await encryptPassword(password);
     const updatedStaff = await Staff.findOneAndUpdate(
       { _id: staffId, tenant: uid },
-      {
-        password: encryptedPassword,
-      },
+      { password },
       { new: true, runValidators: true },
     );
 
@@ -411,7 +411,6 @@ const resetStaffPasswordController = async (req, res) => {
 module.exports = {
   staffCreationController,
   staffLoginController,
-  staffLogoutController,
   updateStaffPasswordController,
   updateStaffDetailsController,
   fetchAStaffController,

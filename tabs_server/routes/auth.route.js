@@ -4,6 +4,8 @@ const { validateBody } = require("../middlewares/validation.middleware");
 const {
   forgotPasswordController,
   resetPasswordController,
+  logoutController,
+  refreshTokenController,
 } = require("../controllers/auth.controller");
 const {
   forgotPasswordSchema,
@@ -31,5 +33,11 @@ router.patch(
   validateBody(resetPasswordSchema),
   resetPasswordController,
 );
+
+// logout route
+router.post("/logout", logoutController);
+
+// refresh token route
+router.post("/token/refresh", refreshTokenController);
 
 module.exports = router;

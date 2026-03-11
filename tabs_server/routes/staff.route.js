@@ -3,7 +3,6 @@ const router = require("express").Router();
 const {
   staffCreationController,
   staffLoginController,
-  staffLogoutController,
   updateStaffPasswordController,
   updateStaffDetailsController,
   fetchAStaffController,
@@ -49,9 +48,6 @@ router.post(
   validateBody(staffLoginSchema),
   staffLoginController,
 );
-
-// staff logout route
-router.post("/staff-logout", staffLogoutController);
 
 // update staff route
 router.patch(

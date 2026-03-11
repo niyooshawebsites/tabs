@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const staffSchema = new mongoose.Schema(
   {
@@ -59,5 +60,18 @@ const staffSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// for hashing the password at registration
+staffSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = bcrypt.hash(this.password, salt);
+});
+
+// for comparaing the password at login
+staffSchema.methods.comparePassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model("Staff", staffSchema);

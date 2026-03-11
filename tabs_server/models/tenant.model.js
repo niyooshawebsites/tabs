@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const tenantSchema = new mongoose.Schema(
   {
@@ -71,5 +72,18 @@ const tenantSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// for hashing the password at registration
+tenantSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = bcrypt.hash(this.password, salt);
+});
+
+// for comparaing the password at login
+tenantSchema.methods.comparePassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model("Tenant", tenantSchema);

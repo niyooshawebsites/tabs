@@ -1,11 +1,13 @@
 const Tenant = require("../models/tenant.model");
+const Session = require("../models/session.model");
+const UAParser = require("ua-parser-js");
 const {
-  encryptPassword,
-  decryptPassword,
-} = require("../utils/securePassword.util");
-const generateAuthToken = require("../utils/authToken.util");
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/authToken.util");
+const { hashToken } = require("../utils/tokenHash.util");
 
-// registration controller
+// tenant registration controller
 const tenantRegistrationController = async (req, res) => {
   try {
     // Ensure the response is not cached
@@ -26,14 +28,11 @@ const tenantRegistrationController = async (req, res) => {
       });
     }
 
-    // encrypting the password
-    const encryptedPassword = await encryptPassword(password);
-
     // initiate a new tenant and save it the DB
     const newTenant = await new Tenant({
       username,
       email,
-      password: encryptedPassword,
+      password,
       profession,
     }).save();
 
@@ -51,7 +50,7 @@ const tenantRegistrationController = async (req, res) => {
   }
 };
 
-// login controller
+// teant login controller
 const tenantLoginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -68,12 +67,9 @@ const tenantLoginController = async (req, res) => {
     }
 
     // verify the password
-    const passwordVerfication = await decryptPassword(
-      password,
-      tenant.password,
-    );
+    const isMatch = await tenant.comparePassword(password);
 
-    if (!passwordVerfication) {
+    if (!isMatch) {
       return res.status(403).json({
         success: false,
         message: "Invalid credentials",
@@ -88,16 +84,46 @@ const tenantLoginController = async (req, res) => {
       empId: tenant.empId,
     };
 
-    // generate the authToken
-    const authToken = await generateAuthToken(loginDetails, "1d");
+    // generate the authTokens
+    const accessToken = generateAccessToken(loginDetails, "15m");
+    const refreshToken = generateRefreshToken(loginDetails, "7d");
+    const hashedRefreshToken = hashToken(refreshToken);
 
-    // set the cookie
-    res.cookie("authToken", authToken, {
+    const parser = new UAParser(req.headers["user-agent"]);
+    const device = parser.getDevice();
+    const browser = parser.getBrowser();
+    const os = parser.getOS();
+
+    // creating session
+    await Session.create({
+      userType: "Tenant",
+      userId: tenant?._id,
+      refreshTokenHash: hashedRefreshToken,
+      id: req?.ip,
+      userAgent: req?.headers["user-agent"],
+      device: device?.model,
+      browser: browser?.name,
+      os: os?.name,
+      expirestAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    // set the cookie with access token
+    res.cookie("accessToken", accessToken, {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
       // sameSite: "None",
       sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 15 * 60 * 1000, // 15 mins
+      path: "/",
+    });
+
+    // set the cookie with refresh token
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: process.env.COOKIE_HTTPONLY === "true",
+      secure: process.env.NODE_ENV === "production",
+      // sameSite: "None",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
     });
 
@@ -107,32 +133,9 @@ const tenantLoginController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      authToken,
+      accessToken,
+      refreshToken,
       data: loginDetails,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error!",
-      err: err.message,
-    });
-  }
-};
-
-// logout controller
-const logoutController = async (req, res) => {
-  try {
-    res.clearCookie("authToken", {
-      httpOnly: process.env.COOKIE_HTTPONLY === "true",
-      secure: process.env.NODE_ENV === "production",
-      // sameSite: "None",
-      sameSite: "lax",
-      path: "/",
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged out successfully",
     });
   } catch (err) {
     return res.status(500).json({
@@ -147,14 +150,11 @@ const logoutController = async (req, res) => {
 const updateTenantController = async (req, res) => {
   try {
     const { uid } = req.params;
-
     const { password } = req.body;
-
-    const encryptedPassword = await encryptPassword(password);
 
     const updatedTenant = await Tenant.findByIdAndUpdate(
       uid,
-      { password: encryptedPassword },
+      { password },
       { new: true, runValidators: true },
     );
 
@@ -178,6 +178,7 @@ const updateTenantController = async (req, res) => {
   }
 };
 
+// check if tenant exists or not
 const doesTenantExistController = async (req, res) => {
   try {
     const { username } = req.query;
@@ -210,7 +211,6 @@ const doesTenantExistController = async (req, res) => {
 module.exports = {
   tenantRegistrationController,
   tenantLoginController,
-  logoutController,
   updateTenantController,
   doesTenantExistController,
 };
