@@ -35,9 +35,28 @@ export default function DashboardClients() {
   const fetchAllClients = async () => {
     try {
       setFetchingClients(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-clients?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-clients?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-clients?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setClients(data.data);

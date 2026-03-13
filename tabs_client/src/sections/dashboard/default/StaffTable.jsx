@@ -84,6 +84,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
       if (!confirmation) return;
 
       setUpdating(true);
+      let response;
 
       const payload = {
         password: 'Password@123'
@@ -91,7 +92,21 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
 
       const updateApiURL = `${import.meta.env.VITE_API_URL}/reset-staff-password/${staffId}?uid=${tenantId}`;
 
-      const { data } = await axios.patch(updateApiURL, payload, { withCredentials: true });
+      try {
+        response = await axios.patch(updateApiURL, payload, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.patch(updateApiURL, payload, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success('Password Reset Successfully');

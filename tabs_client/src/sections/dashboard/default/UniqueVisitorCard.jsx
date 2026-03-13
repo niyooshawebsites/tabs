@@ -14,13 +14,33 @@ export default function UniqueVisitorCard() {
   const fetchYearlyAppointments = async (year) => {
     try {
       setLoadingYearly(true);
+      let response;
 
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-yearly-appointments`, {
-        params: { uid: tenantId, year },
-        withCredentials: true
-      });
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-yearly-appointments`, {
+          params: { uid: tenantId, year },
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
-      setYearlyData(data.data);
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-yearly-appointments`, {
+            params: { uid: tenantId, year },
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
+
+      if (data.success) {
+        setYearlyData(data.data);
+      }
     } catch (err) {
       console.error(err);
     } finally {

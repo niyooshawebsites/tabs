@@ -37,11 +37,30 @@ export default function DashboardLocations() {
   };
 
   const fetchAllLocations = async () => {
+    let response;
     try {
       setFetchingAllLocations(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setPagination(data?.pagination);
@@ -82,11 +101,28 @@ export default function DashboardLocations() {
       );
 
       if (!confirmation) return;
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-location/${lid}?uid=${tenantId}`, {
-        withCredentials: true
-      });
-
+      let response;
       setDeletingLocation(true);
+      try {
+        // original request
+        response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-location/${lid}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-location/${lid}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);

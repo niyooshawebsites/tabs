@@ -28,9 +28,28 @@ export default function DashboardEditLocation() {
 
   const fetchAllLocations = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // response
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(
@@ -64,7 +83,22 @@ export default function DashboardEditLocation() {
     setFetchingLocationToUpdate(true);
     try {
       const apiURL = `${import.meta.env.VITE_API_URL}fetch-a-location/${lid}?uid=${tenantId}`;
-      const { data } = await axios.get(apiURL, { withCredentials: true });
+      let response;
+      try {
+        response = await axios.get(apiURL, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(apiURL, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setInitialLocation((prev) => {
@@ -94,6 +128,7 @@ export default function DashboardEditLocation() {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       setUpdating(true);
+      let response;
 
       const payload = {
         ...values,
@@ -101,7 +136,22 @@ export default function DashboardEditLocation() {
       };
 
       const updateApiURL = `${import.meta.env.VITE_API_URL}update-location/${lid}?uid=${tenantId}`;
-      const { data } = await axios.patch(updateApiURL, payload, { withCredentials: true });
+
+      try {
+        response = await axios.patch(updateApiURL, payload, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.patch(updateApiURL, payload, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);

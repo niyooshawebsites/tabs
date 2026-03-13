@@ -33,9 +33,27 @@ export default function DashboardStaff() {
   const fetchAllStaff = async () => {
     try {
       setFetchingAllStaff(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-staff?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-staff?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-staff?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setStaff(data.data);
@@ -74,10 +92,28 @@ export default function DashboardStaff() {
     try {
       const confirmation = confirm('Do you really want to delete the staff?');
       if (!confirmation) return;
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-staff/${staffId}?uid=${tenantId}`, {
-        withCredentials: true
-      });
       setDeletingAStaff(true);
+      let response;
+
+      try {
+        response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-staff/${staffId}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-a-staff/${staffId}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);

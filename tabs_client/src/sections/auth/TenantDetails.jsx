@@ -19,9 +19,27 @@ const TenantDetails = () => {
   const fetchAdminDetails = async (subDomain) => {
     try {
       if (subDomain) {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-detail?username=${subDomain}`, {
-          withCredentials: true
-        });
+        let response;
+
+        try {
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-detail?username=${subDomain}`, {
+            withCredentials: true
+          });
+        } catch (error) {
+          // If access token expired → refresh
+          if (error.response?.status === 401) {
+            await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+            // Retry original request
+            response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-detail?username=${subDomain}`, {
+              withCredentials: true
+            });
+          } else {
+            throw error;
+          }
+        }
+
+        const { data } = response;
 
         if (data.success) {
           dispatch(
@@ -62,9 +80,27 @@ const TenantDetails = () => {
 
   const fetchAllLocations = async (tid) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(
@@ -96,9 +132,28 @@ const TenantDetails = () => {
 
   const fetchAllServices = async (tid) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
+
       if (data.success) {
         dispatch(
           serviceSliceActions.captureServiceDetails({
@@ -121,7 +176,23 @@ const TenantDetails = () => {
 
   const fetchAnnouncement = async (tid) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-announcement?uid=${tid}`, { withCredentials: true });
+      let response;
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-announcement?uid=${tid}`, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-announcement?uid=${tid}`, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
+
       if (data.success) {
         dispatch(
           announcementSliceActions.captureAnnouncementDetails({
@@ -137,9 +208,26 @@ const TenantDetails = () => {
   const fetchTenantDetails = async (subDomain) => {
     const adminDetailsSubDomain = subDomain;
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
-        withCredentials: true
-      });
+      let response;
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}does-tenant-exist?username=${subDomain}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(

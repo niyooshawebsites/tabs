@@ -38,9 +38,28 @@ export default function DashboardClientDetails() {
   const fetchClientDetails = async () => {
     try {
       setFetchingClientDetails(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${clientInfo}?uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${clientInfo}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${clientInfo}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setClient((prev) => {

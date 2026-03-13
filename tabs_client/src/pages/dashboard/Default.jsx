@@ -70,9 +70,28 @@ export default function DashboardDefault() {
         ? `?service=${filters.service}&location=${filters.location}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&tid=${tenantId}&role=${role}&loginId=${loginId}`
         : `?page=${page}&limit=${limit}&tid=${tenantId}&role=${role}&loginId=${loginId}`;
 
-      const { data } = await axios.get(`${baseUrl}${endPoint}${query}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${baseUrl}${endPoint}${query}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${baseUrl}${endPoint}${query}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setAppointments(data.data);

@@ -22,7 +22,24 @@ export default function ProfileTab() {
   const logout = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}logout`, {}, { withCredentials: true });
+      let response;
+
+      try {
+        // original request
+        response = await axios.post(`${import.meta.env.VITE_API_URL}logout`, {}, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.post(`${import.meta.env.VITE_API_URL}logout`, {}, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(

@@ -9,13 +9,26 @@ import { useSelector } from 'react-redux';
 export default function Plan() {
   const { tenantId } = useSelector((state) => state.tenant_slice);
   const createSubscription = async (planType) => {
+    let response;
     try {
-      // 1️⃣ Create order from backend
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}create-order`, { planType }, { withCredentials: true });
+      try {
+        // Create order from backend
+        response = await axios.post(`${import.meta.env.VITE_API_URL}create-order`, { planType }, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
-      const order = res.data.data;
+          // Retry original request
+          response = await axios.post(`${import.meta.env.VITE_API_URL}create-order`, { planType }, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
 
-      // 2️⃣ Open Razorpay checkout
+      const order = response.data.data;
+
+      // Open Razorpay checkout
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
@@ -25,20 +38,45 @@ export default function Plan() {
         order_id: order.id,
 
         handler: async function (response) {
-          // 3️⃣ After payment, send details to backend for verification
-          const verifyRes = await axios.post(
-            `${import.meta.env.VITE_API_URL}verify`,
-            {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              planType,
-              userId: tenantId
-            },
-            { withCredentials: true }
-          );
+          let verifyRes;
+          try {
+            // After payment, send details to backend for verification
+            verifyRes = await axios.post(
+              `${import.meta.env.VITE_API_URL}verify`,
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                planType,
+                userId: tenantId
+              },
+              { withCredentials: true }
+            );
+          } catch (error) {
+            // If access token expired → refresh
+            if (error.response?.status === 401) {
+              await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
-          alert(verifyRes.data.message);
+              // Retry original request
+              verifyRes = await axios.post(
+                `${import.meta.env.VITE_API_URL}verify`,
+                {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  planType,
+                  userId: tenantId
+                },
+                { withCredentials: true }
+              );
+            } else {
+              throw error;
+            }
+          }
+
+          const { data } = verifyRes;
+
+          alert(data.message);
         },
 
         prefill: {

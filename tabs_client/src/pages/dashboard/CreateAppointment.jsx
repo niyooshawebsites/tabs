@@ -40,9 +40,27 @@ export default function CreateAppointment() {
     try {
       setLoading(true);
       setBookingAppointment(true);
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}book-appointment?uid=${tenantId}`, values, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.post(`${import.meta.env.VITE_API_URL}book-appointment?uid=${tenantId}`, values, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.post(`${import.meta.env.VITE_API_URL}book-appointment?uid=${tenantId}`, values, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);
@@ -62,9 +80,28 @@ export default function CreateAppointment() {
   const handleSubmitClientInfo = async (values, { resetForm }) => {
     try {
       setSubmittingClientInfo(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${values.phone}?uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${values.phone}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-client-by-client-info/${values.phone}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setAppointmentDetails((prev) => {

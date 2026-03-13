@@ -34,6 +34,7 @@ export default function DashboardEditProfile() {
     useSelector((state) => state.admin_slice);
 
   const handleSubmit = async (values, { resetForm }) => {
+    let response;
     if (role === 3 && isAuthenticated) {
       try {
         setUpdatingProfile(true);
@@ -43,9 +44,26 @@ export default function DashboardEditProfile() {
           : `${import.meta.env.VITE_API_URL}add-platform-owner-details?uid=${uid}`;
 
         if (id) {
-          const { data } = await axios.patch(apiURL, values, {
-            withCredentials: true
-          });
+          try {
+            // original request
+            response = await axios.patch(apiURL, values, {
+              withCredentials: true
+            });
+          } catch (error) {
+            // If access token expired → refresh
+            if (error.response?.status === 401) {
+              await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+              // Retry original request
+              response = await axios.patch(apiURL, values, {
+                withCredentials: true
+              });
+            } else {
+              throw error;
+            }
+          }
+
+          const { data } = response;
 
           if (data.success) {
             toast.success(data.message);
@@ -72,9 +90,27 @@ export default function DashboardEditProfile() {
             setUpdatingProfile(false);
           }
         } else {
-          const { data } = await axios.post(apiURL, values, {
-            withCredentials: true
-          });
+          try {
+            // original request
+            response = await axios.post(apiURL, values, {
+              withCredentials: true
+            });
+          } catch (error) {
+            // If access token expired → refresh
+            if (error.response?.status === 401) {
+              await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+              // Retry original request
+              response = await axios.post(apiURL, values, {
+                withCredentials: true
+              });
+            } else {
+              throw error;
+            }
+          }
+
+          const { data } = response;
+
           if (data.success) {
             toast.success(data.message);
             resetForm();
@@ -105,9 +141,26 @@ export default function DashboardEditProfile() {
             : `${import.meta.env.VITE_API_URL}add-tenant-detail?uid=${tenantId}`;
 
         if (id) {
-          const { data } = await axios.patch(apiURL, values, {
-            withCredentials: true
-          });
+          try {
+            // original request
+            response = await axios.patch(apiURL, values, {
+              withCredentials: true
+            });
+          } catch (error) {
+            // If access token expired → refresh
+            if (error.response?.status === 401) {
+              await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+              // Retry original request
+              response = await axios.patch(apiURL, values, {
+                withCredentials: true
+              });
+            } else {
+              throw error;
+            }
+          }
+
+          const { data } = response;
 
           if (data.success) {
             toast.success(data.message);
@@ -136,9 +189,27 @@ export default function DashboardEditProfile() {
             navigate('/dashboard/settings/profile');
           }
         } else {
-          const { data } = await axios.post(apiURL, values, {
-            withCredentials: true
-          });
+          try {
+            // original request
+            response = await axios.post(apiURL, values, {
+              withCredentials: true
+            });
+          } catch (error) {
+            // If access token expired → refresh
+            if (error.response?.status === 401) {
+              await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+              // Retry original request
+              response = await axios.post(apiURL, values, {
+                withCredentials: true
+              });
+            } else {
+              throw error;
+            }
+          }
+
+          const { data } = response;
+
           if (data.success) {
             toast.success(data.message);
 

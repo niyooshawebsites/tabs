@@ -27,9 +27,27 @@ export default function DashboardServices() {
   const fetchAllServices = async () => {
     try {
       serFetchingAllServices(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setPagination(data?.pagination);
@@ -81,11 +99,28 @@ export default function DashboardServices() {
       );
       if (!confirmation) return;
 
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}delete-service/${sid}?uid=${tenantId}`, {
-        withCredentials: true
-      });
-
       serDeletingService(true);
+      let response;
+
+      try {
+        response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-service/${sid}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-service/${sid}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);

@@ -54,9 +54,28 @@ export default function DashboardClientAppointments() {
         ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&uid=${tenantId}`
         : `?page=${page}&limit=${limit}&uid=${tenantId}`;
 
-      const { data } = await axios.get(`${baseUrl}${endPoint}${query}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${baseUrl}${endPoint}${query}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // original request
+          response = await axios.get(`${baseUrl}${endPoint}${query}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setAppointments(data.data);

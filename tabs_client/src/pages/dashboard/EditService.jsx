@@ -29,9 +29,28 @@ export default function EditService() {
 
   const fetchAllServices = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=${page}&limit=${limit}&uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(
@@ -66,7 +85,23 @@ export default function EditService() {
     setLoading(false);
     try {
       const apiURL = `${import.meta.env.VITE_API_URL}fetch-service/${sid}?uid=${tenantId}`;
-      const { data } = await axios.get(apiURL, { withCredentials: true });
+      let response;
+      try {
+        // original request
+        response = await axios.get(apiURL, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(apiURL, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setInitialService((prev) => {
@@ -100,10 +135,25 @@ export default function EditService() {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       setUpdating(true);
-
+      let response;
       const updateApiURL = `${import.meta.env.VITE_API_URL}update-service/${sid}?uid=${tenantId}`;
 
-      const { data } = await axios.patch(updateApiURL, values, { withCredentials: true });
+      try {
+        // original request
+        response = await axios.patch(updateApiURL, values, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.patch(updateApiURL, values, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);
@@ -146,7 +196,7 @@ export default function EditService() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      {fetchingServiceToUpdate ? (
+      {fetchingServiceToUpdate || loading ? (
         <Loader />
       ) : (
         <>

@@ -38,6 +38,6 @@ router.patch(
 router.post("/logout", logoutController);
 
 // refresh token route
-router.post("/token/refresh", refreshTokenController);
+router.post("/refresh-token", refreshTokenController);
 
 module.exports = router;

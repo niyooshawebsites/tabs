@@ -40,7 +40,7 @@ const AppointmentStatusUpdateModal = ({ isOpen, onClose, title }) => {
     remarks: Yup.string().required('Remarks are required')
   });
 
-  // ✅ Initial form values
+  // Initial form values
   const initialValues = {
     status: 'Pending',
     date: '',
@@ -48,21 +48,41 @@ const AppointmentStatusUpdateModal = ({ isOpen, onClose, title }) => {
     remarks: ''
   };
 
-  // ✅ Handle form submission
+  // Handle form submission
   const handleSubmit = async (values, { resetForm }) => {
     try {
       setLoading(true);
-      const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}update-appointment/${aid}?uid=${tenantId}`, values, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        // original request
+        response = await axios.patch(`${import.meta.env.VITE_API_URL}update-appointment/${aid}?uid=${tenantId}`, values, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.patch(`${import.meta.env.VITE_API_URL}update-appointment/${aid}?uid=${tenantId}`, values, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success('Appointment status updated');
-        onClose(); // instead of setIsModalOpen(false)
+        onClose();
         resetForm();
       }
     } catch (err) {
       console.error(err);
+
       const errorData = err.response?.data;
 
       if (errorData?.errors && Array.isArray(errorData.errors)) {

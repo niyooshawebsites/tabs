@@ -43,6 +43,7 @@ export default function AuthLogin() {
     try {
       setLoading(true);
       let apiURL;
+      let response;
 
       if (values.loginType === 'admin') {
         apiURL = `${import.meta.env.VITE_API_URL}tenant-login`;
@@ -52,7 +53,21 @@ export default function AuthLogin() {
         apiURL = `${import.meta.env.VITE_API_URL}staff-login`;
       }
 
-      const { data } = await axios.post(apiURL, values, { withCredentials: true });
+      try {
+        response = await axios.post(apiURL, values, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.post(apiURL, values, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);

@@ -42,9 +42,27 @@ export default function DashboardAppointmentDetails() {
   const fetchAppointment = async () => {
     try {
       setFetchingAppointmentDetails(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}dashboard-search-appointment/${aid}?uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}dashboard-search-appointment/${aid}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}dashboard-search-appointment/${aid}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         setAppointment((prev) => {

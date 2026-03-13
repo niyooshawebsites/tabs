@@ -20,12 +20,27 @@ export default function HeaderContent() {
 
   const fetchAllLocations = async (tid) => {
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}fetch-all-staff-locations?page=1&limit=10&empId=${empId}&tid=${tid}`,
-        {
+      let response;
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-staff-locations?page=1&limit=10&empId=${empId}&tid=${tid}`, {
           withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-staff-locations?page=1&limit=10&empId=${empId}&tid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
         }
-      );
+      }
+
+      const { data } = response;
 
       if (data.success) {
         dispatch(
@@ -57,12 +72,28 @@ export default function HeaderContent() {
 
   const fetchAllServices = async (tid) => {
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}fetch-all-staff-services?page=1&limit=10&empId=${empId}&tid=${tid}`,
-        {
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-staff-services?page=1&limit=10&empId=${empId}&tid=${tid}`, {
           withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-staff-services?page=1&limit=10&empId=${empId}&tid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
         }
-      );
+      }
+
+      const { data } = response;
+
       if (data.success) {
         dispatch(
           serviceSliceActions.captureServiceDetails({

@@ -31,7 +31,23 @@ export default function DashboardLayout() {
   // ---------------------------------------------
   const checkAuth = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}check-auth`, { withCredentials: true });
+      let response;
+      try {
+        // original request
+        response = await axios.get(`${import.meta.env.VITE_API_URL}check-auth`, { withCredentials: true });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}check-auth`, { withCredentials: true });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data?.success) {
         dispatch(

@@ -22,9 +22,27 @@ export default function DashboardAnnouncement() {
       setDeletingannouncement(true);
       const confirmation = confirm('Do you want to delete it? ');
       if (!confirmation) return;
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}delete-announcement/${aid}?uid=${tenantId}`, {
-        withCredentials: true
-      });
+      let response;
+
+      try {
+        response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-announcement/${aid}?uid=${tenantId}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.delete(`${import.meta.env.VITE_API_URL}delete-announcement/${aid}?uid=${tenantId}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
 
       if (data.success) {
         toast.success(data.message);
