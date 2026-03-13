@@ -29,7 +29,7 @@ const tenantRegistrationController = async (req, res) => {
     }
 
     // initiate a new tenant and save it the DB
-    const newTenant = await new Tenant({
+    await new Tenant({
       username,
       email,
       password,
@@ -39,7 +39,6 @@ const tenantRegistrationController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Registration successful",
-      data: newTenant,
     });
   } catch (err) {
     return res.status(500).json({

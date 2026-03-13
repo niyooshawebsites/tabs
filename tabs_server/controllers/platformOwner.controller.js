@@ -1,13 +1,15 @@
 const Appointment = require("../models/appointment.model");
 const Tenant = require("../models/tenant.model");
 const Client = require("../models/client.model");
+const Session = require("../models/session.model");
 const PlatformOwner = require("../models/platformOwner.model");
 const moment = require("moment");
+const UAParser = require("ua-parser-js");
 const {
-  encryptPassword,
-  decryptPassword,
-} = require("../utils/securePassword.util");
-const generateAuthToken = require("../utils/authToken.util");
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/authToken.util");
+const { hashToken } = require("../utils/tokenHash.util");
 
 // platform owner registration controller
 const platformOwnerRegistrationController = async (req, res) => {
@@ -17,18 +19,14 @@ const platformOwnerRegistrationController = async (req, res) => {
 
     const { password } = req.body;
 
-    // encrypting the password
-    const encryptedPassword = await encryptPassword(password);
-
     // initiate a new platform owner and save it the DB
-    const newPlatformOwner = await new PlatformOwner({
-      password: encryptedPassword,
+    await new PlatformOwner({
+      password,
     }).save();
 
     return res.status(200).json({
       success: true,
       message: "Registration successful",
-      data: newPlatformOwner,
     });
   } catch (err) {
     return res.status(500).json({
@@ -55,9 +53,9 @@ const platformOwnerLoginController = async (req, res) => {
     }
 
     // verify the password
-    const passwordVerfication = await decryptPassword(password, owner.password);
+    const isMatch = await owner.comparePassword(password);
 
-    if (!passwordVerfication) {
+    if (!isMatch) {
       return res.status(403).json({
         success: false,
         message: "Invalid credentials",
@@ -72,16 +70,46 @@ const platformOwnerLoginController = async (req, res) => {
       empId: owner.empId,
     };
 
-    // generate the authToken
-    const authToken = await generateAuthToken(loginDetails, "1d");
+    // generate the authTokens
+    const accessToken = generateAccessToken(loginDetails, "15m");
+    const refreshToken = generateRefreshToken(loginDetails, "7d");
+    const hashedRefreshToken = hashToken(refreshToken);
 
-    // set the cookie
-    res.cookie("authToken", authToken, {
+    const parser = new UAParser(req.headers["user-agent"]);
+    const device = parser.getDevice();
+    const browser = parser.getBrowser();
+    const os = parser.getOS();
+
+    // creating session
+    await Session.create({
+      userType: "PO",
+      userId: owner?._id,
+      refreshTokenHash: hashedRefreshToken,
+      id: req?.ip,
+      userAgent: req?.headers["user-agent"],
+      device: device?.model,
+      browser: browser?.name,
+      os: os?.name,
+      expirestAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    // set the cookie with access token
+    res.cookie("accessToken", accessToken, {
       httpOnly: process.env.COOKIE_HTTPONLY === "true",
       secure: process.env.NODE_ENV === "production",
       // sameSite: "None",
       sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 15 * 60 * 1000, // 15 mins
+      path: "/",
+    });
+
+    // set the cookie with refresh token
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: process.env.COOKIE_HTTPONLY === "true",
+      secure: process.env.NODE_ENV === "production",
+      // sameSite: "None",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
     });
 
@@ -91,7 +119,8 @@ const platformOwnerLoginController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      authToken,
+      accessToken,
+      refreshToken,
       data: loginDetails,
     });
   } catch (err) {
