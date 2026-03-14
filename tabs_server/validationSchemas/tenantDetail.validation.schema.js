@@ -5,19 +5,19 @@ const workingDaysSchema = z.array(z.string().min(1), {
   required_error: "Working days are required",
 });
 
-// Full day time
-const fullDaySchema = z.object({
-  start: z.string(),
-  end: z.string(),
-});
+// // Full day time
+// const fullDaySchema = z.object({
+//   start: z.string(),
+//   end: z.string(),
+// });
 
-// Part day time
-const partDaySchema = z.object({
-  morningStart: z.string().min(1, "Morning start time is required"),
-  morningEnd: z.string().min(1, "Morning end time is required"),
-  eveningStart: z.string().min(1, "Evening start time is required"),
-  eveningEnd: z.string().min(1, "Evening end time is required"),
-});
+// // Part day time
+// const partDaySchema = z.object({
+//   morningStart: z.string().min(1, "Morning start time is required"),
+//   morningEnd: z.string().min(1, "Morning end time is required"),
+//   eveningStart: z.string().min(1, "Evening start time is required"),
+//   eveningEnd: z.string().min(1, "Evening end time is required"),
+// });
 
 // Main timings schema
 const timingsSchema = z.discriminatedUnion("shiftType", [
@@ -42,7 +42,7 @@ const timingsSchema = z.discriminatedUnion("shiftType", [
   }),
 ]);
 
-const addAdminDetailsSchema = z.object({
+const addTenantDetailSchema = z.object({
   legalName: z.string().min(3, "Legal name must be greater than 3 characters"),
   gstNo: z.string().optional(),
   isDoctor: z.enum(["yes", "no"]),
@@ -61,6 +61,6 @@ const addAdminDetailsSchema = z.object({
   timings: timingsSchema,
 });
 
-const updateAdminDetailsSchema = addAdminDetailsSchema;
+const updateTenantDetailSchema = addTenantDetailSchema;
 
-module.exports = { addAdminDetailsSchema, updateAdminDetailsSchema };
+module.exports = { addTenantDetailSchema, updateTenantDetailSchema };

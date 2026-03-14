@@ -21,8 +21,13 @@ export default function Navigation() {
       )
     );
 
+  if (role === 3) {
+    // Role 3 sees all menu items
+    return <Box sx={{ pt: 2 }}>{renderGroups(menuItem.items)}</Box>;
+  }
+
   if (role === 2) {
-    // Role 1 sees all menu items
+    // Role 2 sees all menu items
     return <Box sx={{ pt: 2 }}>{renderGroups(menuItem.items)}</Box>;
   }
 

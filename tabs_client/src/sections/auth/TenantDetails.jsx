@@ -243,6 +243,8 @@ const TenantDetails = () => {
       }
 
       if (!data.success) {
+        const redirectUrl = `${import.meta.env.VITE_FRONTEND_URL}`;
+        window.location.replace(redirectUrl);
         toast.error('You are not registered with us. Register first.');
       }
     } catch (err) {

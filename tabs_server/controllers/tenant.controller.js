@@ -103,7 +103,7 @@ const tenantLoginController = async (req, res) => {
       device: device?.model,
       browser: browser?.name,
       os: os?.name,
-      expirestAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
     // set the cookie with access token

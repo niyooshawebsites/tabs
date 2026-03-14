@@ -5,8 +5,6 @@ const {
   fetchTenantDetailController,
   fetchAllTenantDetailForPlatformOwnerController,
   fetchAFilteredTenantDetailForPlatformOwnerController,
-  addPlatformOwnerDetailsController,
-  updatePlatformOwnerDetailsController,
 } = require("../controllers/tenantDetail.controller");
 const { isTenant, isPlatformOwner } = require("../middlewares/auth.middleware");
 const {
@@ -14,38 +12,38 @@ const {
   validateQuery,
 } = require("../middlewares/validation.middleware");
 const {
-  addAdminDetailsSchema,
-  updateAdminDetailsSchema,
-} = require("../validationSchemas/admin.validation.schema");
+  addTenantDetailSchema,
+  updateTenantDetailSchema,
+} = require("../validationSchemas/tenantDetail.validation.schema");
 
 const {
   querySchema,
 } = require("../validationSchemas/common.validation.schema");
 
-// add plaform owner details
-router.post(
-  "/add-platform-owner-details",
-  isPlatformOwner,
-  validateQuery(querySchema),
-  validateBody(addAdminDetailsSchema),
-  addPlatformOwnerDetailsController,
-);
+// // add plaform owner details
+// router.post(
+//   "/add-platform-owner-details",
+//   isPlatformOwner,
+//   validateQuery(querySchema),
+//   validateBody(addAdminDetailsSchema),
+//   addPlatformOwnerDetailsController,
+// );
 
-// update plaform owner details
-router.patch(
-  "/update-platform-owner-details",
-  isPlatformOwner,
-  validateQuery(querySchema),
-  validateBody(addAdminDetailsSchema),
-  updatePlatformOwnerDetailsController,
-);
+// // update plaform owner details
+// router.patch(
+//   "/update-platform-owner-details",
+//   isPlatformOwner,
+//   validateQuery(querySchema),
+//   validateBody(addAdminDetailsSchema),
+//   updatePlatformOwnerDetailsController,
+// );
 
 // add tenant details route
 router.post(
   "/add-tenant-detail",
   isTenant,
   validateQuery(querySchema),
-  validateBody(addAdminDetailsSchema),
+  validateBody(addTenantDetailSchema),
   addTenantDetailController,
 );
 
@@ -54,7 +52,7 @@ router.patch(
   "/update-tenant-detail",
   isTenant,
   validateQuery(querySchema),
-  validateBody(updateAdminDetailsSchema),
+  validateBody(updateTenantDetailSchema),
   updateTenantDetailController,
 );
 

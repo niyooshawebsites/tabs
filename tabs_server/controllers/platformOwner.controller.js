@@ -11,31 +11,31 @@ const {
 } = require("../utils/authToken.util");
 const { hashToken } = require("../utils/tokenHash.util");
 
-// platform owner registration controller
-const platformOwnerRegistrationController = async (req, res) => {
-  try {
-    // Ensure the response is not cached
-    res.setHeader("Cache-Control", "no-store");
+// // platform owner registration controller
+// const platformOwnerRegistrationController = async (req, res) => {
+//   try {
+//     // Ensure the response is not cached
+//     res.setHeader("Cache-Control", "no-store");
 
-    const { password } = req.body;
+//     const { password } = req.body;
 
-    // initiate a new platform owner and save it the DB
-    await new PlatformOwner({
-      password,
-    }).save();
+//     // initiate a new platform owner and save it the DB
+//     await new PlatformOwner({
+//       password,
+//     }).save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Registration successful",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error!",
-      err: err.message,
-    });
-  }
-};
+//     return res.status(200).json({
+//       success: true,
+//       message: "Registration successful",
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error!",
+//       err: err.message,
+//     });
+//   }
+// };
 
 // platform owner login controller
 const platformOwnerLoginController = async (req, res) => {
@@ -90,7 +90,7 @@ const platformOwnerLoginController = async (req, res) => {
       device: device?.model,
       browser: browser?.name,
       os: os?.name,
-      expirestAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
     // set the cookie with access token
@@ -186,7 +186,7 @@ const fetchOverAllStatsController = async (req, res) => {
 };
 
 module.exports = {
-  platformOwnerRegistrationController,
+  // platformOwnerRegistrationController,
   platformOwnerLoginController,
   fetchOverAllStatsController,
 };

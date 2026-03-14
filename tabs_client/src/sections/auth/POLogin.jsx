@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { loginSliceActions } from '../../store/slices/LoginSlice';
-import { tenantSliceActions } from '../../store/slices/TenantSlice';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import IconButton from 'components/@extended/IconButton';
@@ -30,7 +29,7 @@ export default function POLogin() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
-      let apiURL = `${import.meta.env.VITE_API_URL}/admin-login`;
+      let apiURL = `${import.meta.env.VITE_API_URL}po-login`;
 
       const { data } = await axios.post(apiURL, values, { withCredentials: true });
 
@@ -48,13 +47,13 @@ export default function POLogin() {
           })
         );
 
-        if (data?.data?.role == 2) {
-          dispatch(
-            tenantSliceActions.captureTenantDetails({
-              tenantId: data?.data?.uid
-            })
-          );
-        }
+        // if (data?.data?.role == 2) {
+        //   dispatch(
+        //     tenantSliceActions.captureTenantDetails({
+        //       tenantId: data?.data?.uid
+        //     })
+        //   );
+        // }
 
         navigate('/dashboard');
       }
