@@ -1,6 +1,10 @@
 import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 const Home = Loadable(lazy(() => import('../pages/nonAuth/Home')));
+const PoDashboardDefault = Loadable(lazy(() => import('pages/poDashboard/Default')));
+const PoDashboardTenants = Loadable(lazy(() => import('pages/poDashboard/AllTenants')));
+const PoDashboardStaffs = Loadable(lazy(() => import('pages/poDashboard/AllStaffs')));
+const PoDashboardClients = Loadable(lazy(() => import('pages/poDashboard/AllClients')));
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const DashboardCreateAppointment = Loadable(lazy(() => import('pages/dashboard/CreateAppointment')));
 const DashboardAppointments = Loadable(lazy(() => import('pages/dashboard/Appointments')));
@@ -68,6 +72,30 @@ const MainRoutes = {
     {
       path: '*',
       element: <NotFound />
+    },
+
+    // Protected Dashboard Routes
+    {
+      path: 'po/dashboard',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '',
+          element: <PoDashboardDefault />
+        },
+        {
+          path: 'tenants',
+          element: <PoDashboardTenants />
+        },
+        {
+          path: 'staffs',
+          element: <PoDashboardStaffs />
+        },
+        {
+          path: 'clients',
+          element: <PoDashboardClients />
+        }
+      ]
     },
 
     // Protected Dashboard Routes
@@ -167,14 +195,6 @@ const MainRoutes = {
           path: 'plan',
           element: <DashboardPlan />
         }
-        // {
-        //   path: 'tenants',
-        //   element: <Tenants />
-        // },
-        // {
-        //   path: 'end-users',
-        //   element: <EndUsers />
-        // }
       ]
     }
   ]

@@ -281,7 +281,7 @@ const TenantDetails = () => {
           })
         );
         // subDomainSliceActions;
-        if (subDomain != 'admin') {
+        if (subDomain != 'po') {
           fetchTenantDetails(subDomain);
         }
       }

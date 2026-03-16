@@ -65,7 +65,7 @@ const updateTenantDetailController = async (req, res) => {
   }
 };
 
-// fetch admin details
+// fetch tenant details
 const fetchTenantDetailController = async (req, res) => {
   const { username } = req.query;
 
@@ -131,7 +131,7 @@ const fetchTenantDetailController = async (req, res) => {
 
 //     // ✅ Get tenant User IDs from Admins
 //     const tenantUserIds = allAdmins
-//       .map((admin) => admin.tenant?._id)
+//       .map((td) => td.tenant?._id)
 //       .filter(Boolean);
 
 //     // ✅ Aggregate appointment & client counts using tenant (User._id)
@@ -154,11 +154,11 @@ const fetchTenantDetailController = async (req, res) => {
 //       clientsCounts.map((item) => [item._id.toString(), item.count])
 //     );
 
-//     // ✅ Enrich each admin with counts
-//     const enrichedAdmins = allAdmins.map((admin) => {
-//       const tenantId = admin.tenant?._id?.toString();
+//     // ✅ Enrich each tenant details with counts
+//     const enrichedAdmins = allAdmins.map((td) => {
+//       const tenantId = td.tenant?._id?.toString();
 //       return {
-//         ...admin,
+//         ...td,
 //         appointmentCount: appointmentMap[tenantId] || 0,
 //         clientCount: clientMap[tenantId] || 0,
 //       };

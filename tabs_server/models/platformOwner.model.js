@@ -5,7 +5,7 @@ const platformOwnerSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      default: "admin",
+      default: "po",
     },
     email: {
       type: String,

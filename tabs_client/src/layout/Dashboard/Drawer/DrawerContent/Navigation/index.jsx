@@ -23,12 +23,25 @@ export default function Navigation() {
 
   if (role === 3) {
     // Role 3 sees all menu items
-    return <Box sx={{ pt: 2 }}>{renderGroups(menuItem.items)}</Box>;
+    const poNavigationMenu = menuItem.items.filter(
+      (item) =>
+        item.title !== 'Navigation' &&
+        item.title !== 'Appoinitments' &&
+        item.title !== 'Staff' &&
+        item.title !== 'Services' &&
+        item.title !== 'Location' &&
+        item.title !== 'Clients' &&
+        item.title !== 'Notification'
+    );
+    return <Box sx={{ pt: 2 }}>{renderGroups(poNavigationMenu)}</Box>;
   }
 
   if (role === 2) {
     // Role 2 sees all menu items
-    return <Box sx={{ pt: 2 }}>{renderGroups(menuItem.items)}</Box>;
+    const tenantNavigationMenu = menuItem.items.filter(
+      (item) => item.title !== 'Po Dashboard' && item.title !== 'PO Tenants' && item.title !== 'PO Staffs' && item.title !== 'PO Clients'
+    );
+    return <Box sx={{ pt: 2 }}>{renderGroups(tenantNavigationMenu)}</Box>;
   }
 
   if (role === 1) {

@@ -1,7 +1,7 @@
 const mailer = require("nodemailer");
 const moment = require("moment");
 
-const sendAppointmentBookingEmail = (client, appointment, admin) => {
+const sendAppointmentBookingEmail = (client, appointment, tenantDetail) => {
   const msg = `
     <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; font-family: Arial, sans-serif; color: #333;">
     <h1 style="color: #000; text-align:center">IABS</h1>
@@ -22,7 +22,7 @@ const sendAppointmentBookingEmail = (client, appointment, admin) => {
         at
         <strong style="color: #FF6600;">${appointment.time}</strong>
         with
-        <strong style="color: #FF6600;">${admin.legalName}</strong>
+        <strong style="color: #FF6600;">${tenantDetail.legalName}</strong>
         is <strong style="color: #FF6600;">${appointment.status}</strong>.
       </p>
 
@@ -69,7 +69,11 @@ const sendAppointmentBookingEmail = (client, appointment, admin) => {
   });
 };
 
-const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
+const sendAppointmentStatusChangeEmail = (
+  client,
+  appointment,
+  tenantDetail,
+) => {
   const generalMsg = `
     <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; font-family: Arial, sans-serif; color: #333;">
     <h1 style="color: #000; text-align:center">IABS</h1>
@@ -95,7 +99,7 @@ const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
         at
         <strong style="color: #FF6600;">${appointment.time}</strong>
         with
-        <strong style="color: #FF6600;">${admin.legalName}</strong>
+        <strong style="color: #FF6600;">${tenantDetail.legalName}</strong>
         is <strong style="color: #FF6600;">${appointment.status}</strong>.
       </p>
 
@@ -129,7 +133,7 @@ const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
         <strong style="color: #FF6600;">${
           appointment.service.name
         }</strong>        with
-        <strong style="color: #FF6600;">${admin.legalName}</strong>
+        <strong style="color: #FF6600;">${tenantDetail.legalName}</strong>
         has been rescheduled on <strong style="color: #FF6600;">
           ${moment(appointment.date).format("DD-MM-YYYY")}
         </strong>
@@ -173,7 +177,7 @@ const sendAppointmentStatusChangeEmail = (client, appointment, admin) => {
           appointment.time
         }</strong>        with
         <strong style="color: #FF6600;">${
-          admin.legalName
+          tenantDetail.legalName
         }</strong> is <strong style="color: #FF6600;">${
           appointment.staus
         }</strong>

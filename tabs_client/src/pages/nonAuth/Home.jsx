@@ -133,8 +133,8 @@ export default function Home() {
       notes: ''
     };
 
-    if (subDomain == 'admin') {
-      navigate('/admin/login');
+    if (subDomain == 'po') {
+      navigate('/po/login');
     }
 
     if (!id) {
