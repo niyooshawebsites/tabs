@@ -408,6 +408,48 @@ const resetStaffPasswordController = async (req, res) => {
   }
 };
 
+// fetch all staffs controller
+const fetchAllStaffsForPOController = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalStaffs = await Staff.countDocuments({});
+    const staffs = await Staff.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    if (staffs.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No staffs found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Staffs fetched successfully",
+      data: staffs,
+      pagination: {
+        totalStaffs,
+        page,
+        limit,
+        totalPages: Math.ceil(totalStaffs / limit),
+        hasNextPage: page * limit < totalStaffs,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   staffCreationController,
   staffLoginController,
@@ -419,4 +461,5 @@ module.exports = {
   fetchAllStaffServicesController,
   fetchAllStaffLocationsController,
   resetStaffPasswordController,
+  fetchAllStaffsForPOController,
 };

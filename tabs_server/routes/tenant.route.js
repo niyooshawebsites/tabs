@@ -4,9 +4,10 @@ const {
   tenantLoginController,
   updateTenantController,
   doesTenantExistController,
+  fetchAllTenantsForPOController,
 } = require("../controllers/tenant.controller");
 
-const { isTenant } = require("../middlewares/auth.middleware");
+const { isTenant, isPlatformOwner } = require("../middlewares/auth.middleware");
 
 const {
   validateBody,
@@ -43,5 +44,11 @@ router.patch(
 );
 
 router.get("/does-tenant-exist", doesTenantExistController);
+
+router.get(
+  "/fetch-all-tenants-for-po",
+  isPlatformOwner,
+  fetchAllTenantsForPOController,
+);
 
 module.exports = router;

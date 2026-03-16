@@ -149,9 +149,52 @@ const fetchAllClientsForPlatformOwnerController = async (req, res) => {
   }
 };
 
+// fetch all clients controller
+const fetchAllClientsForPOController = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalClients = await Client.countDocuments({});
+    const clients = await Client.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    if (clients.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No clients found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Clients fetched successfully",
+      data: clients,
+      pagination: {
+        totalClients,
+        page,
+        limit,
+        totalPages: Math.ceil(totalClients / limit),
+        hasNextPage: page * limit < totalClients,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   fetchAllClientsController,
   fetchAClientController,
   fetchAClientByPhoneController,
   fetchAllClientsForPlatformOwnerController,
+  fetchAllClientsForPOController,
 };

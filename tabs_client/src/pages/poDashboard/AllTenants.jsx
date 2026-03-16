@@ -39,7 +39,7 @@ export default function PoDashboardTenants() {
 
       try {
         // original request
-        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-clients?page=${page}&limit=${limit}&uid=${tenantId}`, {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-tenants-for-po?page=${page}&limit=${limit}`, {
           withCredentials: true
         });
       } catch (error) {
@@ -48,7 +48,7 @@ export default function PoDashboardTenants() {
           await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
           // Retry original request
-          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-clients?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-tenants-for-po?page=${page}&limit=${limit}`, {
             withCredentials: true
           });
         } else {

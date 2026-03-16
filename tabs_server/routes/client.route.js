@@ -5,6 +5,7 @@ const {
   fetchAClientController,
   fetchAClientByPhoneController,
   fetchAllClientsForPlatformOwnerController,
+  fetchAllClientsForPOController,
 } = require("../controllers/client.controller");
 
 const {
@@ -27,7 +28,7 @@ router.get(
   "/fetch-all-clients",
   isTenantOrStaff,
   validateQuery(querySchema),
-  fetchAllClientsController
+  fetchAllClientsController,
 );
 
 // fetch a client route
@@ -36,7 +37,7 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   validateParams(generateParamSchema("cid")),
-  fetchAClientController
+  fetchAClientController,
 );
 
 // fetch a client by phone route
@@ -45,7 +46,7 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   validateParams(generateParamSchema("clientInfo")),
-  fetchAClientByPhoneController
+  fetchAClientByPhoneController,
 );
 
 // fetch all clients for platform owner route
@@ -53,7 +54,13 @@ router.get(
   "/fetch-all-clients-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAllClientsForPlatformOwnerController
+  fetchAllClientsForPlatformOwnerController,
+);
+
+router.get(
+  "/fetch-all-clients-for-po",
+  isPlatformOwner,
+  fetchAllClientsForPOController,
 );
 
 module.exports = router;

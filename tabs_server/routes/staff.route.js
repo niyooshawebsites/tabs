@@ -11,9 +11,14 @@ const {
   fetchAllStaffServicesController,
   fetchAllStaffLocationsController,
   resetStaffPasswordController,
+  fetchAllStaffsForPOController,
 } = require("../controllers/staff.controller");
 
-const { isTenant, isStaff } = require("../middlewares/auth.middleware");
+const {
+  isTenant,
+  isStaff,
+  isPlatformOwner,
+} = require("../middlewares/auth.middleware");
 
 const {
   validateBody,
@@ -115,6 +120,12 @@ router.patch(
   validateQuery(querySchema),
   validateParams(generateParamSchema("staffId")),
   resetStaffPasswordController,
+);
+
+router.get(
+  "/fetch-all-staffs-for-po",
+  isPlatformOwner,
+  fetchAllStaffsForPOController,
 );
 
 module.exports = router;
