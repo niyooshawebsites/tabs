@@ -2,20 +2,14 @@ import { Grid, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import TenantsTable from '../../sections/dashboard/default/TenantsTable';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
-import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 import { toast } from 'react-toastify';
 
 export default function PoDashboardTenants() {
-  // const { tenantId } = useSelector((state) => state.tenant_slice);
-  const { services } = useSelector((state) => state.service_slice);
-  const { locations } = useSelector((state) => state.location_slice);
-  const { id } = useSelector((state) => state.admin_slice);
   const [tenants, setTenants] = useState([]);
   const [selectedTenantId, setSelectedTenantId] = useState(null);
   const [page, setPage] = useState(1);
@@ -95,22 +89,8 @@ export default function PoDashboardTenants() {
   };
 
   useEffect(() => {
-    if (locations.length > 0) {
-      fetchAllTenants();
-    }
+    fetchAllTenants();
   }, [page, isRefreshed]);
-
-  if (!id) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (locations.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (services.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -121,7 +101,9 @@ export default function PoDashboardTenants() {
           {tenants.length > 0 ? (
             <Grid size={{ xs: 12, md: 12, lg: 12 }}>
               <Grid container direction="row" alignItems="center" justifyContent="space-between">
-                <DashboardHeading title={pagination.totalTenants < 10 ? `0${pagination.totalTenants}` : pagination.totalTenants} />
+                <DashboardHeading
+                  title={`Tenants (${pagination.totalTenants < 10 ? `0${pagination.totalTenants}` : pagination.totalTenants})`}
+                />
                 <Typography
                   variant="body1"
                   color="primary"

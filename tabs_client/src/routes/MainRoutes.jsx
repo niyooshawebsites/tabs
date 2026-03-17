@@ -186,6 +186,10 @@ const MainRoutes = {
         {
           path: 'all-clients',
           element: <PoDashboardClients />
+        },
+        {
+          path: 'tenant/details/:tid',
+          element: <PoDashboardTenants />
         }
       ]
     }

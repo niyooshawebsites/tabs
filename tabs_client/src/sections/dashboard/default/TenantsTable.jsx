@@ -10,7 +10,7 @@ const headCells = [
     id: 'ID',
     align: 'left',
     disablePadding: false,
-    label: 'ID'
+    label: 'Tenant ID'
   },
   {
     id: 'username',
@@ -28,13 +28,13 @@ const headCells = [
     id: 'totalAppointments',
     align: 'left',
     disablePadding: false,
-    label: 'Total Appointments'
+    label: 'Appts'
   },
   {
     id: 'totalClients',
     align: 'left',
     disablePadding: false,
-    label: 'Total Clients'
+    label: 'Clients'
   },
   {
     id: 'planName',
@@ -124,12 +124,15 @@ export default function TenantsTable({ tenants, handlePrev, handleNext, fetchTen
                       <TableCell component="th" id={labelId} scope="row">
                         <span color="secondary">{row?.plan?.price}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                      >
                         <Link color="secondary" onClick={() => fetchTenantAppointments(row._id)}>
                           <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
                         </Link>
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
                         <Link color="secondary" onClick={() => fetchTenantDetails(row._id)} sx={{ cursor: 'pointer' }}>
                           <InfoOutlineIcon color="primary" />
                         </Link>
