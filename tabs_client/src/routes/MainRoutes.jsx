@@ -54,7 +54,7 @@ const MainRoutes = {
       element: <Login />
     },
     {
-      path: 'po/login',
+      path: 'login-po',
       element: <PlatformOwnerLogin />
     },
     {
@@ -173,10 +173,6 @@ const MainRoutes = {
         },
         {
           path: 'pod',
-          element: <PoDashboardTenants />
-        },
-        {
-          path: '/pod',
           element: <PoDashboardDefault />
         },
         {
