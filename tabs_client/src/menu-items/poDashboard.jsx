@@ -16,7 +16,7 @@ const poDashboard = {
       id: 'poDashboard',
       title: 'Po Dashboard',
       type: 'item',
-      url: '/po/dashboard',
+      url: '/dashboard/pod',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     }

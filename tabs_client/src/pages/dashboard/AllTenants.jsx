@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import ClientsTable from '../../sections/dashboard/default/ClientsTable';
+import TenantsTable from '../../sections/dashboard/default/TenantsTable';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,29 +12,28 @@ import NoInfo from '../../components/NoInfo';
 import { toast } from 'react-toastify';
 
 export default function PoDashboardTenants() {
-  const { tenantId } = useSelector((state) => state.tenant_slice);
+  // const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
   const { id } = useSelector((state) => state.admin_slice);
-  const [clients, setClients] = useState([]);
-  const [selectedClientId, setSelectedClientId] = useState(null);
+  const [tenants, setTenants] = useState([]);
+  const [selectedTenantId, setSelectedTenantId] = useState(null);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [pagination, setPagination] = useState({
-    totalClients: 0,
+    totalTenants: 0,
     totalPages: 0,
     hasNextPage: false,
     hasPrevPage: false
   });
 
   const navigate = useNavigate();
-  const { isDoctor } = useSelector((state) => state.admin_slice);
-  const [fetchingClients, setFetchingClients] = useState(false);
+  const [fetchingTenants, setFetchingTenants] = useState(false);
   const [isRefreshed, setIsRefreshed] = useState(false);
 
-  const fetchAllClients = async () => {
+  const fetchAllTenants = async () => {
     try {
-      setFetchingClients(true);
+      setFetchingTenants(true);
       let response;
 
       try {
@@ -59,9 +58,9 @@ export default function PoDashboardTenants() {
       const { data } = response;
 
       if (data.success) {
-        setClients(data.data);
+        setTenants(data.data);
         setPagination(data.pagination);
-        setFetchingClients(false);
+        setFetchingTenants(false);
       }
     } catch (err) {
       console.log(err);
@@ -75,12 +74,12 @@ export default function PoDashboardTenants() {
         const errorMessage = errorData?.message || 'Something went wrong';
         toast.error(errorMessage);
       }
-      setFetchingClients(false);
+      setFetchingTenants(false);
     }
   };
 
-  const fetchClientDetails = async (cid) => {
-    navigate(`/dashboard/client/details/${cid}`);
+  const fetchTenantDetails = async (tid) => {
+    navigate(`/dashboard/tenant/details/${tid}`);
   };
 
   const handleNext = () => {
@@ -91,13 +90,13 @@ export default function PoDashboardTenants() {
     if (pagination.hasPrevPage) setPage((prev) => prev - 1);
   };
 
-  const fetchClientAppointments = (cid) => {
-    navigate(`/dashboard/client/appointments/${cid}`);
+  const fetchTenantAppointments = (tid) => {
+    navigate(`/dashboard/tenant/appointments/${tid}`);
   };
 
   useEffect(() => {
     if (locations.length > 0) {
-      fetchAllClients();
+      fetchAllTenants();
     }
   }, [page, isRefreshed]);
 
@@ -115,20 +114,14 @@ export default function PoDashboardTenants() {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      {fetchingClients ? (
+      {fetchingTenants ? (
         <Loader />
       ) : (
         <>
-          {clients.length > 0 ? (
+          {tenants.length > 0 ? (
             <Grid size={{ xs: 12, md: 12, lg: 12 }}>
               <Grid container direction="row" alignItems="center" justifyContent="space-between">
-                <DashboardHeading
-                  title={
-                    isDoctor == 'yes'
-                      ? `All Patients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
-                      : `All Clients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
-                  }
-                />
+                <DashboardHeading title={pagination.totalTenants < 10 ? `0${pagination.totalTenants}` : pagination.totalTenants} />
                 <Typography
                   variant="body1"
                   color="primary"
@@ -146,14 +139,14 @@ export default function PoDashboardTenants() {
                 </Typography>
               </Grid>
               <MainCard sx={{ mt: 2 }} content={false}>
-                <ClientsTable
-                  clients={clients}
+                <TenantsTable
+                  tenants={tenants}
                   handlePrev={handlePrev}
                   handleNext={handleNext}
-                  selectedClientId={selectedClientId}
-                  fetchClientDetails={fetchClientDetails}
-                  setSelectedClientId={setSelectedClientId}
-                  fetchClientAppointments={fetchClientAppointments}
+                  selectedTenantId={selectedTenantId}
+                  fetchTenantDetails={fetchTenantDetails}
+                  setSelectedTenantId={setSelectedTenantId}
+                  fetchTenantAppointments={fetchTenantAppointments}
                   page={page}
                   pagination={pagination}
                 />

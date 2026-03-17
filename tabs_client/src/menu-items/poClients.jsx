@@ -11,7 +11,7 @@ const poClients = {
     {
       title: 'All Clients',
       type: 'item',
-      url: '/po/dashboard/clients',
+      url: '/dashboard/all-clients',
       icon: icons.UserOutlined
     }
   ]

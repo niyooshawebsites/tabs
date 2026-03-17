@@ -55,7 +55,7 @@ export default function POLogin() {
         //   );
         // }
 
-        navigate('/po/dashboard');
+        navigate('/dashboard/pod');
       }
     } catch (err) {
       const errorData = err.response?.data;

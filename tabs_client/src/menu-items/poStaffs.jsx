@@ -11,7 +11,7 @@ const poStaffs = {
     {
       title: 'All Staffs',
       type: 'item',
-      url: '/po/dashboard/staffs',
+      url: '/dashboard/all-staffs',
       icon: icons.UserOutlined
     }
   ]

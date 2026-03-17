@@ -11,7 +11,7 @@ const poTenants = {
     {
       title: 'All Tenants',
       type: 'item',
-      url: '/po/dashboard/tenants',
+      url: '/dashboard/all-tenants',
       icon: icons.UserOutlined
     }
   ]
