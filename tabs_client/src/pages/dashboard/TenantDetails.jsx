@@ -1,6 +1,7 @@
 import { Grid, Stack, Typography, Box, Button } from '@mui/material';
 import DashboardHeading from '../../components/DashboardHeading';
 import { useNavigate } from 'react-router';
+import { useState, useEffect } from 'react';
 
 export default function DashboardViewProfile() {
   const [tenant, setTenant] = useState({
@@ -18,6 +19,10 @@ export default function DashboardViewProfile() {
     timings: ''
   });
   const navigate = useNavigate();
+
+  const fetchTenantDetails = async () => {};
+
+  useEffect(() => fetchTenantDetails(tid), []);
 
   return (
     <Grid container spacing={3}>
