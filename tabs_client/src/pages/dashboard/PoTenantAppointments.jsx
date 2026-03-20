@@ -109,9 +109,7 @@ export default function PoTenantAppointments() {
   };
 
   useEffect(() => {
-    if (services.length > 0) {
-      fetchTenatAppointments();
-    }
+    fetchTenatAppointments();
   }, [page, filters, isModalOpen, isRefreshed]);
 
   return (
