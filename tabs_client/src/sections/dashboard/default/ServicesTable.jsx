@@ -17,13 +17,13 @@ const headCells = [
   },
   {
     id: 'Service Charges',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Service Charges'
   },
   {
     id: 'Avg Service Duration (mins)',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Avg Service Duration'
   },
@@ -88,10 +88,14 @@ export default function ServicesTable({ services, handlePrev, handleNext, editSe
                         <span color="secondary">{row?.name}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">&#8377; {row?.charges}</span>
+                        <span color="secondary" className="tableContentCenter">
+                          &#8377; {row?.charges}
+                        </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row?.duration} mins</span>
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.duration} mins
+                        </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
                         <Grid container direction="row" alignItems="center" gap={2}>

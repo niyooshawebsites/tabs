@@ -5,6 +5,7 @@ const Session = require("../models/session.model");
 const Location = require("../models/location.model");
 const Staff = require("../models/staff.model");
 const PlatformOwner = require("../models/platformOwner.model");
+const TenantDetail = require("../models/tenantDetail.model");
 const moment = require("moment");
 const UAParser = require("ua-parser-js");
 const {
@@ -283,9 +284,87 @@ const fetchAllTenantsForPoController = async (req, res) => {
   }
 };
 
+// fetch tenant details
+const fetchTenantDetailForPoController = async (req, res) => {
+  const { tid } = req.query;
+
+  try {
+    const tenantDetail = await TenantDetail.findOne({ tenant: tid });
+
+    if (!tenantDetail) {
+      return res.status(404).json({
+        success: false,
+        message: "Tenant detail not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tenant details fetched successfully",
+      data: tenantDetail,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
+// fetch tenant appointments for platform owner
+const fetchTenantAppointmentsForPoController = async (req, res) => {
+  try {
+    const { tid } = req.query;
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const totalAppointments = await Appointment.countDocuments();
+
+    const allAppointments = await Appointment.find({ tenant: tid })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .populate("service")
+      .populate("location")
+      .populate("client")
+      .populate("tenant");
+
+    if (allAppointments.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No appointments found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointments found",
+      data: allAppointments,
+      pagination: {
+        totalAppointments,
+        limit,
+        page,
+        totalPages: Math.ceil(totalAppointments / limit),
+        hasNextPage: page * limit < totalAppointments,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   // platformOwnerRegistrationController,
   platformOwnerLoginController,
   fetchOverAllStatsController,
   fetchAllTenantsForPoController,
+  fetchTenantDetailForPoController,
+  fetchTenantAppointmentsForPoController,
 };

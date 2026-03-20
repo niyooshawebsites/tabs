@@ -57,19 +57,19 @@ const headCells = [
   },
   {
     id: 'Phone',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Phone'
   },
   {
     id: 'Date',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Date'
   },
   {
     id: 'Time',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Time'
   },
@@ -222,13 +222,19 @@ export default function AppointmentsTable({
                           <span color="secondary">{row?.client?.email}</span>
                         </TableCell>
                         <TableCell component="td" id={labelId} scope="row">
-                          <span color="secondary">{row?.client?.phone}</span>
+                          <span color="secondary" className="tableContentCenter">
+                            {row?.client?.phone}
+                          </span>
                         </TableCell>
                         <TableCell component="td" id={labelId} scope="row">
-                          <span color="secondary">{moment(row?.date).format('DD-MM-YYYY')}</span>
+                          <span color="secondary" className="tableContentCenter">
+                            {moment(row?.date).format('DD-MM-YYYY')}
+                          </span>
                         </TableCell>
                         <TableCell component="td" id={labelId} scope="row">
-                          <span color="secondary">{row?.time}</span>
+                          <span color="secondary" className="tableContentCenter">
+                            {row?.time}
+                          </span>
                         </TableCell>
                         <TableCell component="td" id={labelId} scope="row">
                           <AppointmentStatus status={row?.status} />

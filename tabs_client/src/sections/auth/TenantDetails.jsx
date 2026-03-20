@@ -16,7 +16,7 @@ const TenantDetails = () => {
     detectSubDomain();
   }, []);
 
-  const fetchAdminDetails = async (subDomain) => {
+  const fetchTenantDetail = async (subDomain) => {
     try {
       if (subDomain) {
         let response;
@@ -236,7 +236,7 @@ const TenantDetails = () => {
           })
         );
 
-        fetchAdminDetails(adminDetailsSubDomain);
+        fetchTenantDetail(adminDetailsSubDomain);
         fetchAllLocations(data?.data?.id);
         fetchAllServices(data?.data?.id);
         fetchAnnouncement(data?.data?.id);

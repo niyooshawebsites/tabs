@@ -1391,53 +1391,6 @@ const fetchTodayFilteredAppointmentsController = async (req, res) => {
   }
 };
 
-// fetch all appointments for platform owner
-const fetchAllAppointmentsForPlatformOwnerController = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 10;
-    const page = parseInt(req.query.page) || 1;
-    const skip = (page - 1) * limit;
-
-    const totalAppointments = await Appointment.countDocuments();
-
-    const allAppointments = await Appointment.find()
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .populate("service")
-      .populate("location")
-      .populate("client")
-      .populate("tenant");
-
-    if (allAppointments.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No appointments found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Appointments found",
-      data: allAppointments,
-      pagination: {
-        totalAppointments,
-        limit,
-        page,
-        totalPages: Math.ceil(totalAppointments / limit),
-        hasNextPage: page * limit < totalAppointments,
-        hasPrevPage: page > 1,
-      },
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-      err: err.message,
-    });
-  }
-};
-
 module.exports = {
   appointmentSlotsAvailabilityCheckController,
   bookAppointmentController,
@@ -1452,7 +1405,6 @@ module.exports = {
   fetchFilteredAppointmentsForPlatformOwnerController,
   fetchTodayFilteredAppointmentsController,
   fetchFilteredClientAppointmentsController,
-  fetchAllAppointmentsForPlatformOwnerController,
   fetchLast7DaysAppointmentsController,
   fetchYearlyAppointmentsController,
 };

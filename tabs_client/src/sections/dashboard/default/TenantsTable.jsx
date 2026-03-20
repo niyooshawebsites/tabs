@@ -61,6 +61,12 @@ const headCells = [
     label: 'Plan price'
   },
   {
+    id: 'doj',
+    align: 'center',
+    disablePadding: false,
+    label: 'DOJ'
+  },
+  {
     id: 'moreInfo',
     align: 'center',
     disablePadding: false,
@@ -147,6 +153,11 @@ export default function TenantsTable({ tenants, handlePrev, handleNext, fetchTen
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary" className="tableContentCenter">
                           {row?.plan?.name.toUpperCase()}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.plan?.price}
                         </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">

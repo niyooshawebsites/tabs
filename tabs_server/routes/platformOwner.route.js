@@ -5,6 +5,8 @@ const {
   platformOwnerLoginController,
   fetchOverAllStatsController,
   fetchAllTenantsForPoController,
+  fetchTenantDetailForPoController,
+  fetchTenantAppointmentsForPoController,
 } = require("../controllers/platformOwner.controller");
 const { isPlatformOwner } = require("../middlewares/auth.middleware");
 const {
@@ -30,6 +32,18 @@ router.get(
   "/fetch-all-tenants-for-po",
   isPlatformOwner,
   fetchAllTenantsForPoController,
+);
+
+router.get(
+  "/fetch-tenant-detail-for-po",
+  isPlatformOwner,
+  fetchTenantDetailForPoController,
+);
+
+router.get(
+  "/fetch-tenant-appointments-for-po",
+  isPlatformOwner,
+  fetchTenantAppointmentsForPoController,
 );
 
 module.exports = router;

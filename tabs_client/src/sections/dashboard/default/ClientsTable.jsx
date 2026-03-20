@@ -32,7 +32,7 @@ const headCells = [
   },
   {
     id: 'Phone',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Phone'
   },
@@ -110,7 +110,9 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
                         <span color="secondary">{row?.email}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row?.phone}</span>
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.phone}
+                        </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
                         <Link color="secondary" onClick={() => fetchClientAppointments(row._id)}>

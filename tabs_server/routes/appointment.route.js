@@ -13,7 +13,6 @@ const {
   fetchFilteredAppointmentsForPlatformOwnerController,
   fetchTodayFilteredAppointmentsController,
   fetchFilteredClientAppointmentsController,
-  fetchAllAppointmentsForPlatformOwnerController,
   fetchLast7DaysAppointmentsController,
   fetchYearlyAppointmentsController,
 } = require("../controllers/appointment.controller");
@@ -163,14 +162,6 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   fetchTodayFilteredAppointmentsController,
-);
-
-// fetch alls appointments for platform owner route
-router.get(
-  "/fetch-all-appointments-for-platform-owner",
-  isPlatformOwner,
-  validateQuery(querySchema),
-  fetchAllAppointmentsForPlatformOwnerController,
 );
 
 module.exports = router;
