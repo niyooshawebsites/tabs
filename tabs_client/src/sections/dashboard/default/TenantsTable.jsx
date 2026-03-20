@@ -26,31 +26,43 @@ const headCells = [
   },
   {
     id: 'totalAppointments',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Appts'
   },
   {
     id: 'totalClients',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Clients'
   },
   {
+    id: 'totalStaffs',
+    align: 'center',
+    disablePadding: false,
+    label: 'Staffs'
+  },
+  {
+    id: 'totalLocations',
+    align: 'center',
+    disablePadding: false,
+    label: 'Locations'
+  },
+  {
     id: 'planName',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Plan name'
   },
   {
     id: 'PlanPrice',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Plan price'
   },
   {
     id: 'moreInfo',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'More info'
   }
@@ -102,38 +114,48 @@ export default function TenantsTable({ tenants, handlePrev, handleNext, fetchTen
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
-                      <TableCell component="th" id={labelId} scope="row">
+                    <TableRow hover role="checkbox" key={row._id}>
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row._id}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.username}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.profession}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.totalAppointments}</span>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter" onClick={() => fetchTenantAppointments(row._id)}>
+                          {row?.appointmentCount}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.clientCount}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.staffCount}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.locationCount}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.plan?.name.toUpperCase()}
+                        </span>
+                      </TableCell>
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary" className="tableContentCenter">
+                          {row?.plan?.price}
+                        </span>
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.totalClients}</span>
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.plan?.name}</span>
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        <span color="secondary">{row?.plan?.price}</span>
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
-                      >
-                        <Link color="secondary" onClick={() => fetchTenantAppointments(row._id)}>
-                          <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
-                        </Link>
-                        <Link color="secondary" onClick={() => fetchTenantDetails(row._id)} sx={{ cursor: 'pointer' }}>
+                        <Link color="secondary" onClick={() => fetchTenantDetails(row._id)} className="tableContentCenter">
                           <InfoOutlineIcon color="primary" />
                         </Link>
                       </TableCell>

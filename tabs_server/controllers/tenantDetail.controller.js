@@ -107,86 +107,7 @@ const fetchTenantDetailController = async (req, res) => {
   }
 };
 
-// const fetchAllAdminsForPlatformOwnerController = async (req, res) => {
-//   try {
-//     const limit = parseInt(req.query.limit) || 10;
-//     const page = parseInt(req.query.page) || 1;
-//     const skip = (page - 1) * limit;
-
-//     const totalAdmins = await Admin.countDocuments();
-
-//     const allAdmins = await Admin.find()
-//       .skip(skip)
-//       .limit(limit)
-//       .sort({ createdAt: -1 })
-//       .populate("tenant")
-//       .lean();
-
-//     if (allAdmins.length === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "No tenant details found",
-//       });
-//     }
-
-//     // ✅ Get tenant User IDs from Admins
-//     const tenantUserIds = allAdmins
-//       .map((td) => td.tenant?._id)
-//       .filter(Boolean);
-
-//     // ✅ Aggregate appointment & client counts using tenant (User._id)
-//     const [appointmentsCounts, clientsCounts] = await Promise.all([
-//       Appointment.aggregate([
-//         { $match: { tenant: { $in: tenantUserIds } } },
-//         { $group: { _id: "$tenant", count: { $sum: 1 } } },
-//       ]),
-//       Client.aggregate([
-//         { $match: { tenant: { $in: tenantUserIds } } },
-//         { $group: { _id: "$tenant", count: { $sum: 1 } } },
-//       ]),
-//     ]);
-
-//     // ✅ Convert counts into maps
-//     const appointmentMap = Object.fromEntries(
-//       appointmentsCounts.map((item) => [item._id.toString(), item.count])
-//     );
-//     const clientMap = Object.fromEntries(
-//       clientsCounts.map((item) => [item._id.toString(), item.count])
-//     );
-
-//     // ✅ Enrich each tenant details with counts
-//     const enrichedAdmins = allAdmins.map((td) => {
-//       const tenantId = td.tenant?._id?.toString();
-//       return {
-//         ...td,
-//         appointmentCount: appointmentMap[tenantId] || 0,
-//         clientCount: clientMap[tenantId] || 0,
-//       };
-//     });
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Tenant details found",
-//       data: enrichedAdmins,
-//       pagination: {
-//         totalTenants: totalAdmins,
-//         limit,
-//         page,
-//         totalPages: Math.ceil(totalAdmins / limit),
-//         hasNextPage: page * limit < totalAdmins,
-//         hasPrevPage: page > 1,
-//       },
-//     });
-//   } catch (err) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//       err: err.message,
-//     });
-//   }
-// };
-
-const fetchAllTenantDetailForPlatformOwnerController = async (req, res) => {
+const fetchAllTenantDetailForPoController = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
@@ -281,10 +202,7 @@ const fetchAllTenantDetailForPlatformOwnerController = async (req, res) => {
 };
 
 // fetch filtered tenant details form platform ownner controller
-const fetchAFilteredTenantDetailForPlatformOwnerController = async (
-  req,
-  res,
-) => {
+const fetchAFilteredTenantDetailForPoController = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -346,7 +264,7 @@ const fetchAFilteredTenantDetailForPlatformOwnerController = async (
 };
 
 // add platform owner details controller
-const addPlatformOwnerDetailsController = async (req, res) => {
+const addPoDetailsController = async (req, res) => {
   try {
     const { uid } = req.query;
 
@@ -381,7 +299,7 @@ const addPlatformOwnerDetailsController = async (req, res) => {
 };
 
 // update platform owner details controller
-const updatePlatformOwnerDetailsController = async (req, res) => {
+const updatePoDetailsController = async (req, res) => {
   try {
     const { uid } = req.query;
 
@@ -412,8 +330,8 @@ module.exports = {
   addTenantDetailController,
   updateTenantDetailController,
   fetchTenantDetailController,
-  fetchAllTenantDetailForPlatformOwnerController,
-  fetchAFilteredTenantDetailForPlatformOwnerController,
-  addPlatformOwnerDetailsController,
-  updatePlatformOwnerDetailsController,
+  fetchAllTenantDetailForPoController,
+  fetchAFilteredTenantDetailForPoController,
+  addPoDetailsController,
+  updatePoDetailsController,
 };

@@ -78,15 +78,15 @@ export default function LocationTable({
 
                   return (
                     <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?._id}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.name[0].toUpperCase() + row?.name.slice(1)}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <Grid container direction="row" alignItems="center" gap={2}>
                           <Typography color="primary" sx={{ cursor: 'pointer' }} onClick={() => editLocation(row._id)}>
                             Edit

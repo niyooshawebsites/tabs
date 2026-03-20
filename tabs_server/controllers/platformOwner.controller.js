@@ -2,6 +2,8 @@ const Appointment = require("../models/appointment.model");
 const Tenant = require("../models/tenant.model");
 const Client = require("../models/client.model");
 const Session = require("../models/session.model");
+const Location = require("../models/location.model");
+const Staff = require("../models/staff.model");
 const PlatformOwner = require("../models/platformOwner.model");
 const moment = require("moment");
 const UAParser = require("ua-parser-js");
@@ -185,8 +187,105 @@ const fetchOverAllStatsController = async (req, res) => {
   }
 };
 
+// fetch all tenants platform owner controller
+const fetchAllTenantsForPoController = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const totalTenants = await Tenant.countDocuments();
+
+    const allTenants = await Tenant.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (allTenants.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No tenant found",
+      });
+    }
+
+    // ✅ Get tenant User IDs from Tenants
+    const tenantUserIds = allTenants.map((td) => td._id).filter(Boolean);
+
+    // ✅ Aggregate appointment & client counts using tenant (User._id)
+    const [appointmentsCounts, clientsCounts, staffCounts, locationCounts] =
+      await Promise.all([
+        Appointment.aggregate([
+          { $match: { tenant: { $in: tenantUserIds } } },
+          { $group: { _id: "$tenant", count: { $sum: 1 } } },
+        ]),
+        Client.aggregate([
+          { $match: { tenant: { $in: tenantUserIds } } },
+          { $group: { _id: "$tenant", count: { $sum: 1 } } },
+        ]),
+        Staff.aggregate([
+          { $match: { tenant: { $in: tenantUserIds } } },
+          { $group: { _id: "$tenant", count: { $sum: 1 } } },
+        ]),
+        Location.aggregate([
+          { $match: { tenant: { $in: tenantUserIds } } },
+          { $group: { _id: "$tenant", count: { $sum: 1 } } },
+        ]),
+      ]);
+
+    // ✅ Convert counts into maps
+    const appointmentMap = Object.fromEntries(
+      appointmentsCounts.map((item) => [item._id.toString(), item.count]),
+    );
+    const clientMap = Object.fromEntries(
+      clientsCounts.map((item) => [item._id.toString(), item.count]),
+    );
+
+    const staffMap = Object.fromEntries(
+      staffCounts.map((item) => [item._id.toString(), item.count]),
+    );
+
+    const locationMap = Object.fromEntries(
+      locationCounts.map((item) => [item._id.toString(), item.count]),
+    );
+
+    // ✅ Enrich each tenant details with counts
+    const enrichedTenants = allTenants.map((td) => {
+      const tenantId = td._id?.toString();
+      return {
+        ...td,
+        appointmentCount: appointmentMap[tenantId] || 0,
+        clientCount: clientMap[tenantId] || 0,
+        staffCount: staffMap[tenantId] || 0,
+        locationCount: locationMap[tenantId] || 0,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Tenant details found",
+      data: enrichedTenants,
+      pagination: {
+        totalTenants: totalTenants,
+        limit,
+        page,
+        totalPages: Math.ceil(totalTenants / limit),
+        hasNextPage: page * limit < totalTenants,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   // platformOwnerRegistrationController,
   platformOwnerLoginController,
   fetchOverAllStatsController,
+  fetchAllTenantsForPoController,
 };

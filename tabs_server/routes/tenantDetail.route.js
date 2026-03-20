@@ -3,8 +3,8 @@ const {
   addTenantDetailController,
   updateTenantDetailController,
   fetchTenantDetailController,
-  fetchAllTenantDetailForPlatformOwnerController,
-  fetchAFilteredTenantDetailForPlatformOwnerController,
+  fetchAllTenantDetailForPoController,
+  fetchAFilteredTenantDetailForPoController,
 } = require("../controllers/tenantDetail.controller");
 const { isTenant, isPlatformOwner } = require("../middlewares/auth.middleware");
 const {
@@ -68,7 +68,7 @@ router.get(
   "/fetch-all-tenant-detail-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAllTenantDetailForPlatformOwnerController,
+  fetchAllTenantDetailForPoController,
 );
 
 // fetch alls tenants for platform owner route
@@ -76,7 +76,7 @@ router.get(
   "/fetch-filtered-tenant-detail-for-platform-owner",
   isPlatformOwner,
   validateQuery(querySchema),
-  fetchAFilteredTenantDetailForPlatformOwnerController,
+  fetchAFilteredTenantDetailForPoController,
 );
 
 module.exports = router;

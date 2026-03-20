@@ -97,27 +97,27 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
 
                   return (
                     <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row._id}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.name}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{moment(row?.dob).format('DD-MM-YYYY')}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.email}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.phone}</span>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <Link color="secondary" onClick={() => fetchClientAppointments(row._id)}>
                           <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
                         </Link>
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <Link color="secondary" onClick={() => fetchClientDetails(row._id)} sx={{ cursor: 'pointer' }}>
                           <InfoOutlineIcon color="primary" />
                         </Link>

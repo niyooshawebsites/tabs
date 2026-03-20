@@ -153,11 +153,11 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
 
                   return (
                     <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?._id}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">
                           {row?.name
                             .split(' ')
@@ -168,15 +168,15 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                         </span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.empId.toUpperCase()}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.email}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">
                           {row?.handlesAllServices
                             ? 'All Services'
@@ -186,11 +186,11 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                         </span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.location.name[0].toUpperCase() + row?.location.name.slice(1)}</span>
                       </TableCell>
 
-                      <TableCell component="th" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row">
                         <Grid container direction="row" alignItems="center" gap={2}>
                           <Typography color="primary" sx={{ cursor: 'pointer' }} onClick={() => editStaff(row._id)}>
                             Edit

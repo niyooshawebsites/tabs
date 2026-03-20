@@ -207,52 +207,9 @@ const doesTenantExistController = async (req, res) => {
   }
 };
 
-// fetch all tenants controller
-const fetchAllTenantsForPOController = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
-    const totalTenants = await Tenant.countDocuments({});
-    const tenants = await Tenant.find()
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-
-    if (tenants.length == 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No tenants found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Tenants fetched successfully",
-      data: tenants,
-      pagination: {
-        totalTenants,
-        page,
-        limit,
-        totalPages: Math.ceil(totalTenants / limit),
-        hasNextPage: page * limit < totalTenants,
-        hasPrevPage: page > 1,
-      },
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error!",
-      err: err.message,
-    });
-  }
-};
-
 module.exports = {
   tenantRegistrationController,
   tenantLoginController,
   updateTenantController,
   doesTenantExistController,
-  fetchAllTenantsForPOController,
 };

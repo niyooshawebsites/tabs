@@ -173,10 +173,9 @@ const bookAppointmentController = async (req, res) => {
       notes,
     } = req.body;
 
-    console.log("Location: ", location);
-
     // check for exisitng client
     const existingClient = await Client.findOne({ email, tenant: uid });
+
     const tenantDetail = await TenantDetail.findOne({ tenant: uid });
 
     // if client exists
@@ -191,6 +190,18 @@ const bookAppointmentController = async (req, res) => {
         tenant: uid,
         notes,
       }).save();
+
+      // increment tenant data by one
+      await Tenant.findByIdAndUpdate(
+        uid,
+        {
+          $inc: {
+            totalAppointments: 1,
+            totalClients: existingClient ? 0 : 1,
+          },
+        },
+        { new: true },
+      );
 
       // Populate service and client
       const populatedAppointment = await Appointment.findById(
@@ -218,7 +229,7 @@ const bookAppointmentController = async (req, res) => {
       });
     }
 
-    // create and save the new client
+    //if the client does not exists = create and save the new client
     await new Client({
       name,
       gender,
@@ -245,6 +256,18 @@ const bookAppointmentController = async (req, res) => {
       tenant: uid,
       notes,
     }).save();
+
+    // increment tenant data by one
+    await Tenant.findByIdAndUpdate(
+      uid,
+      {
+        $inc: {
+          totalAppointments: 1,
+          totalClients: existingClient ? 0 : 1,
+        },
+      },
+      { new: true },
+    );
 
     // Populate service and client
     const populatedAppointment = await Appointment.findById(newAppointment._id)

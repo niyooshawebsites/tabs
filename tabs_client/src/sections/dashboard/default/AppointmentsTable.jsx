@@ -206,34 +206,34 @@ export default function AppointmentsTable({
                         tabIndex={-1}
                         key={row._id}
                       >
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row._id}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.service?.name}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.location?.name[0]?.toUpperCase() + row?.location?.name?.slice(1)}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.client?.name}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.client?.email}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.client?.phone}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{moment(row?.date).format('DD-MM-YYYY')}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row?.time}</span>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <AppointmentStatus status={row?.status} />
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <Button
                             size="small"
                             color={'primary'}
@@ -252,7 +252,7 @@ export default function AppointmentsTable({
                             Update
                           </Button>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           {row?.status == 'Completed' ? (
                             <a href={`${import.meta.env.VITE_API_URL}generate-invoice/${row?._id}?uid=${tenantId}`} target="_blank">
                               <Typography sx={{ cursor: 'pointer' }}>
@@ -263,12 +263,12 @@ export default function AppointmentsTable({
                             <FileDownloadOffIcon disabled={true} />
                           )}
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <Link color="secondary" onClick={() => fetchAppointmentRemarks(row._id)}>
                             <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
                           </Link>
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell component="td" id={labelId} scope="row">
                           <Link color="secondary" onClick={() => fetchAppointmentDetails(row._id)}>
                             <InfoOutlineIcon color="primary" sx={{ cursor: 'pointer' }} />
                           </Link>
