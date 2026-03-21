@@ -10,7 +10,6 @@ const {
   fetchClientAppointmentsController,
   fetchTodayAppointmentsController,
   fetchFilteredAppointmentsController,
-  fetchFilteredAppointmentsForPlatformOwnerController,
   fetchTodayFilteredAppointmentsController,
   fetchFilteredClientAppointmentsController,
   fetchLast7DaysAppointmentsController,
@@ -146,14 +145,6 @@ router.get(
   isTenantOrStaff,
   validateQuery(querySchema),
   fetchFilteredAppointmentsController,
-);
-
-// fetch filtered appointments for plaform owner
-router.get(
-  "/fetch-filtered-appointments-for-platform-owner",
-  isPlatformOwner,
-  validateQuery(querySchema),
-  fetchFilteredAppointmentsForPlatformOwnerController,
 );
 
 // fetch today's filtered appointments

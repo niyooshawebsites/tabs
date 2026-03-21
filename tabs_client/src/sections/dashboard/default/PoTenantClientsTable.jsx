@@ -3,74 +3,50 @@ import PropTypes from 'prop-types';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-// import moment from 'moment';
+import moment from 'moment';
 
 const headCells = [
   {
     id: 'ID',
     align: 'left',
     disablePadding: false,
-    label: 'Tenant ID'
+    label: 'ID'
   },
   {
-    id: 'username',
+    id: 'Name',
     align: 'left',
     disablePadding: true,
-    label: 'Username'
+    label: 'Name'
   },
   {
-    id: 'profession',
+    id: 'DOB',
     align: 'left',
     disablePadding: false,
-    label: 'Profession'
+    label: 'DOB'
   },
   {
-    id: 'totalAppointments',
-    align: 'center',
+    id: 'Email',
+    align: 'left',
     disablePadding: false,
-    label: 'Appts'
+    label: 'Email'
   },
   {
-    id: 'totalClients',
+    id: 'Phone',
     align: 'center',
     disablePadding: false,
-    label: 'Clients'
+    label: 'Phone'
   },
   {
-    id: 'totalStaffs',
-    align: 'center',
+    id: 'Appointments',
+    align: 'left',
     disablePadding: false,
-    label: 'Staffs'
+    label: 'Appointments'
   },
   {
-    id: 'totalLocations',
-    align: 'center',
+    id: 'Details',
+    align: 'left',
     disablePadding: false,
-    label: 'Locations'
-  },
-  {
-    id: 'planName',
-    align: 'center',
-    disablePadding: false,
-    label: 'Plan name'
-  },
-  {
-    id: 'PlanPrice',
-    align: 'center',
-    disablePadding: false,
-    label: 'Plan price'
-  },
-  {
-    id: 'doj',
-    align: 'center',
-    disablePadding: false,
-    label: 'DOJ'
-  },
-  {
-    id: 'moreInfo',
-    align: 'center',
-    disablePadding: false,
-    label: 'More info'
+    label: 'Details'
   }
 ];
 
@@ -93,16 +69,7 @@ function OrderTableHead({ order, orderBy }) {
   );
 }
 
-export default function TenantsTable({
-  tenants,
-  handlePrev,
-  handleNext,
-  fetchTenantDetails,
-  fetchTenantAppointments,
-  fetchTenantClients,
-  page,
-  pagination
-}) {
+export default function ClientsTable({ clients, handlePrev, handleNext, fetchClientDetails, fetchClientAppointments, page, pagination }) {
   // const { role, isAuthenticated } = useSelector((state) => state.login_slice);
   const order = 'asc';
   const orderBy = 'tracking_no';
@@ -119,63 +86,41 @@ export default function TenantsTable({
           '& td, & th': { whiteSpace: 'nowrap' }
         }}
       >
-        {tenants.length > 0 ? (
+        {clients.length > 0 ? (
           <>
             {' '}
             <Table aria-labelledby="tableTitle">
               <OrderTableHead order={order} orderBy={orderBy} />
               <TableBody>
-                {tenants.map((row, index) => {
+                {clients.map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover role="checkbox" key={row._id}>
+                    <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row._id}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row?.username}</span>
+                        <span color="secondary">{row?.name}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row?.profession}</span>
+                        <span color="secondary">{moment(row?.dob).format('DD-MM-YYYY')}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter" onClick={() => fetchTenantAppointments(row._id)}>
-                          {row?.appointmentCount}
-                        </span>
-                      </TableCell>
-                      <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter" onClick={() => fetchTenantClients(row._id)}>
-                          {row?.clientCount}
-                        </span>
+                        <span color="secondary">{row?.email}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary" className="tableContentCenter">
-                          {row?.staffCount}
+                          {row?.phone}
                         </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {row?.locationCount}
-                        </span>
+                        <Link color="secondary" onClick={() => fetchClientAppointments(row._id)}>
+                          <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
+                        </Link>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {row?.plan?.name.toUpperCase()}
-                        </span>
-                      </TableCell>
-                      <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {row?.plan?.price}
-                        </span>
-                      </TableCell>
-                      <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {row?.plan?.price}
-                        </span>
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        <Link color="secondary" onClick={() => fetchTenantDetails(row._id)} className="tableContentCenter">
+                        <Link color="secondary" onClick={() => fetchClientDetails(row._id)} sx={{ cursor: 'pointer' }}>
                           <InfoOutlineIcon color="primary" />
                         </Link>
                       </TableCell>
@@ -199,7 +144,7 @@ export default function TenantsTable({
             </Stack>
           </>
         ) : (
-          <Box sx={{ p: 1 }}>No Tenants</Box>
+          <Box sx={{ p: 1 }}>No Clients</Box>
         )}
       </TableContainer>
     </Box>

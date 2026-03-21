@@ -7,12 +7,22 @@ const {
   fetchAllTenantsForPoController,
   fetchTenantDetailForPoController,
   fetchTenantAppointmentsForPoController,
+  fetchFilteredTenantAppointmentsForPoController,
+  fetchTenantClientsForPoController,
 } = require("../controllers/platformOwner.controller");
 const { isPlatformOwner } = require("../middlewares/auth.middleware");
 const {
   poLoginSchema,
 } = require("../validationSchemas/platformOwner.validation.schema");
-const { validateBody } = require("../middlewares/validation.middleware");
+
+const {
+  querySchema,
+  generateParamSchema,
+} = require("../validationSchemas/common.validation.schema");
+const {
+  validateBody,
+  validateQuery,
+} = require("../middlewares/validation.middleware");
 
 // router.post("/po-registration", platformOwnerRegistrationController);
 
@@ -44,6 +54,20 @@ router.get(
   "/fetch-tenant-appointments-for-po",
   isPlatformOwner,
   fetchTenantAppointmentsForPoController,
+);
+
+router.get(
+  "/fetch-filtered-tenant-appointments-for-po",
+  isPlatformOwner,
+  validateQuery(querySchema),
+  fetchFilteredTenantAppointmentsForPoController,
+);
+
+router.get(
+  "/fetch-tenant-clients-for-po",
+  isPlatformOwner,
+  validateQuery(querySchema),
+  fetchTenantClientsForPoController,
 );
 
 module.exports = router;

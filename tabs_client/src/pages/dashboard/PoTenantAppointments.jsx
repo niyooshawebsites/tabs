@@ -1,22 +1,22 @@
 import { Grid, Box, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import AppointmentsTable from '../../sections/dashboard/default/AppointmentsTable';
+import PoTenantAppointmentsTable from '../../sections/dashboard/default/PoTenantAppointmentsTable';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
-import AppointmentFilter from '../../components/AppointmentFilter';
+import PoTenantAppointmentFilter from '../../components/PoTenantAppointmentFilter';
 import NoInfo from '../../components/NoInfo';
 
 export default function PoTenantAppointments() {
   const { tid } = useParams();
   const [fetchingAppointments, setFetchingAppointments] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [services, setServices] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [status, setStatus] = useState('');
@@ -92,6 +92,82 @@ export default function PoTenantAppointments() {
     }
   };
 
+  const fetchTenantLocations = async (tid) => {
+    try {
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=1&limit=10&uid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
+
+      if (data.success) {
+        setLocations(data?.data || []);
+      }
+    } catch (err) {
+      console.log(err);
+      const errorData = err.response?.data;
+
+      if (errorData?.errors && Array.isArray(errorData.errors)) {
+        // Multiple validation errors (Zod)
+        errorData.errors.forEach((msg) => toast.error(msg));
+      } else {
+        // Generic error
+        const errorMessage = errorData?.message || 'Something went wrong';
+        toast.error(errorMessage);
+      }
+    }
+  };
+
+  const fetchTenantServices = async (tid) => {
+    try {
+      let response;
+
+      try {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
+          withCredentials: true
+        });
+      } catch (error) {
+        // If access token expired → refresh
+        if (error.response?.status === 401) {
+          await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
+
+          // Retry original request
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-services?page=1&limit=10&uid=${tid}`, {
+            withCredentials: true
+          });
+        } else {
+          throw error;
+        }
+      }
+
+      const { data } = response;
+
+      if (data.success) {
+        setServices(data?.data || []);
+      }
+    } catch (err) {
+      const errorData = err.response?.data;
+      if (errorData?.errors) errorData.errors.forEach((msg) => toast.error(msg));
+      else toast.error(errorData?.message || 'Something went wrong');
+    }
+  };
+
   const handleNext = () => {
     if (pagination.hasNextPage) setPage((prev) => prev + 1);
   };
@@ -109,8 +185,10 @@ export default function PoTenantAppointments() {
   };
 
   useEffect(() => {
+    fetchTenantServices(tid);
+    fetchTenantLocations(tid);
     fetchTenatAppointments();
-  }, [page, filters, isModalOpen, isRefreshed]);
+  }, [page, filters, isRefreshed]);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -167,20 +245,25 @@ export default function PoTenantAppointments() {
                     gap: 2
                   }}
                 >
-                  <AppointmentFilter setFilters={setFilters} setIsFiltered={setIsFiltered} setPage={setPage} setStatus={setStatus} />
+                  <PoTenantAppointmentFilter
+                    locations={locations}
+                    services={services}
+                    setFilters={setFilters}
+                    setIsFiltered={setIsFiltered}
+                    setPage={setPage}
+                    setStatus={setStatus}
+                  />
                 </Box>
               </Grid>
               <MainCard sx={{ mt: 2 }} content={false}>
-                <AppointmentsTable
+                <PoTenantAppointmentsTable
                   appointments={appointments}
-                  setIsModalOpen={setIsModalOpen}
                   handlePrev={handlePrev}
                   handleNext={handleNext}
                   selectedAppointmentId={selectedAppointmentId}
                   setSelectedAppointmentId={setSelectedAppointmentId}
                   fetchAppointmentDetails={fetchAppointmentDetails}
                   fetchAppointmentRemarks={fetchAppointmentRemarks}
-                  isModalOpen={isModalOpen}
                   page={page}
                   pagination={pagination}
                 />

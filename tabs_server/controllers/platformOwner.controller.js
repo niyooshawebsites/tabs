@@ -320,7 +320,9 @@ const fetchTenantAppointmentsForPoController = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    const totalAppointments = await Appointment.countDocuments();
+    const totalAppointments = await Appointment.countDocuments({
+      tenant: tid,
+    });
 
     const allAppointments = await Appointment.find({ tenant: tid })
       .skip(skip)
@@ -360,6 +362,127 @@ const fetchTenantAppointmentsForPoController = async (req, res) => {
   }
 };
 
+const fetchFilteredTenantAppointmentsForPoController = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const { service, location, startDate, endDate, status } = req.query;
+
+    // build a dynamic mongodb query
+    const filter = {};
+
+    // if service is provided
+    if (service) {
+      filter.service = service;
+    }
+
+    // if location is provided
+    if (location) {
+      filter.location = location;
+    }
+
+    // if start and end date is provided
+    if (startDate && endDate) {
+      filter.date = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    }
+
+    // if status is provided
+    if (status) {
+      filter.status = status;
+    }
+
+    const totalAppointments = await Appointment.countDocuments(filter);
+
+    const appointments = await Appointment.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .populate("service")
+      .populate("location")
+      .populate("client")
+      .populate("tenant");
+
+    if (appointments.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No appointments found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointments found",
+      data: appointments,
+      pagination: {
+        limit,
+        page,
+        totalAppointments,
+        totalPages: Math.ceil(totalAppointments / limit),
+        hasNextPage: page * limit < totalAppointments,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
+// fetch tenant clients for platform owner
+const fetchTenantClientsForPoController = async (req, res) => {
+  try {
+    const { tid } = req.query;
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const totalClients = await Client.countDocuments({
+      tenant: tid,
+    });
+
+    const allClients = await Client.find({ tenant: tid })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .populate("tenant");
+
+    if (allClients.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No appointments found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Clients found",
+      data: allClients,
+      pagination: {
+        totalClients,
+        limit,
+        page,
+        totalPages: Math.ceil(totalClients / limit),
+        hasNextPage: page * limit < totalClients,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   // platformOwnerRegistrationController,
   platformOwnerLoginController,
@@ -367,4 +490,6 @@ module.exports = {
   fetchAllTenantsForPoController,
   fetchTenantDetailForPoController,
   fetchTenantAppointmentsForPoController,
+  fetchFilteredTenantAppointmentsForPoController,
+  fetchTenantClientsForPoController,
 };

@@ -1,38 +1,45 @@
 import { Grid, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import TenantsTable from '../../sections/dashboard/default/TenantsTable';
+import PoTenantClientsTable from '../../sections/dashboard/default/PoTenantClientsTable';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
+import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 import { toast } from 'react-toastify';
 
-export default function PoDashboardTenants() {
-  const [tenants, setTenants] = useState([]);
-  const [selectedTenantId, setSelectedTenantId] = useState(null);
+export default function DashboardClients() {
+  const { tenantId } = useSelector((state) => state.tenant_slice);
+  const { services } = useSelector((state) => state.service_slice);
+  const { locations } = useSelector((state) => state.location_slice);
+  const { id } = useSelector((state) => state.admin_slice);
+  const [clients, setClients] = useState([]);
+  const [selectedClientId, setSelectedClientId] = useState(null);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [pagination, setPagination] = useState({
-    totalTenants: 0,
+    totalClients: 0,
     totalPages: 0,
     hasNextPage: false,
     hasPrevPage: false
   });
+  const { tid } = useParams();
 
   const navigate = useNavigate();
-  const [fetchingTenants, setFetchingTenants] = useState(false);
+  const [fetchingClients, setFetchingClients] = useState(false);
   const [isRefreshed, setIsRefreshed] = useState(false);
 
-  const fetchAllTenants = async () => {
+  const fetchTenantClients = async () => {
     try {
-      setFetchingTenants(true);
+      setFetchingClients(true);
       let response;
 
       try {
         // original request
-        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-tenants-for-po?page=${page}&limit=${limit}`, {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-clients-for-po?page=${page}&limit=${limit}&tid=${tid}`, {
           withCredentials: true
         });
       } catch (error) {
@@ -41,7 +48,7 @@ export default function PoDashboardTenants() {
           await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
           // Retry original request
-          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-tenants-for-po?page=${page}&limit=${limit}`, {
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-clients-for-po?page=${page}&limit=${limit}&tid=${tid}`, {
             withCredentials: true
           });
         } else {
@@ -52,9 +59,9 @@ export default function PoDashboardTenants() {
       const { data } = response;
 
       if (data.success) {
-        setTenants(data.data);
+        setClients(data.data);
         setPagination(data.pagination);
-        setFetchingTenants(false);
+        setFetchingClients(false);
       }
     } catch (err) {
       console.log(err);
@@ -68,12 +75,12 @@ export default function PoDashboardTenants() {
         const errorMessage = errorData?.message || 'Something went wrong';
         toast.error(errorMessage);
       }
-      setFetchingTenants(false);
+      setFetchingClients(false);
     }
   };
 
-  const fetchTenantDetails = async (tid) => {
-    navigate(`/dashboard/tenant/details/${tid}`);
+  const fetchClientDetails = async (cid) => {
+    navigate(`/dashboard/client/details/${cid}`);
   };
 
   const handleNext = () => {
@@ -84,29 +91,41 @@ export default function PoDashboardTenants() {
     if (pagination.hasPrevPage) setPage((prev) => prev - 1);
   };
 
-  const fetchTenantAppointments = (tid) => {
-    navigate(`/dashboard/tenant/appointments/${tid}`);
-  };
-
-  const fetchTenantClients = (tid) => {
-    navigate(`/dashboard/tenant/clients/${tid}`);
+  const fetchClientAppointments = (cid) => {
+    navigate(`/dashboard/client/appointments/${cid}`);
   };
 
   useEffect(() => {
-    fetchAllTenants();
+    fetchTenantClients();
   }, [page, isRefreshed]);
+
+  if (!id) {
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
+  }
+
+  if (locations.length === 0) {
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
+  }
+
+  if (services.length === 0) {
+    return <CheckMissingInfo id={id} locations={locations} services={services} />;
+  }
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      {fetchingTenants ? (
+      {fetchingClients ? (
         <Loader />
       ) : (
         <>
-          {tenants.length > 0 ? (
+          {clients.length > 0 ? (
             <Grid size={{ xs: 12, md: 12, lg: 12 }}>
               <Grid container direction="row" alignItems="center" justifyContent="space-between">
                 <DashboardHeading
-                  title={`Tenants (${pagination.totalTenants < 10 ? `0${pagination.totalTenants}` : pagination.totalTenants})`}
+                  title={
+                    isDoctor == 'yes'
+                      ? `All Patients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
+                      : `All Clients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
+                  }
                 />
                 <Typography
                   variant="body1"
@@ -125,15 +144,14 @@ export default function PoDashboardTenants() {
                 </Typography>
               </Grid>
               <MainCard sx={{ mt: 2 }} content={false}>
-                <TenantsTable
-                  tenants={tenants}
+                <PoTenantClientsTable
+                  clients={clients}
                   handlePrev={handlePrev}
                   handleNext={handleNext}
-                  selectedTenantId={selectedTenantId}
-                  fetchTenantDetails={fetchTenantDetails}
-                  fetchTenantClients={fetchTenantClients}
-                  setSelectedTenantId={setSelectedTenantId}
-                  fetchTenantAppointments={fetchTenantAppointments}
+                  selectedClientId={selectedClientId}
+                  fetchClientDetails={fetchClientDetails}
+                  setSelectedClientId={setSelectedClientId}
+                  fetchClientAppointments={fetchClientAppointments}
                   page={page}
                   pagination={pagination}
                 />
