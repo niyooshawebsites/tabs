@@ -12,7 +12,6 @@ import NoInfo from '../../components/NoInfo';
 import { toast } from 'react-toastify';
 
 export default function DashboardClients() {
-  const { tenantId } = useSelector((state) => state.tenant_slice);
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
   const { id } = useSelector((state) => state.admin_slice);
@@ -99,18 +98,6 @@ export default function DashboardClients() {
     fetchTenantClients();
   }, [page, isRefreshed]);
 
-  if (!id) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (locations.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (services.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {fetchingClients ? (
@@ -121,11 +108,7 @@ export default function DashboardClients() {
             <Grid size={{ xs: 12, md: 12, lg: 12 }}>
               <Grid container direction="row" alignItems="center" justifyContent="space-between">
                 <DashboardHeading
-                  title={
-                    isDoctor == 'yes'
-                      ? `All Patients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
-                      : `All Clients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`
-                  }
+                  title={`All Clients (${pagination.totalClients < 10 ? `0${pagination.totalClients}` : pagination.totalClients})`}
                 />
                 <Typography
                   variant="body1"

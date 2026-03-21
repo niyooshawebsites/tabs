@@ -176,12 +176,8 @@ export default function PoTenantAppointments() {
     if (pagination.hasPrevPage) setPage((prev) => prev - 1);
   };
 
-  const fetchAppointmentDetails = (aid) => {
-    navigate(`/dashboard/appointment/details/${aid}`);
-  };
-
-  const fetchAppointmentRemarks = (aid) => {
-    navigate(`/dashboard/appointment/remarks/${aid}`);
+  const fetchAppointmentDetails = (tid, aid) => {
+    navigate(`/dashboard/tenant/${tid}/appointment/${aid}`);
   };
 
   useEffect(() => {
@@ -257,13 +253,13 @@ export default function PoTenantAppointments() {
               </Grid>
               <MainCard sx={{ mt: 2 }} content={false}>
                 <PoTenantAppointmentsTable
+                  tid={tid}
                   appointments={appointments}
                   handlePrev={handlePrev}
                   handleNext={handleNext}
                   selectedAppointmentId={selectedAppointmentId}
                   setSelectedAppointmentId={setSelectedAppointmentId}
                   fetchAppointmentDetails={fetchAppointmentDetails}
-                  fetchAppointmentRemarks={fetchAppointmentRemarks}
                   page={page}
                   pagination={pagination}
                 />

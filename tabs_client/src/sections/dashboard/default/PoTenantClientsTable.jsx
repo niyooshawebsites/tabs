@@ -20,7 +20,7 @@ const headCells = [
   },
   {
     id: 'DOB',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'DOB'
   },
@@ -37,14 +37,14 @@ const headCells = [
     label: 'Phone'
   },
   {
-    id: 'Appointments',
-    align: 'left',
+    id: 'Appts',
+    align: 'center',
     disablePadding: false,
-    label: 'Appointments'
+    label: 'Appts'
   },
   {
     id: 'Details',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Details'
   }
@@ -96,7 +96,7 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
+                    <TableRow hover role="checkbox" key={row._id}>
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row._id}</span>
                       </TableCell>
@@ -104,7 +104,9 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
                         <span color="secondary">{row?.name}</span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{moment(row?.dob).format('DD-MM-YYYY')}</span>
+                        <span color="secondary" className="tableContentCenter">
+                          {moment(row?.dob).format('DD-MM-YYYY')}
+                        </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.email}</span>
@@ -115,12 +117,17 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
                         </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <Link color="secondary" onClick={() => fetchClientAppointments(row._id)}>
+                        <Link color="secondary" onClick={() => fetchClientAppointments(row._id)} className="tableContentCenter">
                           <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
                         </Link>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <Link color="secondary" onClick={() => fetchClientDetails(row._id)} sx={{ cursor: 'pointer' }}>
+                        <Link
+                          color="secondary"
+                          onClick={() => fetchClientDetails(row._id)}
+                          sx={{ cursor: 'pointer' }}
+                          className="tableContentCenter"
+                        >
                           <InfoOutlineIcon color="primary" />
                         </Link>
                       </TableCell>
@@ -129,7 +136,7 @@ export default function ClientsTable({ clients, handlePrev, handleNext, fetchCli
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 4 }}>
+            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
               <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
                 <ArrowBackIos />
               </IconButton>

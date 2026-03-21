@@ -123,6 +123,7 @@ function AppointmentStatus({ status }) {
 }
 
 export default function PoTenantAppointmentsTable({
+  tid,
   appointments,
   setIsModalOpen,
   handlePrev,
@@ -158,13 +159,7 @@ export default function PoTenantAppointmentsTable({
 
                   return (
                     <>
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        tabIndex={-1}
-                        key={row._id}
-                      >
+                      <TableRow hover role="checkbox" key={row._id}>
                         <TableCell component="td" id={labelId} scope="row">
                           <span color="secondary">{row._id}</span>
                         </TableCell>
@@ -200,7 +195,7 @@ export default function PoTenantAppointmentsTable({
                         </TableCell>
 
                         <TableCell component="td" id={labelId} scope="row">
-                          <Link color="secondary" onClick={() => fetchAppointmentDetails(row._id)} className="tableContentCenter">
+                          <Link color="secondary" onClick={() => fetchAppointmentDetails(tid, row._id)} className="tableContentCenter">
                             <InfoOutlineIcon color="primary" sx={{ cursor: 'pointer' }} />
                           </Link>
                         </TableCell>
@@ -210,7 +205,7 @@ export default function PoTenantAppointmentsTable({
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 4 }}>
+            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
               <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
                 <ArrowBackIos />
               </IconButton>

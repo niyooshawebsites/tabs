@@ -16,10 +16,7 @@ const {
   fetchYearlyAppointmentsController,
 } = require("../controllers/appointment.controller");
 
-const {
-  isTenantOrStaff,
-  isPlatformOwner,
-} = require("../middlewares/auth.middleware");
+const { isTenantOrStaff } = require("../middlewares/auth.middleware");
 const checkPlan = require("../middlewares/checkPlan.middleware");
 
 const {
@@ -90,7 +87,6 @@ router.get(
 // update an appointment
 router.patch(
   "/update-appointment/:aid",
-  isTenantOrStaff,
   validateQuery(querySchema),
   validateParams(generateParamSchema("aid")),
   validateBody(updateAppointmentSchema),

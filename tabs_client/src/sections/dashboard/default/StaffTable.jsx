@@ -152,7 +152,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row._id}>
+                    <TableRow hover role="checkbox" key={row._id}>
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?._id}</span>
                       </TableCell>
@@ -210,7 +210,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 4 }}>
+            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
               <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
                 <ArrowBackIos />
               </IconButton>

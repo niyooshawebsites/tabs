@@ -1,13 +1,18 @@
 import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 const Home = Loadable(lazy(() => import('../pages/nonAuth/Home')));
+
 const PoDashboardDefault = Loadable(lazy(() => import('pages/dashboard/PoDefault')));
 const PoDashboardTenants = Loadable(lazy(() => import('pages/dashboard/AllTenants')));
 const PoDashboardStaffs = Loadable(lazy(() => import('pages/dashboard/AllStaffs')));
 const PoDashboardClients = Loadable(lazy(() => import('pages/dashboard/AllClients')));
+
 const PoDashboardTenantDetails = Loadable(lazy(() => import('pages/dashboard/PoTenantDetails')));
+const PoDashboardTenantAppointmentDetails = Loadable(lazy(() => import('pages/dashboard/PoTenantAppointmentDetails')));
 const PoDashboardTenantAppointments = Loadable(lazy(() => import('pages/dashboard/PoTenantAppointments')));
 const PoDashboardTenantClients = Loadable(lazy(() => import('pages/dashboard/PoTenantClients')));
+const PoDashboardClientAppointments = Loadable(lazy(() => import('pages/dashboard/PoClientAppointments')));
+
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const DashboardCreateAppointment = Loadable(lazy(() => import('pages/dashboard/CreateAppointment')));
 const DashboardAppointments = Loadable(lazy(() => import('pages/dashboard/Appointments')));
@@ -199,8 +204,16 @@ const MainRoutes = {
           element: <PoDashboardTenantAppointments />
         },
         {
+          path: 'tenant/:tid/appointment/:aid',
+          element: <PoDashboardTenantAppointmentDetails />
+        },
+        {
           path: 'tenant/clients/:tid',
           element: <PoDashboardTenantClients />
+        },
+        {
+          path: 'client/appointments-for-po/:cid',
+          element: <PoDashboardClientAppointments />
         }
       ]
     }

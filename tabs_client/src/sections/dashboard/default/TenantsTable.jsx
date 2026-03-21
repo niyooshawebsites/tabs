@@ -184,7 +184,7 @@ export default function TenantsTable({
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 4 }}>
+            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
               <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
                 <ArrowBackIos />
               </IconButton>
