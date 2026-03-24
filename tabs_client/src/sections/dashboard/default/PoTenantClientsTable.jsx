@@ -69,7 +69,7 @@ function OrderTableHead({ order, orderBy }) {
   );
 }
 
-export default function ClientsTable({ clients, handlePrev, handleNext, fetchClientDetails, fetchClientAppointments, page, pagination }) {
+export default function PoTenantClientsTable({ clients, handlePrev, handleNext, fetchClientDetails, fetchClientAppointments, page, pagination }) {
   // const { role, isAuthenticated } = useSelector((state) => state.login_slice);
   const order = 'asc';
   const orderBy = 'tracking_no';

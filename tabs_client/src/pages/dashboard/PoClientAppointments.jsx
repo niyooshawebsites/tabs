@@ -13,7 +13,7 @@ import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 
 export default function DashboardClientAppointments() {
-  const { tenantId } = useSelector((state) => state.tenant_slice);
+  
   const { services } = useSelector((state) => state.service_slice);
   const { locations } = useSelector((state) => state.location_slice);
   const { isDoctor } = useSelector((state) => state.admin_slice);
@@ -48,11 +48,11 @@ export default function DashboardClientAppointments() {
       setFetchingClientAppointments(true);
       const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
-      const endPoint = isFiltered ? `fetch-filtered-client-appointments/${cid}` : `fetch-client-appointments/${cid}`;
+      const endPoint = isFiltered ? `fetch-filtered-client-appointments-for-po/${cid}` : `fetch-client-appointments-for-po/${cid}`;
 
       const query = isFiltered
-        ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}&uid=${tenantId}`
-        : `?page=${page}&limit=${limit}&uid=${tenantId}`;
+        ? `?service=${filters.service}&startDate=${filters.startDate}&endDate=${filters.endDate}&page=${page}&limit=${limit}&status=${status}`
+        : `?page=${page}&limit=${limit}`;
 
       let response;
 
@@ -121,18 +121,6 @@ export default function DashboardClientAppointments() {
   useEffect(() => {
     fetchClientAppointments();
   }, [page, filters, isModalOpen, isRefreshed]);
-
-  if (!id) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (locations.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
-
-  if (services.length === 0) {
-    return <CheckMissingInfo id={id} locations={locations} services={services} />;
-  }
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>

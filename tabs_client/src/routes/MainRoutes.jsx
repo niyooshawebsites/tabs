@@ -12,6 +12,7 @@ const PoDashboardTenantAppointmentDetails = Loadable(lazy(() => import('pages/da
 const PoDashboardTenantAppointments = Loadable(lazy(() => import('pages/dashboard/PoTenantAppointments')));
 const PoDashboardTenantClients = Loadable(lazy(() => import('pages/dashboard/PoTenantClients')));
 const PoDashboardClientAppointments = Loadable(lazy(() => import('pages/dashboard/PoClientAppointments')));
+const PoDashboardClientDetails = Loadable(lazy(() => import('pages/dashboard/PoClientDetails')));
 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const DashboardCreateAppointment = Loadable(lazy(() => import('pages/dashboard/CreateAppointment')));
@@ -214,6 +215,10 @@ const MainRoutes = {
         {
           path: 'client/appointments-for-po/:cid',
           element: <PoDashboardClientAppointments />
+        },
+        {
+          path: 'client-details-for-po/:cid',
+          element: <PoDashboardClientDetails />
         }
       ]
     }

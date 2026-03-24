@@ -527,12 +527,11 @@ const fetchTenantAppointmentDetailsForPoController = async (req, res) => {
 const fetchClientAppointmentsForPoController = async (req, res) => {
   try {
     const { cid } = req.params;
-    const { tid } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const appointments = await Appointment.find({ client: cid, tenant: tid })
+    const appointments = await Appointment.find({ client: cid })
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
@@ -542,7 +541,6 @@ const fetchClientAppointmentsForPoController = async (req, res) => {
 
     const totalAppointments = await Appointment.countDocuments({
       client: cid,
-      tenant: tid,
     });
 
     if (totalAppointments === 0) {
@@ -574,6 +572,37 @@ const fetchClientAppointmentsForPoController = async (req, res) => {
   }
 };
 
+const fetchAClientForPoController = async (req, res) => {
+  try {
+    const { cid } = req.params;
+
+    let client;
+
+    if (mongoose.Types.ObjectId.isValid(clientInfo)) {
+      client = await Client.findOne({ _id: cid });
+    }
+
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        message: "Client not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Client found successfully",
+      data: client,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   // platformOwnerRegistrationController,
   platformOwnerLoginController,
@@ -585,4 +614,5 @@ module.exports = {
   fetchTenantClientsForPoController,
   fetchTenantAppointmentDetailsForPoController,
   fetchClientAppointmentsForPoController,
+  fetchAClientForPoController,
 };

@@ -2,19 +2,14 @@ import { Grid, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import PoTenantClientsTable from '../../sections/dashboard/default/PoTenantClientsTable';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
-import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 import { toast } from 'react-toastify';
 
 export default function DashboardClients() {
-  const { services } = useSelector((state) => state.service_slice);
-  const { locations } = useSelector((state) => state.location_slice);
-  const { id } = useSelector((state) => state.admin_slice);
   const [clients, setClients] = useState([]);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [page, setPage] = useState(1);
@@ -91,7 +86,7 @@ export default function DashboardClients() {
   };
 
   const fetchClientAppointments = (cid) => {
-    navigate(`/dashboard/client/appointments/${cid}`);
+    navigate(`/dashboard/client/appointments-for-po/${cid}`);
   };
 
   useEffect(() => {
