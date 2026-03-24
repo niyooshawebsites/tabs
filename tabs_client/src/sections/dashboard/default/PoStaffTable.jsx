@@ -1,56 +1,56 @@
-import { Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, IconButton } from '@mui/material';
+import { Box, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid } from '@mui/material';
 import PropTypes from 'prop-types';
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
-import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import moment from 'moment';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import Loader from '../../../components/Loader';
 
 const headCells = [
   {
-    id: 'ID',
+    id: 'Staff ID',
     align: 'left',
     disablePadding: false,
-    label: 'ID'
+    label: 'Staff ID'
   },
   {
     id: 'Name',
     align: 'left',
-    disablePadding: true,
+    disablePadding: false,
     label: 'Name'
   },
   {
-    id: 'DOB',
-    align: 'center',
-    disablePadding: false,
-    label: 'DOB'
-  },
-  {
-    id: 'Email',
+    id: 'Staff ID',
     align: 'left',
     disablePadding: false,
-    label: 'Email'
+    label: 'Staff ID'
   },
   {
-    id: 'Phone',
-    align: 'center',
+    id: 'Email ID',
+    align: 'left',
     disablePadding: false,
-    label: 'Phone'
+    label: 'Email ID'
   },
   {
-    id: 'Appts',
-    align: 'center',
+    id: 'Service',
+    align: 'left',
     disablePadding: false,
-    label: 'Appts'
+    label: 'Service'
   },
   {
-    id: 'Details',
-    align: 'center',
+    id: 'Location',
+    align: 'left',
     disablePadding: false,
-    label: 'Details'
+    label: 'Location'
+  },
+  {
+    id: 'Action',
+    align: 'left',
+    disablePadding: false,
+    label: 'Action'
   }
 ];
 
-function OrderTableHead({ order, orderBy }) {
+function StaffTableHead({ order, orderBy }) {
   return (
     <TableHead>
       <TableRow>
@@ -69,16 +69,7 @@ function OrderTableHead({ order, orderBy }) {
   );
 }
 
-export default function PoTenantClientsTable({
-  tid,
-  clients,
-  handlePrev,
-  handleNext,
-  fetchClientDetails,
-  fetchClientAppointments,
-  page,
-  pagination
-}) {
+export default function StaffTable({ staff, handlePrev, handleNext, deleteStaff, pagination, page, deletingAStaff }) {
   const order = 'asc';
   const orderBy = 'tracking_no';
 
@@ -94,50 +85,60 @@ export default function PoTenantClientsTable({
           '& td, & th': { whiteSpace: 'nowrap' }
         }}
       >
-        {clients.length > 0 ? (
+        {staff.length > 0 ? (
           <>
             {' '}
             <Table aria-labelledby="tableTitle">
-              <OrderTableHead order={order} orderBy={orderBy} />
+              <StaffTableHead order={order} orderBy={orderBy} />
               <TableBody>
-                {clients.map((row, index) => {
+                {staff.map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow hover role="checkbox" key={row._id}>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row._id}</span>
+                        <span color="secondary">{row?._id}</span>
                       </TableCell>
+
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary">{row?.name}</span>
-                      </TableCell>
-                      <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {moment(row?.dob).format('DD-MM-YYYY')}
+                        <span color="secondary">
+                          {row?.name
+                            .split(' ')
+                            .map((el) => {
+                              return el.toUpperCase();
+                            })
+                            .join(' ')}
                         </span>
                       </TableCell>
+
+                      <TableCell component="td" id={labelId} scope="row">
+                        <span color="secondary">{row?.empId.toUpperCase()}</span>
+                      </TableCell>
+
                       <TableCell component="td" id={labelId} scope="row">
                         <span color="secondary">{row?.email}</span>
                       </TableCell>
+
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
-                          {row?.phone}
+                        <span color="secondary">
+                          {row?.handlesAllServices
+                            ? 'All Services'
+                            : row?.services?.length
+                              ? row.services.map((s) => s.name).join(', ')
+                              : '-'}
                         </span>
                       </TableCell>
+
                       <TableCell component="td" id={labelId} scope="row">
-                        <Link color="secondary" onClick={() => fetchClientAppointments(row._id)} className="tableContentCenter">
-                          <SpeakerNotesIcon color="primary" sx={{ cursor: 'pointer' }} />
-                        </Link>
+                        <span color="secondary">{row?.location.name[0].toUpperCase() + row?.location.name.slice(1)}</span>
                       </TableCell>
+
                       <TableCell component="td" id={labelId} scope="row">
-                        <Link
-                          color="secondary"
-                          onClick={() => fetchClientDetails(tid, row._id)}
-                          sx={{ cursor: 'pointer' }}
-                          className="tableContentCenter"
-                        >
-                          <InfoOutlineIcon color="primary" />
-                        </Link>
+                        <Grid container direction="row" alignItems="center" gap={2}>
+                          <Typography color="error" sx={{ cursor: 'pointer' }} onClick={() => deleteStaff(row._id)}>
+                            {deletingAStaff ? 'Deleting...' : 'Delete'}
+                          </Typography>
+                        </Grid>
                       </TableCell>
                     </TableRow>
                   );
@@ -159,11 +160,11 @@ export default function PoTenantClientsTable({
             </Stack>
           </>
         ) : (
-          <Box sx={{ p: 1 }}>No Clients</Box>
+          <Box sx={{ p: 1 }}>No Staff</Box>
         )}
       </TableContainer>
     </Box>
   );
 }
 
-OrderTableHead.propTypes = { order: PropTypes.any, orderBy: PropTypes.string };
+StaffTableHead.propTypes = { order: PropTypes.any, orderBy: PropTypes.string };

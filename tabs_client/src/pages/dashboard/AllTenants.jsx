@@ -92,6 +92,14 @@ export default function PoDashboardTenants() {
     navigate(`/dashboard/tenant/clients/${tid}`);
   };
 
+  const fetchTenantStaffs = (tid) => {
+    navigate(`/dashboard/tenant/staffs/${tid}`);
+  };
+
+  const fetchTenantLocations = (tid) => {
+    navigate(`/dashboard/tenant/locations/${tid}`);
+  };
+
   useEffect(() => {
     fetchAllTenants();
   }, [page, isRefreshed]);
@@ -134,6 +142,8 @@ export default function PoDashboardTenants() {
                   fetchTenantClients={fetchTenantClients}
                   setSelectedTenantId={setSelectedTenantId}
                   fetchTenantAppointments={fetchTenantAppointments}
+                  fetchTenantStaffs={fetchTenantStaffs}
+                  fetchTenantLocations={fetchTenantLocations}
                   page={page}
                   pagination={pagination}
                 />

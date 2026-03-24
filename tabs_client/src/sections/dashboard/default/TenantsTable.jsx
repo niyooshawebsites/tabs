@@ -100,10 +100,11 @@ export default function TenantsTable({
   fetchTenantDetails,
   fetchTenantAppointments,
   fetchTenantClients,
+  fetchTenantStaffs,
+  fetchTenantLocations,
   page,
   pagination
 }) {
-  // const { role, isAuthenticated } = useSelector((state) => state.login_slice);
   const order = 'asc';
   const orderBy = 'tracking_no';
 
@@ -150,11 +151,11 @@ export default function TenantsTable({
                         </span>
                       </TableCell>
                       <TableCell component="td" id={labelId} scope="row">
-                        <span color="secondary" className="tableContentCenter">
+                        <span color="secondary" className="tableContentCenter" onClick={() => fetchTenantStaffs(row._id)}>
                           {row?.staffCount}
                         </span>
                       </TableCell>
-                      <TableCell component="td" id={labelId} scope="row">
+                      <TableCell component="td" id={labelId} scope="row" onClick={() => fetchTenantLocations(row._id)}>
                         <span color="secondary" className="tableContentCenter">
                           {row?.locationCount}
                         </span>

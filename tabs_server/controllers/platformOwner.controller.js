@@ -13,6 +13,7 @@ const {
   generateRefreshToken,
 } = require("../utils/authToken.util");
 const { hashToken } = require("../utils/tokenHash.util");
+const mongoose = require("mongoose");
 
 // // platform owner registration controller
 // const platformOwnerRegistrationController = async (req, res) => {
@@ -578,7 +579,7 @@ const fetchAClientForPoController = async (req, res) => {
 
     let client;
 
-    if (mongoose.Types.ObjectId.isValid(clientInfo)) {
+    if (mongoose.Types.ObjectId.isValid(cid)) {
       client = await Client.findOne({ _id: cid });
     }
 

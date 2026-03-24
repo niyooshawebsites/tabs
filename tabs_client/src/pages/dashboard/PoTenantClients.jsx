@@ -73,8 +73,8 @@ export default function DashboardClients() {
     }
   };
 
-  const fetchClientDetails = async (cid) => {
-    navigate(`/dashboard/client/details/${cid}`);
+  const fetchClientDetails = async (tid, cid) => {
+    navigate(`/dashboard/client-details-for-po/${tid}/${cid}`);
   };
 
   const handleNext = () => {
@@ -123,6 +123,7 @@ export default function DashboardClients() {
               </Grid>
               <MainCard sx={{ mt: 2 }} content={false}>
                 <PoTenantClientsTable
+                  tid={tid}
                   clients={clients}
                   handlePrev={handlePrev}
                   handleNext={handleNext}

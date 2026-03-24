@@ -4,10 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
-import CheckMissingInfo from '../../components/CheckMissingInfo';
 import NoInfo from '../../components/NoInfo';
 import '../../assets/style.css';
 
@@ -24,10 +22,8 @@ export default function PoDashboardClientDetails() {
     state: null,
     pincode: null
   });
-
-  const { cid } = useParams();
+  const { tid, cid } = useParams();
   const navigate = useNavigate();
-  const { isDoctor } = useSelector((state) => state.admin_slice);
   const [fetchingClientDetails, setFetchingClientDetails] = useState(false);
 
   const fetchClientDetails = async () => {
@@ -105,22 +101,14 @@ export default function PoDashboardClientDetails() {
               <Grid size={{ xs: 12, lg: 12 }}>
                 <Stack sx={{ gap: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <DashboardHeading title={isDoctor == 'yes' ? `Patient Details` : `Client Details`} />
+                    <DashboardHeading title={`Client Details`} />
                     <Button
                       sx={{ p: 1 }}
                       onClick={() => {
-                        if (role == 1) {
-                          navigate(`/dashboard/client/appointments/${client?.cid}`);
-                          return;
-                        }
-
-                        if (role == 2) {
-                          navigate('/dashboard/clients');
-                          return;
-                        }
+                        navigate(`/dashboard/tenant/clients/${tid}`);
                       }}
                     >
-                      {`${role == 2 ? 'Clients' : 'Dashboard'} `}
+                      Back
                     </Button>
                   </Box>
 
@@ -192,25 +180,6 @@ export default function PoDashboardClientDetails() {
                       Pincode
                     </Typography>
                     <Typography variant="h6">{client?.pincode || 'N/A'}</Typography>
-                  </Box>
-
-                  <Box className="details">
-                    <Button
-                      sx={{ p: 1 }}
-                      onClick={() => {
-                        navigate('/dashboard/clients');
-                      }}
-                    >
-                      Back to Clients
-                    </Button>
-                    <Button
-                      sx={{ p: 1 }}
-                      onClick={() => {
-                        navigate(`/dashboard/client/appointments/${client.cid}`);
-                      }}
-                    >
-                      Back to Appointments
-                    </Button>
                   </Box>
                 </Stack>
               </Grid>
