@@ -604,6 +604,99 @@ const fetchAClientForPoController = async (req, res) => {
   }
 };
 
+const fetchTenantStaffForPoController = async (req, res) => {
+  try {
+    const { tid } = req.query;
+
+    const limit = parseInt(req.query.limit) || 5;
+    const page = parseInt(req.query.page) || 1;
+
+    const skip = (page - 1) * limit;
+
+    const totalStaff = await Staff.countDocuments({ tenant: tid });
+
+    const staff = await Staff.find({ tenant: tid })
+      .select("-password")
+      .populate("services")
+      .populate("location")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    if (staff.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "All services found",
+      data: staff,
+      pagination: {
+        totalStaff,
+        limit,
+        page,
+        totalPages: Math.ceil(totalStaff / limit),
+        hasNextPage: page * limit < totalStaff,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
+const fetchTenantLocationsForPoController = async (req, res) => {
+  try {
+    const { tid } = req.query;
+
+    const limit = parseInt(req.query.limit) || 5;
+    const page = parseInt(req.query.page) || 1;
+
+    const skip = (page - 1) * limit;
+
+    const totalLocations = await Location.countDocuments({ tenant: tid });
+
+    const locations = await Location.find({ tenant: tid })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    if (locations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Location not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "All locations found",
+      data: locations,
+      pagination: {
+        totalLocations,
+        limit,
+        page,
+        totalPages: Math.ceil(totalLocations / limit),
+        hasNextPage: page * limit < totalLocations,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error!",
+      err: err.message,
+    });
+  }
+};
+
 module.exports = {
   // platformOwnerRegistrationController,
   platformOwnerLoginController,
@@ -616,4 +709,6 @@ module.exports = {
   fetchTenantAppointmentDetailsForPoController,
   fetchClientAppointmentsForPoController,
   fetchAClientForPoController,
+  fetchTenantStaffForPoController,
+  fetchTenantLocationsForPoController,
 };

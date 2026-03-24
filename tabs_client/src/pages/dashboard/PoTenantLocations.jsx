@@ -2,20 +2,22 @@ import { Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import LocationTable from '../../sections/dashboard/default/LocationTable';
+import PoLocationTable from '../../sections/dashboard/default/PoLocationTable';
 import { toast } from 'react-toastify';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import NoInfo from '../../components/NoInfo';
 
 export default function PoDashboardLocations() {
   const { tid } = useParams();
+  const [locations, setLocations] = useState([]);
   const [fetchingAllLocations, setFetchingAllLocations] = useState(false);
   const [pagination, setPagination] = useState({});
   const [deletingLocation, setDeletingLocation] = useState(false);
   const [loationDeleted, setLoationDeleted] = useState(false);
-  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
 
   const handleNext = () => {
     if (pagination.hasNextPage) setPage((prev) => prev + 1);
@@ -25,10 +27,6 @@ export default function PoDashboardLocations() {
     if (pagination.hasPrevPage) setPage((prev) => prev - 1);
   };
 
-  const editLocation = async (lid) => {
-    navigate(`/dashboard/location/edit/${lid}`);
-  };
-
   const fetchAllLocations = async () => {
     let response;
     try {
@@ -36,7 +34,7 @@ export default function PoDashboardLocations() {
 
       try {
         // original request
-        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-locations-for-po?page=${page}&limit=${limit}&tid=${tid}`, {
           withCredentials: true
         });
       } catch (error) {
@@ -45,9 +43,12 @@ export default function PoDashboardLocations() {
           await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
           // Retry original request
-          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-all-locations?page=${page}&limit=${limit}&uid=${tenantId}`, {
-            withCredentials: true
-          });
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}fetch-tenant-locations-for-po?page=${page}&limit=${limit}&tid=${tid}`,
+            {
+              withCredentials: true
+            }
+          );
         } else {
           throw error;
         }
@@ -57,6 +58,7 @@ export default function PoDashboardLocations() {
 
       if (data.success) {
         setPagination(data?.pagination);
+        setLocations(data?.data);
         setFetchingAllLocations(false);
       }
     } catch (err) {
@@ -145,9 +147,8 @@ export default function PoDashboardLocations() {
                   />
                 </Grid>
                 <MainCard sx={{ mt: 2 }} content={false}>
-                  <LocationTable
+                  <PoLocationTable
                     locations={locations}
-                    editLocation={editLocation}
                     deleteLocation={deleteLocation}
                     handlePrev={handlePrev}
                     handleNext={handleNext}

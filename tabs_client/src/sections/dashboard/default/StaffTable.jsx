@@ -1,11 +1,11 @@
-import { Box, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid } from '@mui/material';
 import PropTypes from 'prop-types';
-import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
 import Loader from '../../../components/Loader';
+import Pagination from '../../../components/Pagination';
 
 const headCells = [
   {
@@ -210,19 +210,7 @@ export default function StaffTable({ staff, handlePrev, handleNext, editStaff, d
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
-              <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
-                <ArrowBackIos />
-              </IconButton>
-
-              <Typography variant="body1">
-                Page {page} of {pagination.totalPages}
-              </Typography>
-
-              <IconButton color="primary" onClick={handleNext} disabled={!pagination.hasNextPage} aria-label="Next page">
-                <ArrowForwardIos />
-              </IconButton>
-            </Stack>
+            <Pagination pagination={pagination} handlePrev={handlePrev} handleNext={handleNext} page={page} />
           </>
         ) : (
           <Box sx={{ p: 1 }}>No Staff</Box>

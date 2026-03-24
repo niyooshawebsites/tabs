@@ -55,14 +55,6 @@ router.get(
   fetchALocationController,
 );
 
-// get location route
-// router.get(
-//   "/fetch-all-locations",
-//   isTenant,
-//   validateQuery(querySchema),
-//   fetchAllLocationsController,
-// );
-
 router.get(
   "/fetch-all-locations",
   validateQuery(querySchema),

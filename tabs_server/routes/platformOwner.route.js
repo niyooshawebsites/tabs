@@ -12,6 +12,8 @@ const {
   fetchTenantAppointmentDetailsForPoController,
   fetchClientAppointmentsForPoController,
   fetchAClientForPoController,
+  fetchTenantStaffForPoController,
+  fetchTenantLocationsForPoController,
 } = require("../controllers/platformOwner.controller");
 
 const { isPlatformOwner } = require("../middlewares/auth.middleware");
@@ -99,6 +101,20 @@ router.get(
   validateQuery(querySchema),
   validateParams(generateParamSchema("cid")),
   fetchAClientForPoController,
+);
+
+// get staff route
+router.get(
+  "/fetch-tenant-staff-for-po",
+  isPlatformOwner,
+  validateQuery(querySchema),
+  fetchTenantStaffForPoController,
+);
+
+router.get(
+  "/fetch-tenant-locations-for-po",
+  validateQuery(querySchema),
+  fetchTenantLocationsForPoController,
 );
 
 module.exports = router;

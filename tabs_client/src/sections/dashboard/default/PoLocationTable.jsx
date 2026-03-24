@@ -17,7 +17,7 @@ const headCells = [
   },
   {
     id: 'Action',
-    align: 'left',
+    align: 'center',
     disablePadding: false,
     label: 'Action'
   }
@@ -42,16 +42,7 @@ function LocationTableHead({ order, orderBy }) {
   );
 }
 
-export default function LocationTable({
-  locations,
-  handlePrev,
-  handleNext,
-  editLocation,
-  deleteLocation,
-  pagination,
-  page,
-  deletingLocation
-}) {
+export default function PoLocationTable({ locations, handlePrev, handleNext, deleteLocation, pagination, page, deletingLocation }) {
   const order = 'asc';
   const orderBy = 'tracking_no';
 
@@ -87,11 +78,7 @@ export default function LocationTable({
                       </TableCell>
 
                       <TableCell component="td" id={labelId} scope="row">
-                        <Grid container direction="row" alignItems="center" gap={2}>
-                          <Typography color="primary" sx={{ cursor: 'pointer' }} onClick={() => editLocation(row._id)}>
-                            Edit
-                          </Typography>
-
+                        <Grid container direction="row" alignItems="center" gap={2} className="tableContentCenter">
                           <Typography color="error" sx={{ cursor: 'pointer' }} onClick={() => deleteLocation(row._id)}>
                             {deletingLocation ? 'Deleting...' : 'Delete'}
                           </Typography>

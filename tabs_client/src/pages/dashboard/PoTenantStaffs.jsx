@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import StaffTable from '../../sections/dashboard/default/StaffTable';
+import PoStaffTable from '../../sections/dashboard/default/PoStaffTable';
 import { toast } from 'react-toastify';
 import DashboardHeading from '../../components/DashboardHeading';
 import Loader from '../../components/Loader';
@@ -23,7 +23,6 @@ export default function PoDashboardStaff() {
   const [limit] = useState(5);
   const [fetchingAllStaff, setFetchingAllStaff] = useState(false);
   const [deletingAStaff, setDeletingAStaff] = useState(false);
-  const navigate = useNavigate();
 
   const fetchAllStaff = async () => {
     try {
@@ -31,7 +30,7 @@ export default function PoDashboardStaff() {
       let response;
 
       try {
-        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-staff?page=${page}&limit=${limit}&uid=${tenantId}`, {
+        response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-staff-for-po?page=${page}&limit=${limit}&tid=${tid}`, {
           withCredentials: true
         });
       } catch (error) {
@@ -40,7 +39,7 @@ export default function PoDashboardStaff() {
           await axios.post(`${import.meta.env.VITE_API_URL}refresh-token`, {}, { withCredentials: true });
 
           // Retry original request
-          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-staff?page=${page}&limit=${limit}&uid=${tenantId}`, {
+          response = await axios.get(`${import.meta.env.VITE_API_URL}fetch-tenant-staff-for-po?page=${page}&limit=${limit}&tid=${tid}`, {
             withCredentials: true
           });
         } else {
@@ -135,9 +134,7 @@ export default function PoDashboardStaff() {
   };
 
   useEffect(() => {
-    if (locations.length > 0) {
-      fetchAllStaff();
-    }
+    fetchAllStaff();
   }, [page, pagination.totalStaff]);
 
   return (
@@ -155,7 +152,7 @@ export default function PoDashboardStaff() {
                   />
                 </Grid>
                 <MainCard sx={{ mt: 2 }} content={false}>
-                  <StaffTable
+                  <PoStaffTable
                     staff={staff}
                     deleteStaff={deleteAStaff}
                     handlePrev={handlePrev}

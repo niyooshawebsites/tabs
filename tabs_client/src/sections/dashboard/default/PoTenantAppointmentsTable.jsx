@@ -1,10 +1,10 @@
-import { Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, IconButton } from '@mui/material';
+import { Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import Dot from 'components/@extended/Dot';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
-import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import moment from 'moment';
 import AppointmentStatusUpdateModal from '../../../components/AppointmentStatusUpdateModal';
+import Pagination from '../../../components/Pagination';
 
 const headCells = [
   {
@@ -205,19 +205,7 @@ export default function PoTenantAppointmentsTable({
                 })}
               </TableBody>
             </Table>
-            <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 4, backgroundColor: 'gray' }}>
-              <IconButton color="primary" onClick={handlePrev} disabled={!pagination.hasPrevPage} aria-label="Previous page">
-                <ArrowBackIos />
-              </IconButton>
-
-              <Typography variant="body1">
-                Page {page} of {pagination.totalPages}
-              </Typography>
-
-              <IconButton color="primary" onClick={handleNext} disabled={!pagination.hasNextPage} aria-label="Next page">
-                <ArrowForwardIos />
-              </IconButton>
-            </Stack>
+            <Pagination pagination={pagination} handlePrev={handlePrev} handleNext={handleNext} page={page} />
             <AppointmentStatusUpdateModal
               isOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
